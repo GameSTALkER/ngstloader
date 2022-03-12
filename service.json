@@ -1,0 +1,81 @@
+{
+    
+    "script-path": "https://raw.githubusercontent.com/GameSTALkER/ngstloader/scripts/",
+
+    "1632210982": {"author": "nGameSTALkER",
+                   "script": true,
+                   "lobby": "1240123653"
+     },
+    
+    "142823291":  {"author": "xennyy", 
+                   "script": "https://raw.githubusercontent.com/xennyy/Xenny-Ware/main/MM2.lua"
+     },
+
+    "1537690962": {"author": "Pepsi", 
+                   "script": true
+     },
+
+    "2286901071": {"author": "nGameSTALkER", 
+                    "script": true,
+                    "lobby": true
+     },
+    
+    "2356303743": {"author": "nGameSTALkER", 
+                   "script": true,
+                   "lobby": "2286901071"
+     },
+
+    "3101667897": {"author": "nGameSTALkER", 
+                   "script": true
+     },
+
+    "4490140733": {"author": false, 
+                   "script": true
+     },
+
+    "4806026225": {"author": "nGameSTALkER", 
+                   "script": true
+     },
+
+    "5256165620": {"author": false, 
+                   "script": true
+     },
+
+    "5591597781": {"author": "nGameSTALkER", 
+                   "script": true,
+                   "lobby": "3260590327"
+     },
+
+    "6284583030": {"author": "Pepsi",
+                   "script": true
+     },
+
+    "6447798030": {"author": "wally", 
+                   "script": "https://raw.githubusercontent.com/wally-rblx/funky-friday-autoplay/main/main.lua"
+     },
+    
+    "7094672259": {"author": "nGameSTALkER",
+                   "script": true 
+    },
+
+    "7562422641": {"author": "nGameSTALkER", 
+                   "script": true,
+                   "lobby": "7555007091"
+     },
+
+    "7584496019": {"author": "Ezpi",
+                   "script": true
+     },
+    
+    "8892207911": {"author": "nGameSTALkER",
+                   "script": true
+     },
+
+    "893973440":  {"author": "nGameSTALkER", 
+                   "script": true
+     },
+    
+    "7555007091": {"lobby": true, "game": "7562422641"},
+    "1240123653": {"exec?": "1632210982"},
+    "3260590327": {"lobby": true, "game": "5591597781"}
+}
