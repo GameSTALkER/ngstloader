@@ -2392,7 +2392,7 @@ function lib:init(loader_name,available_games_url)
                 local info = tipgen(Toggle,toapply.desc)
 
                 do
-                    if toapply["exec"] then pcall(callback,toggle_state) end
+                    if toapply["exec"] then pcall(callback,toapply['state']) end
                     -- main func
                     local db = false
                     local toggle_state = toapply['state']
