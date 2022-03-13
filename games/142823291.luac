@@ -1,0 +1,70 @@
+
+local _gui = loadstring(game:HttpGet("https://raw.githubusercontent.com/GameSTALkER/synapse.luas/main/UiLibs/GUiLibRewrite.lua"))():CreateWin("MM2")
+local _tab = _gui:CreateTab({name="General"})
+
+local prl = game:GetService("Players").LocalPlayer
+_G.ismurdwhon = false
+_G.issheron = false
+
+_tab:CreateToggle({name="State",desc="Murder CHAMS",state=_G.ismurdwhon},function(_)
+    _G.ismurdwhon = _
+    spawn(function()
+        while _G.ismurdwhon == true do
+            pcall(function()
+                for i, v in pairs(game.Players:children()) do
+                    if v.Name ~= prl.Name and (v.Backpack:FindFirstChild("Knife") or v.Character:FindFirstChild("Knife")) then
+                        print("gay is "..v.Name)
+                        local esp = Instance.new("BoxHandleAdornment")
+                        esp.Name = "TorsoChams"
+                        esp.Parent = v.Character
+                        esp.Size = Vector3.new(2,2,1)
+                        esp.Color3 = Color3.new(255, 0, 0)
+                        esp.Transparency = 0.4
+                        esp.AlwaysOnTop = true
+                        if v.Character:FindFirstChild("UpperTorso") then esp.Adornee = v.Character.UpperTorso else esp.Adornee = v.Character.Torso end
+                        esp.Visible = true
+                        esp.ZIndex = 10
+                    end
+                end
+            end)
+
+            wait(1)
+        end
+    end)
+end)
+_tab:CreateToggle({name="State",desc="Sherif CHAMS",state=_G.issheron},function(_)
+    _G.issheron = _
+    spawn(function()
+        while _G.issheron == true do
+            pcall(function()
+                for i, v in pairs(game.Players:GetChildren()) do
+                    if v.Name ~= prl.Name and (v.Backpack:FindFirstChild("Gun") or v.Character:FindFirstChild("Gun")) then
+                        local esp = Instance.new("BoxHandleAdornment")
+                        esp.Name = "TorsoChams"
+                        esp.Parent = v.Character
+                        esp.Size = Vector3.new(2,2,1)
+                        esp.Color3 = Color3.new(0, 0, 255)
+                        esp.Transparency = 0.4
+                        esp.AlwaysOnTop = true
+                        if v.Character:FindFirstChild("UpperTorso") then esp.Adornee = v.Character.UpperTorso else esp.Adornee = v.Character.Torso end
+                        esp.Visible = true
+                        esp.ZIndex = 10
+                    end
+                end
+            end)
+
+            wait(1)
+        end
+    end)
+end)
+
+spawn(function()
+    while _G.issheron == true or _G.ismurdwhon == true do
+        wait(3)
+        for i, v in pairs(game.Players:GetChildren()) do
+            if v.ClassName == "BoxHandleAdornment" and v.Name == "TorsoChams" then
+                v:Destroy()
+            end
+        end
+    end
+end)
