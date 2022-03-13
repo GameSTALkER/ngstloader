@@ -1049,7 +1049,7 @@ function lib:init(loader_name,available_games_url)
         elseif data.script == true or type(data["exec?"]) == "string" then 
             local gameid = game.PlaceId
             if type(json[tostring(game.PlaceId)]["exec?"]) == "string" then gameid = json[tostring(game.PlaceId)]["exec?"] end
-            Text_3.Text = "Supported"
+            Text_3.Text = json["script-path"] .. gameid .. ".lua"
         else
             Text_3.Text = data.script
         end
@@ -1120,7 +1120,7 @@ function lib:init(loader_name,available_games_url)
     			loadanim()
     			TweenService:Create(Execute,TweenInfo.new(.15),{ImageTransparency = 1}):Play()
     			TweenService:Create(Loading,TweenInfo.new(.15),{ImageTransparency = 0}):Play()
-    			loadstring(game:HttpGet(json["script-path"] .. gameid .. ".lua"))()
+    			loadstring(game:HttpGet(Text_3.Text))()
     			TweenService:Create(Loading,TweenInfo.new(.15),{ImageTransparency = 1}):Play()
     			TweenService:Create(Execute,TweenInfo.new(.15),{ImageTransparency = 0}):Play()
     			execdb = false
@@ -3616,8 +3616,8 @@ getgenv().ngstloader = lib:init("nGSTLoader","https://raw.githubusercontent.com/
 
 
 getgenv().ngstloader:CustomScript("AnimHub","https://raw.githubusercontent.com/GameSTALkER/ngstloader/main/scripts/AnimHub.lua")
-getgenv().ngstloader:CustomScript("SSpy","https://raw.githubusercontent.com/GameSTALkER/ngstloader/scripts/SimpleSpy.lua")
-getgenv().ngstloader:CustomScript("BackDoor","https://raw.githubusercontent.com/GameSTALkER/ngstloader/scripts/backdoor.lua")
+getgenv().ngstloader:CustomScript("SSpy","https://raw.githubusercontent.com/GameSTALkER/ngstloader/main/scripts/SimpleSpy.lua")
+getgenv().ngstloader:CustomScript("BackDoor","https://raw.githubusercontent.com/GameSTALkER/ngstloader/main/scripts/backdoor.lua")
 
 getgenv().ngstloader:CustomScript("InfY","https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source")
 getgenv().ngstloader:CustomScript("OwlHub","https://raw.githubusercontent.com/CriShoux/OwlHub/master/OwlHub.txt")
