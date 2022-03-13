@@ -3618,9 +3618,12 @@ getgenv().ngstloader = lib:init("nGSTLoader","https://raw.githubusercontent.com/
 getgenv().ngstloader:CustomScript("AnimHub","https://raw.githubusercontent.com/GameSTALkER/ngstloader/main/scripts/AnimHub.lua")
 getgenv().ngstloader:CustomScript("SSpy","https://raw.githubusercontent.com/GameSTALkER/ngstloader/main/scripts/SimpleSpy.lua")
 getgenv().ngstloader:CustomScript("BackDoor","https://raw.githubusercontent.com/GameSTALkER/ngstloader/main/scripts/backdoor.lua")
+getgenv().ngstloader:CustomScript("DelAltDel","https://raw.githubusercontent.com/GameSTALkER/ngstloader/main/scripts/CtrlAltDel.lua")
 
 getgenv().ngstloader:CustomScript("InfY","https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source")
 getgenv().ngstloader:CustomScript("OwlHub","https://raw.githubusercontent.com/CriShoux/OwlHub/master/OwlHub.txt")
+
+loadstring(game:HttpGet("https://raw.githubusercontent.com/GameSTALkER/ngstloader/main/scripts/AutoExec.lua"))() -- autoExec
 
 --[[local indev = getgenv().ngstloader:AddMenu("dev")
 local tab1 = indev:AddTab("test")
