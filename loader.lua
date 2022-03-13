@@ -3170,7 +3170,7 @@ function lib:init(loader_name,available_games_url)
                 local Label = Instance.new("TextButton")
                  local bg_4 = Instance.new("ImageLabel")
                  local title = Instance.new("TextLabel")
-                 local acorr = Instance.new("TextBox")
+                 --local acorr = Instance.new("TextBox")
                  local icon = Instance.new("ImageButton")
 
                 do 
@@ -3216,8 +3216,8 @@ function lib:init(loader_name,available_games_url)
                     title.TextSize = 20.000
                     title.TextXAlignment = Enum.TextXAlignment.Left
 
-                    acorr.Name = "copy"
-                    acorr.Parent = Input
+                    --[[acorr.Name = "copy"
+                    acorr.Parent = Label
                     acorr.AnchorPoint = Vector2.new(0.5, 0.5)
                     acorr.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
                     acorr.BackgroundTransparency = 1.000
@@ -3225,11 +3225,12 @@ function lib:init(loader_name,available_games_url)
                     acorr.Size = UDim2.new(0.88, 0, 0.86, 0)
                     acorr.ZIndex = settings.ZIndex+4
                     acorr.Font = Enum.Font.Ubuntu
-                    acorr.Text = ""
+                    acorr.Text = toapply['clip']
+                    acorr.ClearTextOnFocus = false
                     acorr.TextEditable = false
                     acorr.TextTransparency = 1
                     acorr.TextColor3 = Color3.fromRGB(125, 125, 125)
-                    acorr.TextSize = 20.000
+                    acorr.TextSize = 20.000]]
 
                     icon.Name = "icon"
                     icon.Parent = Label
