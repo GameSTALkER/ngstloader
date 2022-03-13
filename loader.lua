@@ -3267,7 +3267,7 @@ function lib:init(loader_name,available_games_url)
                         end
                         if db then return end
                         db = true
-                        if syn then setclipboard(tostring(toapply['clip'])) end
+                        pcall(function() setclipboard(tostring(toapply['clip'])) end)
 
                         title.Text = "Copied"
                         wait(1)
