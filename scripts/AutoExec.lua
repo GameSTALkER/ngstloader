@@ -237,6 +237,8 @@ end
 
 local reanimdata = cfg(nil)
 local function ReAnimate(id,Anim)
+    reanimdata[Anim] = id
+    cfg(reanimdata)
     if id == -1 then return end
     local AnimateScript = game.Players.LocalPlayer.Character:WaitForChild("Animate")
     if type(id) == "table" then
@@ -256,9 +258,6 @@ local function ReAnimate(id,Anim)
     
     end
     game.Players.LocalPlayer.Character.Humanoid:ChangeState(5)
-    reanimdata[Anim] = id
-    wait()
-    cfg(reanimdata)
     
 end
 if getgenv().FreeAnimationsCon ~= nil then getgenv().FreeAnimationsCon:Disconnect() end
