@@ -84,7 +84,7 @@
                     (strings* or tables*) -> (Name or {Name,Value}) -- Button's return Value on MouseButton1Click
                 }
             }
-            callback -> returns (value -> any)
+            callback -> returns (value -> any, name -> string)
         }
 
 
@@ -3443,14 +3443,14 @@ function lib:init(loader_name,available_games_url)
                                 if v == toapply['active'] then
                                     if toapply["exec"] then callback(v) end
                                     items.Text = v 
-                                    lastpressedbtn = v
+                                    lastpressedbtn = {v,v}
+                                    break
                                 end
-                            else
-                                if tostring(v[1]) == tostring(toapply['active']) or tostring(v[2]) == tostring(toapply['active']) then
-                                    if toapply["exec"] then callback(v[2]) end
-                                    items.Text = v[1]
-                                    lastpressedbtn = v[2]
-                                end
+                            elseif tostring(v[1]) == tostring(toapply['active']) or tostring(v[2]) == tostring(toapply['active']) then
+                                if toapply["exec"] then callback(v[2]) end
+                                items.Text = v[1]
+                                lastpressedbtn = {v[2],v[1]}
+                                break
                             end
                         end end)
                     end
@@ -3458,11 +3458,11 @@ function lib:init(loader_name,available_games_url)
                         if type(toapply['btns'][1]) == "string" then
                             if toapply["exec"] then callback(toapply['btns'][1]) end
                             items.Text = toapply['btns'][1]
-                            lastpressedbtn = toapply['btns'][1]
+                            lastpressedbtn = {toapply['btns'][1],toapply['btns'][1]}
                         else
                             if toapply["exec"] then callback(toapply['btns'][1][2]) end
                             items.Text = toapply['btns'][1][1]
-                            lastpressedbtn = toapply['btns'][1][2]
+                            lastpressedbtn = {toapply['btns'][1][2],toapply['btns'][1][1]}
                         end
                     end
                     local ispressed,ispressed2 = false,false
@@ -3500,7 +3500,7 @@ function lib:init(loader_name,available_games_url)
                         TweenService:Create(items,TweenInfo.new(.25),{TextColor3 = Color3.fromRGB(255,255,255)}):Play()
                         TweenService:Create(bg_33,TweenInfo.new(.25),{ImageColor3 = Color3.fromRGB(c.R+settings.cm.list.ratio,c.G+settings.cm.list.ratio,c.B+settings.cm.list.ratio)}):Play()
                         TweenService:Create(icon,TweenInfo.new(.25),{ImageColor3 = Color3.fromRGB(255,255,255)}):Play() 
-                        callback(lastpressedbtn)
+                        callback(lastpressedbtn[1],lastpressedbtn[2])
                         ispressed2 = false
                         
                     end)
@@ -3598,8 +3598,8 @@ function lib:init(loader_name,available_games_url)
                                 if not ispressed then return end
                                 ispressed = false
                                 items.Text = lname
-                                lastpressedbtn = lvalue
-                                callback(lvalue)
+                                lastpressedbtn = {lvalue,lname}
+                                callback(lastpressedbtn[1],lastpressedbtn[2])
                             end)
                             Button.MouseButton1Down:Connect(function()
                                 ispressed = true
@@ -3624,6 +3624,29 @@ function lib:init(loader_name,available_games_url)
                 end)
                 local khm = #toapply['btns'] * (UIGridLayout.CellSize.Y.Offset + UIGridLayout.CellPadding.Y.Offset)
                 TweenService:Create(List1,TweenInfo.new(.1),{CanvasSize = UDim2.new(0,0,0,khm)}):Play()
+
+                local ulib = {}
+                function ulib:Active(new_value)
+                    if new_value ~= nil then spawn(function()
+                        for i,v in pairs(toapply['btns']) do
+                            if type(v) == "string" then
+                                if v == tostring(new_value) then
+                                    items.Text = v 
+                                    lastpressedbtn = {v,v}
+                                    break
+                                end
+                            elseif tostring(v[1]) == tostring(new_value) or tostring(v[2]) == tostring(new_value) then
+                                items.Text = v[1]
+                                lastpressedbtn = {v[2],v[1]}
+                                break
+                            end
+                        end end)
+                    end
+
+
+                end
+
+                return ulib
                 
             end
             autosizeY(Menu1_2,function(_) if _ > 4 then TweenService:Create(Menu1_2,TweenInfo.new(.1),{Position = UDim2.new(0.57, 0,0.5, 0)}):Play() end; end)
@@ -3686,7 +3709,7 @@ tab1:CreateInput({},function(_) print("input text: ".._) end)
 tab1:CreateSlider({},function(_) print("Int: ".._) end)
 tab1:CreateBind({},function(_,_T) print("Key: ".._..", Tick: ".._T) end)
 tab1:CreateLabel({})
-tab1:CreateList({},function(_) print('Value is: '.._) end)
+tab1:CreateList({},function(_,name) print('Value is: '.._.." from: "..name) end)
 local tab2 = indev:AddTab("test1")
 tab2:CreateButton({name="changed name", desc="have desc"},function(_) print("clicked ".._.." times!") end)
 tab2:CreateToggle({name="changed name", desc="have desc",state=true,exec=true},function(_) print("state: "..tostring(_)) end)
@@ -3694,5 +3717,5 @@ tab2:CreateInput({name="Auto complete player name",desc="Auto complete Playe's N
 tab2:CreateSlider({name="changed name",desc="have desc",min=-100,def=0,max=100},function(_) print("Int: ".._) end)
 tab2:CreateBind({name="changed name + loop",loop=true,desc="have desc",key="*"},function(_,_T) print("Key: ".._..", Tick: ".._T) end)
 tab2:CreateLabel({name="changed name + clipboard info",copy="i'am clanged",desc="it's really changed"})
-tab2:CreateList({name="changed name",multi=true,active="changed name + value",desc="have enabled multi choicer (soon)",btns={"changed name only",{"changed name + value","i like dinging"}}},function(_) print('Value is: '.._) end)
+tab2:CreateList({name="changed name",multi=true,active="changed name + value",desc="have enabled multi choicer (soon)",btns={"changed name only",{"changed name + value","i like dinging"}}},function(_,name) print('Value is: '.._.." from: "..name) end)
 ]]
