@@ -237,28 +237,30 @@ end
 
 local reanimdata = cfg(nil)
 local function ReAnimate(id,Anim)
-    reanimdata[Anim] = id
-    cfg(reanimdata)
-    if id == -1 then return end
-    local AnimateScript = game.Players.LocalPlayer.Character:WaitForChild("Animate")
-    if type(id) == "table" then
-        for k,w in pairs(id) do
-            for i,v in pairs(AnimateScript[Anim]:GetChildren()) do
-                if v.ClassName == "Animation" and v.Name == "Animation"..k then v.AnimationId = "rbxassetid://"..w end
+    pcall(function()
+        local mychar = game.Players.LocalPlayer.Character
+        reanimdata[Anim] = id
+        cfg(reanimdata)
+        if id == -1 then return end
+        local AnimateScript = mychar:WaitForChild("Animate")
+        if type(id) == "table" then
+            for k,w in pairs(id) do
+                for i,v in pairs(AnimateScript[Anim]:GetChildren()) do
+                    if v.ClassName == "Animation" and v.Name == "Animation"..k then v.AnimationId = "rbxassetid://"..w end
+                    
+                end
                 
             end
-            
+        
+        else
+            for i,v in pairs(AnimateScript[Anim]:GetChildren()) do
+                if v.ClassName == "Animation" then v.AnimationId = "rbxassetid://"..id end
+                
+            end
+        
         end
-    
-    else
-        for i,v in pairs(AnimateScript[Anim]:GetChildren()) do
-            if v.ClassName == "Animation" then v.AnimationId = "rbxassetid://"..id end
-            
-        end
-    
-    end
-    game.Players.LocalPlayer.Character.Humanoid:ChangeState(5)
-    
+        mychar.Humanoid:ChangeState(5)
+    end)
 end
 if getgenv().FreeAnimationsCon ~= nil then getgenv().FreeAnimationsCon:Disconnect() end
 getgenv().FreeAnimationsCon = game.Players.LocalPlayer.CharacterAdded:Connect(function()
