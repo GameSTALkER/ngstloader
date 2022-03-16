@@ -79,6 +79,7 @@
                 name(title)          -> string,     -- Name of function ("List name")
                 desc(description)    -> string,     -- Description of function ("")
                 exec                 -> boolean,    -- Trigger callback on creation (false)
+                active               -> any,        -- On function create 1st value will be name or value from list (first from list*)
                 btns(buttons,btn)    -> table {     -- List of buttons in function ({"name is value",{"button with own value","hello world!"}})
                     (strings* or tables*) -> (Name or {Name,Value}) -- Button's return Value on MouseButton1Click
                 }
@@ -967,7 +968,7 @@ function lib:init(loader_name,available_games_url)
     	TweenService:Create(instance,TweenInfo.new(.1),{CanvasSize = UDim2.new(0,0,0,khm)}):Play()
     	
         callback = function() end
-        pcall(callback, buttons) end)
+        callback( buttons) end)
     end
     local function click(type,c,i1,i2,fisonbtn,setting)
         local i2type = "TextColor3"
@@ -2261,7 +2262,7 @@ function lib:init(loader_name,available_games_url)
                         click_count = click_count + 1
                         if db then return end
                         db = true
-                        pcall(callback,click_count)
+                        callback(click_count)
                         db = false
                     end)
                 
@@ -2392,7 +2393,7 @@ function lib:init(loader_name,available_games_url)
                 local info = tipgen(Toggle,toapply.desc)
 
                 do
-                    if toapply["exec"] then pcall(callback,toapply['state']) end
+                    if toapply["exec"] then callback(toapply['state']) end
                     -- main func
                     local db = false
                     local toggle_state = toapply['state']
@@ -2404,7 +2405,7 @@ function lib:init(loader_name,available_games_url)
                         if db then return end
                         db = true
                         toggle_state = not toggle_state
-                        pcall(callback,toggle_state)
+                        callback(toggle_state)
                         local r = 0
                         if not toggle_state then r = 180 end
                         TweenService:Create(state,TweenInfo.new(.25),{Rotation = r}):Play()
@@ -2672,7 +2673,7 @@ function lib:init(loader_name,available_games_url)
                             TweenService:Create(bgl,TweenInfo.new(.25),{ImageColor3 = Color3.fromRGB(c.R,c.G,c.B)}):Play()
                         end
                         if not _ then return end
-                        pcall(callback,Input.Text)
+                        callback(Input.Text)
                     
                     end)
                     Input.MouseEnter:Connect(function()
@@ -2865,7 +2866,7 @@ function lib:init(loader_name,available_games_url)
                         pcall(function()
                             int.Text = Value
                             OldValue = Value
-                            if toapply["exec"] then pcall(callback,Value) end
+                            if toapply["exec"] then callback(Value) end
                         end)
                     end)
                     slider.MouseButton1Down:Connect(function()
@@ -2886,7 +2887,7 @@ function lib:init(loader_name,available_games_url)
                                 if Value == OldValue then return end
                                 int.Text = Value
                                 OldValue = Value
-                                pcall(callback,Value)
+                                callback(Value)
                             end)
                         end)
                         moveconnection = mouse.Move:Connect(function()
@@ -2895,7 +2896,7 @@ function lib:init(loader_name,available_games_url)
                                 if Value == OldValue then return end
                                 int.Text = Value
                                 OldValue = Value
-                                pcall(callback,Value)
+                                callback(Value)
                             end)
                             TweenService:Create(bg_2,TweenInfo.new(.1),{Size = UDim2.new(0, math.clamp(mouse.X - bg_2.AbsolutePosition.X, 0, 640), 1, 0)}):Play()
                         end)
@@ -2906,7 +2907,7 @@ function lib:init(loader_name,available_games_url)
                                     if Value == OldValue then return end
                                     int.Text = Value
                                     OldValue = Value
-                                    pcall(callback,Value)
+                                    callback(Value)
                                 end)
                                 TweenService:Create(bg_2,TweenInfo.new(.1),{Size = UDim2.new(0, math.clamp(mouse.X - bg_2.AbsolutePosition.X, 0, 640), 1, 0)}):Play()
                                 moveconnection:Disconnect()
@@ -2929,7 +2930,7 @@ function lib:init(loader_name,available_games_url)
                             TweenService:Create(bg_2,TweenInfo.new(.1),{Size = UDim2.new(0, 320, 1, 0)}):Play()
                             int.Text = toapply['def']
                             OldValue = toapply['def']
-                            pcall(callback,toapply['def'])
+                            callback(toapply['def'])
                         end)
                     end)
 
@@ -3109,7 +3110,7 @@ function lib:init(loader_name,available_games_url)
                             spawn(function() 
                                 while wait() do
                                     bind_tick = bind_tick + 1
-                                    pcall(callback, key.KeyCode.Name, bind_tick)
+                                    callback( key.KeyCode.Name, bind_tick)
                                     if not islooping then break end 
                                 end
                             end)
@@ -3310,7 +3311,7 @@ function lib:init(loader_name,available_games_url)
                 counters['lists'] = counters['lists'] + 1
 
                 local save = {num=counters['lists']}
-                local toapply = {name="List name",desc="",multi=false,btns={"name is value",{"button with own value","hello world!"}}}
+                local toapply = {name="List name",desc="",active=nil,multi=false,btns={"name is value",{"button with own value","hello world!"}}}
 
                 for k,v in pairs(fsettings) do
                     k = tostring(k):lower()
@@ -3318,6 +3319,8 @@ function lib:init(loader_name,available_games_url)
                         toapply['name'] = tostring(v)
                     elseif table.find({'desc','description'},k) then
                         toapply['desc'] = tostring(v)
+                    elseif k == "active" then
+                        toapply['active'] = v
                     elseif k == "multi" then
                         if type(v) == "boolean" then
                             toapply['multi'] = v
@@ -3433,24 +3436,45 @@ function lib:init(loader_name,available_games_url)
                 end
 
                 do
-                    if type(toapply['btns'][1]) == "string" then
-                        if toapply["exec"] then pcall(callback,toapply['btns'][1]) end
-                        items.Text = toapply['btns'][1]
-                    else
-                        if toapply["exec"] then pcall(callback,toapply['btns'][1][1]) end
-                        items.Text = toapply['btns'][1][1]
+                    local lastpressedbtn = nil
+                    if toapply['active'] ~= nil then spawn(function()
+                        for i,v in pairs(toapply['btns']) do
+                            if type(v) == "string" then
+                                if v == toapply['active'] then
+                                    if toapply["exec"] then callback(v) end
+                                    items.Text = v 
+                                    lastpressedbtn = v
+                                end
+                            else
+                                if tostring(v[1]) == tostring(toapply['active']) or tostring(v[2]) == tostring(toapply['active']) then
+                                    if toapply["exec"] then callback(v[2]) end
+                                    items.Text = v[1]
+                                    lastpressedbtn = v[2]
+                                end
+                            end
+                        end end)
                     end
-                    local ispressed = false
+                    if lastpressedbtn == nil then
+                        if type(toapply['btns'][1]) == "string" then
+                            if toapply["exec"] then callback(toapply['btns'][1]) end
+                            items.Text = toapply['btns'][1]
+                            lastpressedbtn = toapply['btns'][1]
+                        else
+                            if toapply["exec"] then callback(toapply['btns'][1][2]) end
+                            items.Text = toapply['btns'][1][1]
+                            lastpressedbtn = toapply['btns'][1][2]
+                        end
+                    end
+                    local ispressed,ispressed2 = false,false
                     local c = toRGB(bg_33.ImageColor3)
                     List.MouseButton1Up:Connect(function()
                         islistopened = true
-                        TweenService:Create(bg_33,TweenInfo.new(.25),{ImageColor3 = Color3.fromRGB(c.R,c.G,c.B)}):Play()
                         TweenService:Create(icon,TweenInfo.new(.25),{ImageColor3 = Color3.fromRGB(200,200,200)}):Play() 
-                        if isonbtn then 
-                            TweenService:Create(bg_33,TweenInfo.new(.25),{ImageColor3 = Color3.fromRGB(c.R+settings.cm.list.ratio,c.G+settings.cm.list.ratio,c.B+settings.cm.list.ratio)}):Play()
-                            TweenService:Create(items,TweenInfo.new(.25),{TextColor3 = Color3.fromRGB(255,255,255)}):Play() 
-                            TweenService:Create(icon,TweenInfo.new(.25),{ImageColor3 = Color3.fromRGB(255,255,255)}):Play() 
-                        end
+                        TweenService:Create(items,TweenInfo.new(.25),{TextColor3 = Color3.fromRGB(200, 200, 200)}):Play()
+                        TweenService:Create(bg_33,TweenInfo.new(.25),{ImageColor3 = Color3.fromRGB(c.R,c.G,c.B)}):Play()
+                        TweenService:Create(title,TweenInfo.new(.25),{TextTransparency = 0}):Play() 
+                        TweenService:Create(items,TweenInfo.new(.25),{TextTransparency = 1}):Play() 
+                        
                         if not ispressed then return end
                         for i,v in pairs(LSbg:GetChildren()) do
                             v.Visible = false
@@ -3471,9 +3495,25 @@ function lib:init(loader_name,available_games_url)
                         TweenService:Create(icon,TweenInfo.new(.25),{ImageColor3 = Color3.fromRGB(150,150,150)}):Play() 
                     
                     end)
+                    List.MouseButton2Up:Connect(function()
+                        if not ispressed2 then return end
+                        TweenService:Create(items,TweenInfo.new(.25),{TextColor3 = Color3.fromRGB(255,255,255)}):Play()
+                        TweenService:Create(bg_33,TweenInfo.new(.25),{ImageColor3 = Color3.fromRGB(c.R+settings.cm.list.ratio,c.G+settings.cm.list.ratio,c.B+settings.cm.list.ratio)}):Play()
+                        TweenService:Create(icon,TweenInfo.new(.25),{ImageColor3 = Color3.fromRGB(255,255,255)}):Play() 
+                        callback(lastpressedbtn)
+                        ispressed2 = false
+                        
+                    end)
+                    List.MouseButton2Down:Connect(function()
+                        ispressed2 = true
+                        TweenService:Create(bg_33,TweenInfo.new(.25),{ImageColor3 = Color3.fromRGB(c.R-settings.cm.list.ratio,c.G-settings.cm.list.ratio,c.B-settings.cm.list.ratio)}):Play()
+                        TweenService:Create(items,TweenInfo.new(.25),{TextColor3 = Color3.fromRGB(150, 150, 150)}):Play()
+                        TweenService:Create(icon,TweenInfo.new(.25),{ImageColor3 = Color3.fromRGB(150,150,150)}):Play() 
+                        
+                    end)
+                    
                     List.MouseEnter:Connect(function()
                         if islistopened then return end
-                        isonbtn = true
                         TweenService:Create(items,TweenInfo.new(.25),{TextColor3 = Color3.fromRGB(255,255,255)}):Play()
                         TweenService:Create(bg_33,TweenInfo.new(.25),{ImageColor3 = Color3.fromRGB(c.R+settings.cm.list.ratio,c.G+settings.cm.list.ratio,c.B+settings.cm.list.ratio)}):Play()
                         TweenService:Create(icon,TweenInfo.new(.25),{ImageColor3 = Color3.fromRGB(255,255,255)}):Play() 
@@ -3481,8 +3521,16 @@ function lib:init(loader_name,available_games_url)
                         TweenService:Create(items,TweenInfo.new(.25),{TextTransparency = 0}):Play() 
                     
                     end)
+                    List.MouseMoved:Connect(function()
+                        if islistopened then return end
+                        TweenService:Create(items,TweenInfo.new(.25),{TextColor3 = Color3.fromRGB(255,255,255)}):Play()
+                        TweenService:Create(bg_33,TweenInfo.new(.25),{ImageColor3 = Color3.fromRGB(c.R+settings.cm.list.ratio,c.G+settings.cm.list.ratio,c.B+settings.cm.list.ratio)}):Play()
+                        TweenService:Create(icon,TweenInfo.new(.25),{ImageColor3 = Color3.fromRGB(255,255,255)}):Play() 
+                        TweenService:Create(title,TweenInfo.new(.25),{TextTransparency = 1}):Play() 
+                        TweenService:Create(items,TweenInfo.new(.25),{TextTransparency = 0}):Play() 
+                        
+                    end)
                     List.MouseLeave:Connect(function()
-                        isonbtn = false
                         ispressed = false
                         if islistopened then return end
                         TweenService:Create(icon,TweenInfo.new(.25),{ImageColor3 = Color3.fromRGB(200,200,200)}):Play() 
@@ -3494,88 +3542,92 @@ function lib:init(loader_name,available_games_url)
                     end)
                 end
 
-                for i,v in pairs(toapply['btns']) do
-                    local Button = Instance.new("TextButton")
-                    local bg_34 = Instance.new("ImageLabel")
-
-                    local lname;
-                    local lvalue;
-
-                    if type(v) == "table" then
-                        lname = v[1]
-                        lvalue = v[2]
-                    else lname,lvalue = v,v end
-                    do
-                        Button.Name = "Button"
-                        Button.Parent = List1
-                        Button.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
-                        Button.BackgroundTransparency = 1.000
-                        Button.BorderSizePixel = 0
-                        Button.Size = UDim2.new(0, 200, 0, 50)
-                        Button.ZIndex = settings.ZIndex+28
-                        Button.Font = Enum.Font.Ubuntu
-                        Button.Text = lname
-                        Button.TextColor3 = Color3.fromRGB(200, 200, 200)
-                        Button.TextSize = 14.000
-                        
-                        bg_34.Name = "bg"
-                        bg_34.Parent = Button
-                        bg_34.Active = true
-                        bg_34.AnchorPoint = Vector2.new(0.5, 0.5)
-                        bg_34.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-                        bg_34.BackgroundTransparency = 1.000
-                        bg_34.Position = UDim2.new(0.5, 0, 0.5, 0)
-                        bg_34.Selectable = true
-                        bg_34.Size = UDim2.new(1, 0, 1, 0)
-                        bg_34.ZIndex = settings.ZIndex+27
-                        bg_34.Image = "rbxassetid://3570695787"
-                        bg_34.ImageColor3 = Color3.fromRGB(25, 25, 25)
-                        bg_34.ScaleType = Enum.ScaleType.Slice
-                        bg_34.SliceCenter = Rect.new(100, 100, 100, 100)
-                        bg_34.SliceScale = 0.080
-                    end
-                    do
-                        local ispressed = false
-                        local c = toRGB(bg_34.ImageColor3)
-                        local isonbtn = false
-                        Button.MouseButton1Up:Connect(function()
-                            TweenService:Create(Button,TweenInfo.new(.25),{TextColor3 = Color3.fromRGB(200, 200, 200)}):Play()
-                            TweenService:Create(bg_34,TweenInfo.new(.25),{ImageColor3 = Color3.fromRGB(c.R,c.G,c.B)}):Play()
-                            if isonbtn then
+                spawn(function()
+                    for i,v in pairs(toapply['btns']) do
+                        local Button = Instance.new("TextButton")
+                        local bg_34 = Instance.new("ImageLabel")
+        
+                        local lname;
+                        local lvalue;
+        
+                        if type(v) == "table" then
+                            lname = v[1]
+                            lvalue = v[2]
+                        else lname,lvalue = v,v end
+                        do
+                            Button.Name = "Button"
+                            Button.Parent = List1
+                            Button.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+                            Button.BackgroundTransparency = 1.000
+                            Button.BorderSizePixel = 0
+                            Button.Size = UDim2.new(0, 200, 0, 50)
+                            Button.ZIndex = settings.ZIndex+28
+                            Button.Font = Enum.Font.Ubuntu
+                            Button.Text = lname
+                            Button.TextColor3 = Color3.fromRGB(200, 200, 200)
+                            Button.TextSize = 14.000
+                            
+                            bg_34.Name = "bg"
+                            bg_34.Parent = Button
+                            bg_34.Active = true
+                            bg_34.AnchorPoint = Vector2.new(0.5, 0.5)
+                            bg_34.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+                            bg_34.BackgroundTransparency = 1.000
+                            bg_34.Position = UDim2.new(0.5, 0, 0.5, 0)
+                            bg_34.Selectable = true
+                            bg_34.Size = UDim2.new(1, 0, 1, 0)
+                            bg_34.ZIndex = settings.ZIndex+27
+                            bg_34.Image = "rbxassetid://3570695787"
+                            bg_34.ImageColor3 = Color3.fromRGB(25, 25, 25)
+                            bg_34.ScaleType = Enum.ScaleType.Slice
+                            bg_34.SliceCenter = Rect.new(100, 100, 100, 100)
+                            bg_34.SliceScale = 0.080
+                        end
+                        do
+                            local ispressed = false
+                            local c = toRGB(bg_34.ImageColor3)
+                            local isonbtn = false
+                            Button.MouseButton1Up:Connect(function()
+                                TweenService:Create(Button,TweenInfo.new(.25),{TextColor3 = Color3.fromRGB(200, 200, 200)}):Play()
+                                TweenService:Create(bg_34,TweenInfo.new(.25),{ImageColor3 = Color3.fromRGB(c.R,c.G,c.B)}):Play()
+                                if isonbtn then
+                                    TweenService:Create(Button,TweenInfo.new(.25),{TextColor3 = Color3.fromRGB(255,255,255)}):Play()
+                                    TweenService:Create(bg_34,TweenInfo.new(.25),{ImageColor3 = Color3.fromRGB(c.R+settings.cm.list.btns.ratio,c.G+settings.cm.list.btns.ratio,c.B+settings.cm.list.btns.ratio)}):Play()
+                                    
+                                end
+                                if not ispressed then return end
+                                ispressed = false
+                                items.Text = lname
+                                lastpressedbtn = lvalue
+                                callback(lvalue)
+                            end)
+                            Button.MouseButton1Down:Connect(function()
+                                ispressed = true
+                                TweenService:Create(Button,TweenInfo.new(.25),{TextColor3 = Color3.fromRGB(150, 150, 150)}):Play()
+                                TweenService:Create(bg_34,TweenInfo.new(.25),{ImageColor3 = Color3.fromRGB(c.R-settings.cm.list.btns.ratio,c.G-settings.cm.list.btns.ratio,c.B-settings.cm.list.btns.ratio)}):Play()
+                            end)
+                            Button.MouseEnter:Connect(function()
                                 TweenService:Create(Button,TweenInfo.new(.25),{TextColor3 = Color3.fromRGB(255,255,255)}):Play()
                                 TweenService:Create(bg_34,TweenInfo.new(.25),{ImageColor3 = Color3.fromRGB(c.R+settings.cm.list.btns.ratio,c.G+settings.cm.list.btns.ratio,c.B+settings.cm.list.btns.ratio)}):Play()
-                                
-                            end
-                            if not ispressed then return end
-                            ispressed = false
-                            items.Text = lname
-                            pcall(callback,lvalue)
-                        end)
-                        Button.MouseButton1Down:Connect(function()
-                            ispressed = true
-                            TweenService:Create(Button,TweenInfo.new(.25),{TextColor3 = Color3.fromRGB(150, 150, 150)}):Play()
-                            TweenService:Create(bg_34,TweenInfo.new(.25),{ImageColor3 = Color3.fromRGB(c.R-settings.cm.list.btns.ratio,c.G-settings.cm.list.btns.ratio,c.B-settings.cm.list.btns.ratio)}):Play()
-                        end)
-                        Button.MouseEnter:Connect(function()
-                            TweenService:Create(Button,TweenInfo.new(.25),{TextColor3 = Color3.fromRGB(255,255,255)}):Play()
-                            TweenService:Create(bg_34,TweenInfo.new(.25),{ImageColor3 = Color3.fromRGB(c.R+settings.cm.list.btns.ratio,c.G+settings.cm.list.btns.ratio,c.B+settings.cm.list.btns.ratio)}):Play()
-                        
-                        end)
-                        Button.MouseLeave:Connect(function()
-                            ispressed = false
-                            TweenService:Create(Button,TweenInfo.new(.25),{TextColor3 = Color3.fromRGB(200, 200, 200)}):Play()
-                            TweenService:Create(bg_34,TweenInfo.new(.25),{ImageColor3 = Color3.fromRGB(c.R,c.G,c.B)}):Play()
-
-                        end)
+                            
+                            end)
+                            Button.MouseLeave:Connect(function()
+                                ispressed = false
+                                TweenService:Create(Button,TweenInfo.new(.25),{TextColor3 = Color3.fromRGB(200, 200, 200)}):Play()
+                                TweenService:Create(bg_34,TweenInfo.new(.25),{ImageColor3 = Color3.fromRGB(c.R,c.G,c.B)}):Play()
+        
+                            end)
+                        end
+        
                     end
-
-                end
+                    
+                end)
                 local khm = #toapply['btns'] * (UIGridLayout.CellSize.Y.Offset + UIGridLayout.CellPadding.Y.Offset)
                 TweenService:Create(List1,TweenInfo.new(.1),{CanvasSize = UDim2.new(0,0,0,khm)}):Play()
+                
             end
-            autosizeY(Menu1_2,function(_) if _ > 4 then TweenService:Create(Menu1_2,TweenInfo.new(.1),{Position = UDim2.new(0.57, 0,0.5, 0)}):Play() end; end) 
+            autosizeY(Menu1_2,function(_) if _ > 4 then TweenService:Create(Menu1_2,TweenInfo.new(.1),{Position = UDim2.new(0.57, 0,0.5, 0)}):Play() end; end)
             autosizeY(NewMenuscr,function(_) if _ > 6 then TweenService:Create(NewMenuscr,TweenInfo.new(.1),{Position = UDim2.new(0.48, 0,0.5, 0)}):Play() end; end)
-            --
             do -- tab changer
                 local isonbtn = false
                 local c = toRGB(NewMenubg.ImageColor3)
@@ -3642,4 +3694,5 @@ tab2:CreateInput({name="Auto complete player name",desc="Auto complete Playe's N
 tab2:CreateSlider({name="changed name",desc="have desc",min=-100,def=0,max=100},function(_) print("Int: ".._) end)
 tab2:CreateBind({name="changed name + loop",loop=true,desc="have desc",key="*"},function(_,_T) print("Key: ".._..", Tick: ".._T) end)
 tab2:CreateLabel({name="changed name + clipboard info",copy="i'am clanged",desc="it's really changed"})
-tab2:CreateList({name="changed name",multi=true,desc="have enabled multi choicer (soon)",btns={"changed name only",{"changed name + value","i like dinging"}}},function(_) print('Value is: '.._) end)]]
+tab2:CreateList({name="changed name",multi=true,active="changed name + value",desc="have enabled multi choicer (soon)",btns={"changed name only",{"changed name + value","i like dinging"}}},function(_) print('Value is: '.._) end)
+]]
