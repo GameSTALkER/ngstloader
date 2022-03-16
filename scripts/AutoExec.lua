@@ -264,6 +264,7 @@ local function ReAnimate(id,Anim)
 end
 if getgenv().FreeAnimationsCon ~= nil then getgenv().FreeAnimationsCon:Disconnect() end
 getgenv().FreeAnimationsCon = game.Players.LocalPlayer.CharacterAdded:Connect(function()
+    game:GetService("Players").LocalPlayer.Character:wait()
     for k,v in pairs(reanimdata) do
         if v ~= -1 then 
             ReAnimate(v,k)
