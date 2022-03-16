@@ -1,3 +1,4 @@
+do
 local function cfg(act,v)
     if not isfile("AutoExec.json") then writefile("AutoExec.json", "{}") end
     if act:lower() == "save" then
@@ -20,7 +21,7 @@ end
 if getgenv().AutoExecPuppy == nil then getgenv().AutoExecPuppy = {[1]={}, [2]={}} end
 
 -- interface
-local _gui = getgenv().ngstloader:AddMenu("AutoExec")
+_gui = getgenv().ngstloader:AddMenu("AutoExec")
 local _general = _gui:AddTab("General")
 local f = {af=false,uf=false,em=false}
 
@@ -215,3 +216,237 @@ _general:CreateToggle({name="free emotes (/e %emotename)", desc="dance4-dance30 
     states['emotes'] = _
     cfg("save",states)
 end)
+end
+do
+local tab = _gui:AddTab("Animations")
+
+local cfgname = "FreeAnimations.json"
+
+local function cfg(val)
+    if not isfile(cfgname) then writefile(cfgname,"{}") end
+    local data = readfile(cfgname) 
+    if val == nil then -- load
+        return game:GetService("HttpService"):JSONDecode(data)
+        
+    else -- save
+        writefile(cfgname, game:GetService("HttpService"):JSONEncode(val))
+        
+    end
+    
+end
+
+local reanimdata = cfg(nil)
+local function ReAnimate(id,Anim)
+    if id == -1 then return end
+    local AnimateScript = game.Players.LocalPlayer.Character:WaitForChild("Animate")
+    if type(id) == "table" then
+        for k,w in pairs(id) do
+            for i,v in pairs(AnimateScript[Anim]:GetChildren()) do
+                if v.ClassName == "Animation" and v.Name == "Animation"..k then v.AnimationId = "rbxassetid://"..w end
+                
+            end
+            
+        end
+    
+    else
+        for i,v in pairs(AnimateScript[Anim]:GetChildren()) do
+            if v.ClassName == "Animation" then v.AnimationId = "rbxassetid://"..id end
+            
+        end
+    
+    end
+    game.Players.LocalPlayer.Character.Humanoid:ChangeState(5)
+    reanimdata[Anim] = id
+    wait()
+    cfg(reanimdata)
+    
+end
+if getgenv().FreeAnimationsCon ~= nil then getgenv().FreeAnimationsCon:Disconnect() end
+getgenv().FreeAnimationsCon = game.Players.LocalPlayer.CharacterAdded:Connect(function()
+    for k,v in pairs(reanimdata) do
+        if v ~= -1 then 
+            ReAnimate(v,k)
+            wait()
+        
+        end
+
+    end 
+        
+end)
+tab:CreateList({name="Run Animation",exec=true,active=reanimdata.run,btns={{"OFF",-1},
+    {"None",0},
+    {"Oldschool",5319844329},
+    {"Toy",782842708},
+    {"Stylish",616140816},
+    {"Robot",616091570},
+    {"Zombie",616163682},
+    {"Bubbly",910025107},
+    {"Ninja",656118852},
+    {"Cartoony",742638842},
+    {"Mage",707861613},
+    {"Rthro",2510198475},
+    {"Rthro Heavy",3236836670},
+    {"WereWolf",1083216690},
+    {"Elder",845386501},
+    {"Vampire",1083462077},
+    {"Astronaut",891636393},
+    {"Superhero",616117076},
+    {"Levitation",616010382},
+    {"Knight",657564596},
+    {"Pirate",750783738},
+    {"Mr. Toilet Run",4417979645}
+}},function(id)
+    ReAnimate(id,"run")
+    
+end)
+tab:CreateList({name="Walk Animation",exec=true,active=reanimdata.walk,btns={{"OFF",-1},
+    {"None",0},
+    {"Oldschool",5319847204},
+    {"Toy",782843345},
+    {"Stylish",616146177},
+    {"Robot",616095330},
+    {"Zombie",616168032},
+    {"Bubbly",910034870},
+    {"Ninja",656121766},
+    {"Cartoony",742640026},
+    {"Mage",707897309},
+    {"Rthro",2510202577},
+    {"WereWolf",1083178339},
+    {"Elder",845403856},
+    {"Vampire",1083473930},
+    {"Astronaut",891636393},
+    {"Superhero",616122287},
+    {"Levitation",616013216},
+    {"Knight",657552124},
+    {"Pirate",750785693},
+    {"Ud'zal's Walk",3303162967}
+}},function(id)
+    ReAnimate(id,"walk")
+    
+end)
+tab:CreateList({name="Fall Animation",exec=true,active=reanimdata.fall,btns={{"OFF",-1},
+    {"None",0},
+    {"Oldschool",5319839762},
+    {"Toy",782846423},
+    {"Stylish",616134815},
+    {"Robot",616087089},
+    {"Zombie",616157476},
+    {"Bubbly",910001910},
+    {"Ninja",656115606},
+    {"Cartoony",742637151},
+    {"Mage",707829716},
+    {"Rthro",2510195892},
+    {"WereWolf",1083189019},
+    {"Elder",845396048},
+    {"Vampire",1083443587},
+    {"Astronaut",891617961},
+    {"Superhero",616108001},
+    {"Levitation",616005863},
+    {"Knight",657600338},
+    {"Pirate",750780242}
+}},function(id)
+    ReAnimate(id,"fall")
+    
+end)
+tab:CreateList({name="Jump Animation",exec=true,active=reanimdata.jump,btns={{"OFF",-1},
+    {"None",0},
+    {"Oldschool",5319841935},
+    {"Toy",782847020},
+    {"Stylish",616139451},
+    {"Robot",616090535},
+    {"Zombie",616161997},
+    {"Bubbly",910016857},
+    {"Ninja",656117878},
+    {"Cartoony",742637942},
+    {"Mage",707853694},
+    {"Rthro",2510197830},
+    {"WereWolf",1083218792},
+    {"Elder",845398858},
+    {"Vampire",1083455352},
+    {"Astronaut",891627522},
+    {"Superhero",616115533},
+    {"Levitation",616008936},
+    {"Knight",658409194},
+    {"Pirate",750782230}
+}},function(id)
+    ReAnimate(id,"jump")
+    
+end)
+tab:CreateList({name="Idle Animation",exec=true,active=reanimdata.idle,btns={{"OFF",-1},
+    {"None",0},
+    {"Oldschool",{5319828216,5319831086}},
+    {"Toy",{782841498,782845736}},
+    {"Stylish",{616136790,616138447}},
+    {"Robot",{616088211,616089559}},
+    {"Zombie",{616158929,616160636}},
+    {"Bubbly",{910004836,910009958}},
+    {"Ninja",{656117400,656118341}},
+    {"Cartoony",{742637544,742638445}},
+    {"Mage",{707742142,707855907}},
+    {"Rthro",{2510196951,2510197257}},
+    {"WereWolf",{1083195517,1083214717}},
+    {"Elder",{845397899,845400520}},
+    {"Vampire",{1083445855,1083450166}},
+    {"Astronaut",{891621366,891633237}},
+    {"Superhero",{616111295,616113536}},
+    {"Levitation",{616006778,616008087}},
+    {"Knight",{657595757,657568135}},
+    {"Pirate",{750781874,750782770}},
+    {"Borock's Idle",{3293641938,3293642554}},
+    {"Mr. Toilet Idle",{4417977954,4417978624}},
+    {"Ud'zal's Idle",{3303162274,3303162549}}
+}},function(id)
+    ReAnimate(id,"idle")
+    
+end)
+tab:CreateList({name="Swim Animation",exec=true,active=reanimdata.swim,btns={{"OFF",{-1,-1}},
+    {"None",{0,0}},
+    {"Oldschool",{5319850266,5319852613}},
+    {"Toy",{782844582,782845186}},
+    {"Stylish",{616143378,616144772}},
+    {"Robot",{616092998,616094091}},
+    {"Zombie",{616165109,616166655}},
+    {"Bubbly",{910028158,910030921}},
+    {"Ninja",{656119721,656121397}},
+    {"Cartoony",{742639220,742639812}},
+    {"Mage",{707876443,707894699}},
+    {"Rthro",{2510199791,2510201162}},
+    {"WereWolf",{1083222527,1083225406}},
+    {"Elder",{845401742,845403127}},
+    {"Vampire",{1083464683,1083467779}},
+    {"Astronaut",{891639666,891663592}},
+    {"Superhero",{616119360,616120861}},
+    {"Levitation",{616011509,616012453}},
+    {"Knight",{657560551,657557095}},
+    {"Pirate",{750784579,750785176}}
+}},function(id)
+    ReAnimate(id[1],"swim")
+    ReAnimate(id[2],"swimIdle")
+    
+end)
+tab:CreateList({name="Climb Animation",exec=true,active=reanimdata.climb,btns={{"OFF",-1},
+    {"None",0},
+    {"Oldschool",5319816685},
+    {"Toy",782843869},
+    {"Stylish",616133594},
+    {"Robot",616086039},
+    {"Zombie",616156119},
+    {"Bubbly",909997997},
+    {"Ninja",656114359},
+    {"Cartoony",742636889},
+    {"Mage",707826056},
+    {"Rthro",2510192778},
+    {"WereWolf",1083182000},
+    {"Elder",845392038},
+    {"Vampire",1083439238},
+    {"Astronaut",891609353},
+    {"Superhero",616104706},
+    {"Levitation",616003713},
+    {"Knight",658360781},
+    {"Pirate",750779899}
+}},function(id)
+    ReAnimate(id,"climb")
+    
+end)
+
+end
