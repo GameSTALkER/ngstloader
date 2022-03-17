@@ -3695,6 +3695,7 @@ getgenv().ngstloader:CustomScript("AnimHub","https://raw.githubusercontent.com/G
 getgenv().ngstloader:CustomScript("SSpy","https://raw.githubusercontent.com/GameSTALkER/ngstloader/main/scripts/SimpleSpy.lua")
 getgenv().ngstloader:CustomScript("BackDoor","https://raw.githubusercontent.com/GameSTALkER/ngstloader/main/scripts/backdoor.lua")
 getgenv().ngstloader:CustomScript("DelAltDel","https://raw.githubusercontent.com/GameSTALkER/ngstloader/main/scripts/CtrlAltDel.lua")
+getgenv().ngstloader:CustomScript("Anti-Fling","https://raw.githubusercontent.com/GameSTALkER/ngstloader/main/scripts/antifling.lua")
 
 getgenv().ngstloader:CustomScript("InfY","https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source")
 getgenv().ngstloader:CustomScript("OwlHub","https://raw.githubusercontent.com/CriShoux/OwlHub/master/OwlHub.txt")
