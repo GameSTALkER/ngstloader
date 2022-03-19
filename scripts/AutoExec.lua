@@ -224,9 +224,16 @@ do
     
     local function cfg(val)
         if not isfile(cfgname) then writefile(cfgname,"{}") end
-        local data = readfile(cfgname) 
         if val == nil then -- load
-            return game:GetService("HttpService"):JSONDecode(data)
+			local data = readfile(cfgname)
+            resp, err = pcall(function() data = game:GetService("HttpService"):JSONDecode(data) end)
+			if not resp then
+				print(cfgname.." is broken. recreating...")
+				writefile(cfgname, "{}")
+				
+				return {}
+			end
+			return data
             
         else -- save
             writefile(cfgname, game:GetService("HttpService"):JSONEncode(val))
@@ -244,12 +251,22 @@ do
             if id == -1 then return end
             local AnimateScript = mychar:WaitForChild("Animate")
             if type(id) == "table" then
-                for k,w in pairs(id) do
-                    for i,v in pairs(AnimateScript[Anim]:GetChildren()) do
-                        if v.ClassName == "Animation" and v.Name == "Animation"..k then v.AnimationId = "rbxassetid://"..w end
-                        
+                if Anim == "idle" then
+                    for k,w in pairs(id) do
+                        for i,v in pairs(AnimateScript[Anim]:GetChildren()) do
+                            if v.ClassName == "Animation" and v.Name == "Animation"..k then v.AnimationId = "rbxassetid://"..w end
+
+                        end
+
                     end
-                    
+
+                elseif Anim == "swim" then
+                    for i,v in pairs(AnimateScript[Anim]:GetChildren()) do
+                        if v.ClassName == "Animation" and v.Name == "swim" then v.AnimationId = "rbxassetid://"..id[1] 
+                        elseif v.ClassName == "Animation" and v.Name == "swimIdle" then v.AnimationId = "rbxassetid://"..id[2] end
+
+                    end
+
                 end
             
             else
@@ -264,7 +281,6 @@ do
     end
     if getgenv().FreeAnimationsCon ~= nil then getgenv().FreeAnimationsCon:Disconnect() end
     getgenv().FreeAnimationsCon = game.Players.LocalPlayer.CharacterAdded:Connect(function()
-        game:GetService("Players").LocalPlayer.Character:wait()
         for k,v in pairs(reanimdata) do
             if v ~= -1 then 
                 ReAnimate(v,k)
@@ -276,29 +292,32 @@ do
             
     end)
     local animbtn = {}
-    tab:CreateList({name="Animation Pack",btns={{"OFF",{run=-1,walk=-1,fall=-1,jump=-1,idle={-1,-1},swim=-1,swimIdle=-1,climb=-1}},
-        {"None",{run=0,walk=0,fall=0,jump=0,idle={0,0},swim=0,swimIdle=0,climb=0}},
-        {"Oldschool",{run=5319844329,walk=5319847204,fall=5319839762,jump=5319841935,idle={5319828216,5319831086},swim=5319850266,swimIdle=5319852613,climb=5319816685}},
-        {"Toy",{run=782842708,walk=782843345,fall=782846423,jump=782847020,idle={782841498,782845736},swim=782844582,swimIdle=782845186,climb=782843869}},
-        {"Stylish",{run=616140816,walk=616146177,fall=616134815,jump=616139451,idle={616136790,616138447},swim=616143378,swimIdle=616144772,climb=616133594}},
-        {"Robot",{run=616091570,walk=616095330,fall=616087089,jump=616090535,idle={616088211,616089559},swim=616092998,swimIdle=616094091,climb=616086039}},
-        {"Zombie",{run=616163682,walk=616168032,fall=616157476,jump=616161997,idle={616158929,616160636},swim=616165109,swimIdle=616166655,climb=616156119}},
-        {"Bubbly",{run=910025107,walk=910034870,fall=910001910,jump=910016857,idle={910004836,910009958},swim=910028158,swimIdle=910030921,climb=909997997}},
-        {"Ninja",{run=656118852,walk=656121766,fall=656115606,jump=656117878,idle={656117400,656118341},swim=656119721,swimIdle=656121397,climb=707826056}},
-        {"Cartoony",{run=742638842,walk=742640026,fall=742637151,jump=742637942,idle={742637544,742638445},swim=742639220,swimIdle=742639812,climb=742636889}},
-        {"Mage",{run=707861613,walk=707897309,fall=707829716,jump=707853694,idle={707742142,707855907},swim=707876443,swimIdle=707894699,climb=656114359}},
-        {"Rthro",{run=2510198475,walk=2510202577,fall=2510195892,jump=2510197830,idle={2510196951,2510197257},swim=2510199791,swimIdle=2510201162,climb=845392038}},
-        {"WereWolf",{run=1083216690,walk=1083178339,fall=1083189019,jump=1083218792,idle={1083195517,1083214717},swim=1083222527,swimIdle=1083225406,climb=1083182000}},
-        {"Elder",{run=845386501,walk=845403856,fall=845396048,jump=845398858,idle={845397899,845400520},swim=845401742,swimIdle=845403127,climb=2510192778}},
-        {"Vampire",{run=1083462077,walk=1083473930,fall=1083443587,jump=1083455352,idle={1083445855,1083450166},swim=1083464683,swimIdle=1083467779,climb=1083439238}},
-        {"Astronaut",{run=891636393,walk=891636393,fall=891617961,jump=891627522,idle={891621366,891633237},swim=891639666,swimIdle=891663592,climb=891609353}},
-        {"Superhero",{run=616117076,walk=616122287,fall=616108001,jump=616115533,idle={616111295,616113536},swim=616119360,swimIdle=616120861,climb=616104706}},
-        {"Levitation",{run=616010382,walk=616013216,fall=616005863,jump=616008936,idle={616006778,616008087},swim=616011509,swimIdle=616012453,climb=616003713}},
-        {"Knight",{run=657564596,walk=657552124,fall=657600338,jump=658409194,idle={657595757,657568135},swim=657560551,swimIdle=657557095,climb=658360781}},
-        {"Pirate",{run=750783738,walk=750785693,fall=750780242,jump=750782230,idle={750781874,750782770},swim=750784579,swimIdle=750785176,climb=750779899}}
-    }},function(id)
+    tab:CreateList({name="Animation Pack",active=reanimdata.Pack,btns={{"OFF",{run=-1,walk=-1,fall=-1,jump=-1,idle=-1,swim=-1,climb=-1}},
+        {"None",{run=0,walk=0,fall=0,jump=0,idle={0,0},swim={0,0},climb=0}},
+        {"Oldschool",{run=5319844329,walk=5319847204,fall=5319839762,jump=5319841935,idle={5319828216,5319831086},swim={5319850266,5319852613},climb=5319816685}},
+        {"Toy",{run=782842708,walk=782843345,fall=782846423,jump=782847020,idle={782841498,782845736},swim={782844582,782845186},climb=782843869}},
+        {"Stylish",{run=616140816,walk=616146177,fall=616134815,jump=616139451,idle={616136790,616138447},swim={616143378,616144772},climb=616133594}},
+        {"Robot",{run=616091570,walk=616095330,fall=616087089,jump=616090535,idle={616088211,616089559},swim={616092998,616094091},climb=616086039}},
+        {"Zombie",{run=616163682,walk=616168032,fall=616157476,jump=616161997,idle={616158929,616160636},swim={616165109,616166655},climb=616156119}},
+        {"Bubbly",{run=910025107,walk=910034870,fall=910001910,jump=910016857,idle={910004836,910009958},swim={910028158,910030921},climb=909997997}},
+        {"Ninja",{run=656118852,walk=656121766,fall=656115606,jump=656117878,idle={656117400,656118341},swim={656119721,656121397},climb=707826056}},
+        {"Cartoony",{run=742638842,walk=742640026,fall=742637151,jump=742637942,idle={742637544,742638445},swim={742639220,742639812},climb=742636889}},
+        {"Mage",{run=707861613,walk=707897309,fall=707829716,jump=707853694,idle={707742142,707855907},swim={707876443,707894699},climb=656114359}},
+        {"Rthro",{run=2510198475,walk=2510202577,fall=2510195892,jump=2510197830,idle={2510196951,2510197257},swim={2510199791,2510201162},climb=845392038}},
+        {"WereWolf",{run=1083216690,walk=1083178339,fall=1083189019,jump=1083218792,idle={1083195517,1083214717},swim={1083222527,1083225406},climb=1083182000}},
+        {"Elder",{run=845386501,walk=845403856,fall=845396048,jump=845398858,idle={845397899,845400520},swim={845401742,845403127},climb=2510192778}},
+        {"Vampire",{run=1083462077,walk=1083473930,fall=1083443587,jump=1083455352,idle={1083445855,1083450166},swim={1083464683,1083467779},climb=1083439238}},
+        {"Astronaut",{run=891636393,walk=891636393,fall=891617961,jump=891627522,idle={891621366,891633237},swim={891639666,891663592},climb=891609353}},
+        {"Superhero",{run=616117076,walk=616122287,fall=616108001,jump=616115533,idle={616111295,616113536},swim={616119360,616120861},climb=616104706}},
+        {"Levitation",{run=616010382,walk=616013216,fall=616005863,jump=616008936,idle={616006778,616008087},swim={616011509,616012453},climb=616003713}},
+        {"Knight",{run=657564596,walk=657552124,fall=657600338,jump=658409194,idle={657595757,657568135},swim={657560551,657557095},climb=658360781}},
+        {"Pirate",{run=750783738,walk=750785693,fall=750780242,jump=750782230,idle={750781874,750782770},swim={750784579,750785176},climb=750779899}}
+    }},function(id,name)
+    	reanimdata.Pack = name
+    	reanimdata.idleName=name
+    	reanimdata.swimName=name
         for k,v in pairs(id) do
-            pcall(function() animbtn[k]:Active(k) end)
+            animbtn[k]:Active(name)
             ReAnimate(v,k)
             
         end
@@ -326,7 +345,7 @@ do
         {"Knight",657564596},
         {"Pirate",750783738},
         {"Mr. Toilet Run",4417979645}
-    }},function(id)
+    }},function(id,name)
         ReAnimate(id,"run")
         
     end)
@@ -403,8 +422,8 @@ do
         ReAnimate(id,"jump")
         
     end)
-    animbtn['idle'] = tab:CreateList({name="Idle Animation",exec=true,active=reanimdata.idle,btns={{"OFF",-1},
-        {"None",0},
+    animbtn['idle'] = tab:CreateList({name="Idle Animation",exec=true,active=reanimdata.idleName,btns={{"OFF",-1},
+        {"None",{0,0}},
         {"Oldschool",{5319828216,5319831086}},
         {"Toy",{782841498,782845736}},
         {"Stylish",{616136790,616138447}},
@@ -426,11 +445,12 @@ do
         {"Borock's Idle",{3293641938,3293642554}},
         {"Mr. Toilet Idle",{4417977954,4417978624}},
         {"Ud'zal's Idle",{3303162274,3303162549}}
-    }},function(id)
+    }},function(id,name)
+    	reanimdata.idleName = name
         ReAnimate(id,"idle")
         
     end)
-    animbtn['swim'] = tab:CreateList({name="Swim Animation",exec=true,active=reanimdata.swim,btns={{"OFF",{-1,-1}},
+    animbtn['swim'] = tab:CreateList({name="Swim Animation",exec=true,active=reanimdata.swimName,btns={{"OFF",-1},
         {"None",{0,0}},
         {"Oldschool",{5319850266,5319852613}},
         {"Toy",{782844582,782845186}},
@@ -450,9 +470,9 @@ do
         {"Levitation",{616011509,616012453}},
         {"Knight",{657560551,657557095}},
         {"Pirate",{750784579,750785176}}
-    }},function(id)
-        ReAnimate(id[1],"swim")
-        ReAnimate(id[2],"swimIdle")
+    }},function(id,name)
+    	reanimdata.swimName = name
+        ReAnimate(id,"swim")
         
     end)
     animbtn['climb'] = tab:CreateList({name="Climb Animation",exec=true,active=reanimdata.climb,btns={{"OFF",-1},
