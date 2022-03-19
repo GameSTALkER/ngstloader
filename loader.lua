@@ -3696,6 +3696,15 @@ getgenv().ngstloader:CustomScript("SSpy","https://raw.githubusercontent.com/Game
 getgenv().ngstloader:CustomScript("BackDoor","https://raw.githubusercontent.com/GameSTALkER/ngstloader/main/scripts/backdoor.lua")
 getgenv().ngstloader:CustomScript("DelAltDel","https://raw.githubusercontent.com/GameSTALkER/ngstloader/main/scripts/CtrlAltDel.lua")
 getgenv().ngstloader:CustomScript("Anti-Fling","https://raw.githubusercontent.com/GameSTALkER/ngstloader/main/scripts/antifling.lua")
+getgenv().ngstloader:CustomScript("Crasher",function()
+for _,s in pairs(game.Players.LocalPlayer.Character:GetDescendants()) do
+    if s:IsA("Motor6D") and s.Name ~= "Neck" then
+        local fard = s.Parent
+        s:Destroy()
+        fard.CFrame = CFrame.new(9e9 * _,9e9* _,9e9*_)
+        wait()
+    end
+end end)
 
 getgenv().ngstloader:CustomScript("InfY","https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source")
 getgenv().ngstloader:CustomScript("OwlHub","https://raw.githubusercontent.com/CriShoux/OwlHub/master/OwlHub.txt")
