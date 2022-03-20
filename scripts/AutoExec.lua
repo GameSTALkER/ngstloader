@@ -246,7 +246,7 @@ do
     local function ReAnimate(id,Anim)
         pcall(function()
             local mychar = game.Players.LocalPlayer.Character
-	    if mychar.Humanoid.RigType == Enum.HumanoidRigType.R6 then return end
+			if mychar.Humanoid.RigType == Enum.HumanoidRigType.R6 then return end
             reanimdata[Anim] = id
             cfg(reanimdata)
             if id == -1 then return end
@@ -285,15 +285,15 @@ do
         for k,v in pairs(reanimdata) do
             if v ~= -1 then 
                 ReAnimate(v,k)
-                wait()
             
             end
+            wait()
     
         end 
             
     end)
     local animbtn = {}
-    tab:CreateList({name="Animation Pack",active=reanimdata.Pack,btns={{"OFF",{run=-1,walk=-1,fall=-1,jump=-1,idle=-1,swim=-1,climb=-1}},
+    tab:CreateList({name="Animation Pack",exec=false,active=reanimdata.Pack,btns={{"OFF",{run=-1,walk=-1,fall=-1,jump=-1,idle=-1,swim=-1,climb=-1}},
         {"None",{run=0,walk=0,fall=0,jump=0,idle={0,0},swim={0,0},climb=0}},
         {"Oldschool",{run=5319844329,walk=5319847204,fall=5319839762,jump=5319841935,idle={5319828216,5319831086},swim={5319850266,5319852613},climb=5319816685}},
         {"Toy",{run=782842708,walk=782843345,fall=782846423,jump=782847020,idle={782841498,782845736},swim={782844582,782845186},climb=782843869}},
@@ -315,8 +315,8 @@ do
         {"Pirate",{run=750783738,walk=750785693,fall=750780242,jump=750782230,idle={750781874,750782770},swim={750784579,750785176},climb=750779899}}
     }},function(id,name)
     	reanimdata.Pack = name
-    	reanimdata.idleName=name
-    	reanimdata.swimName=name
+    	reanimdata.idleName = name
+    	reanimdata.swimName = name
         for k,v in pairs(id) do
             animbtn[k]:Active(name)
             ReAnimate(v,k)
@@ -423,6 +423,7 @@ do
         ReAnimate(id,"jump")
         
     end)
+    
     animbtn['idle'] = tab:CreateList({name="Idle Animation",exec=true,active=reanimdata.idleName,btns={{"OFF",-1},
         {"None",{0,0}},
         {"Oldschool",{5319828216,5319831086}},
@@ -447,8 +448,8 @@ do
         {"Mr. Toilet Idle",{4417977954,4417978624}},
         {"Ud'zal's Idle",{3303162274,3303162549}}
     }},function(id,name)
-    	reanimdata.idleName = name
         ReAnimate(id,"idle")
+    	if name ~= nil then reanimdata.idleName = name end
         
     end)
     animbtn['swim'] = tab:CreateList({name="Swim Animation",exec=true,active=reanimdata.swimName,btns={{"OFF",-1},
@@ -472,8 +473,8 @@ do
         {"Knight",{657560551,657557095}},
         {"Pirate",{750784579,750785176}}
     }},function(id,name)
-    	reanimdata.swimName = name
         ReAnimate(id,"swim")
+    	if name ~= nil then reanimdata.swimName = name end
         
     end)
     animbtn['climb'] = tab:CreateList({name="Climb Animation",exec=true,active=reanimdata.climb,btns={{"OFF",-1},
