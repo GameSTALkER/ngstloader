@@ -3441,13 +3441,13 @@ function lib:init(loader_name,available_games_url)
                         for i,v in pairs(toapply['btns']) do
                             if type(v) == "string" then
                                 if v == toapply['active'] then
-                                    if toapply["exec"] then callback(v) end
+                                    if toapply["exec"] then callback(v,v) end
                                     items.Text = v 
                                     lastpressedbtn = {v,v}
                                     break
                                 end
                             elseif tostring(v[1]) == tostring(toapply['active']) or tostring(v[2]) == tostring(toapply['active']) then
-                                if toapply["exec"] then callback(v[2]) end
+                                if toapply["exec"] then callback(v[2],v[1]) end
                                 items.Text = v[1]
                                 lastpressedbtn = {v[2],v[1]}
                                 break
@@ -3456,11 +3456,11 @@ function lib:init(loader_name,available_games_url)
                     end
                     if lastpressedbtn == nil then
                         if type(toapply['btns'][1]) == "string" then
-                            if toapply["exec"] then callback(toapply['btns'][1]) end
+                            if toapply["exec"] then callback(toapply['btns'][1],toapply['btns'][1]) end
                             items.Text = toapply['btns'][1]
                             lastpressedbtn = {toapply['btns'][1],toapply['btns'][1]}
                         else
-                            if toapply["exec"] then callback(toapply['btns'][1][2]) end
+                            if toapply["exec"] then callback(toapply['btns'][1][2],toapply['btns'][1][1]) end
                             items.Text = toapply['btns'][1][1]
                             lastpressedbtn = {toapply['btns'][1][2],toapply['btns'][1][1]}
                         end
