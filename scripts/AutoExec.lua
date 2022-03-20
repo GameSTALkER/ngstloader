@@ -246,6 +246,7 @@ do
     local function ReAnimate(id,Anim)
         pcall(function()
             local mychar = game.Players.LocalPlayer.Character
+	    if mychar.Humanoid.RigType == Enum.HumanoidRigType.R6 then return end
             reanimdata[Anim] = id
             cfg(reanimdata)
             if id == -1 then return end
