@@ -9,8 +9,8 @@ if _G.GemFarm then _G.GemFarm = false; wait(1) end
 if _G.AutoRebirth then _G.AutoRebirth = false; wait(1) end
 
 -- gui
-local guilib = loadstring(game:HttpGet("https://raw.githubusercontent.com/GameSTALkER/synapse.luas/main/UiLibs/GUILib.lua"))():CreateWindow("Legends Of Speed", nil)
-guilib:CreateToggle('Hoop Farm', function(state)
+local guilib = loadstring(game:HttpGet("https://raw.githubusercontent.com/GameSTALkER/ngstloader/main/UIs/DarkGUi.lua"))():CreateWindow("Legends Of Speed")
+guilib:CreateToggle({name='Hoop Farm'}, function(state)
     _G.HoopFarm = not _G.HoopFarm
     if _G.HoopFarm then
         spawn(function()
@@ -26,7 +26,7 @@ guilib:CreateToggle('Hoop Farm', function(state)
         end)
     end
 end)
-guilib:CreateToggle('Orb Farm', function(state)
+guilib:CreateToggle({name='Orb Farm'}, function(state)
     _G.OrbFarm = not _G.OrbFarm
     if _G.OrbFarm then
         spawn(function()
@@ -43,7 +43,7 @@ guilib:CreateToggle('Orb Farm', function(state)
         end)
     end
 end)
-guilib:CreateToggle('Gem Farm', function(state)
+guilib:CreateToggle({name='Gem Farm'}, function(state)
     _G.GemFarm = not _G.GemFarm
     if _G.GemFarm then
         spawn(function()
@@ -60,7 +60,7 @@ guilib:CreateToggle('Gem Farm', function(state)
         end)
     end
 end)
-guilib:CreateToggle('Auto Rebirth', function(state)
+guilib:CreateToggle({name='Auto Rebirth'}, function(state)
     _G.AutoRebirth = not _G.AutoRebirth
     if _G.AutoRebirth then
         spawn(function()
