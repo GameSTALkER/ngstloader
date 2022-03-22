@@ -1,6 +1,6 @@
 -- Tower Defense Simulator | Match
 
-local maingui = loadstring(game:HttpGet("https://raw.githubusercontent.com/GameSTALkER/synapse.luas/main/UiLibs/GUiLibRewrite.lua"))():CreateWin("Tower defence sim.", "Match.jf7qwSdf")
+local maingui = loadstring(game:HttpGet("https://raw.githubusercontent.com/GameSTALkER/ngstloader/main/UIs/DarkGUi.lua"))():CreateWin("Tower defence sim.", "Match.jf7qwSdf")
 local tab1 = maingui:CreateTab({name="General"})
 
 local me = game:GetService("Players").LocalPlayer
