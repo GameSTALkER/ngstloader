@@ -9,7 +9,7 @@ if _G.GemFarm then _G.GemFarm = false; wait(1) end
 if _G.AutoRebirth then _G.AutoRebirth = false; wait(1) end
 
 -- gui
-local guilib = loadstring(game:HttpGet("https://raw.githubusercontent.com/GameSTALkER/ngstloader/main/UIs/DarkGUi.lua"))():CreateWindow("Legends Of Speed")
+local guilib = loadstring(game:HttpGet("https://raw.githubusercontent.com/GameSTALkER/ngstloader/main/UIs/DarkGUi.lua"))():CreateWin("Legends Of Speed")
 guilib:CreateToggle({name='Hoop Farm'}, function(state)
     _G.HoopFarm = not _G.HoopFarm
     if _G.HoopFarm then
