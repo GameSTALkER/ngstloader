@@ -2,7 +2,7 @@
 
 local scriptvars = {}
 
-local bmain = loadstring(game:HttpGet("https://raw.githubusercontent.com/GameSTALkER/synapse.luas/main/UiLibs/GUiLibRewrite.lua"))():CreateWin("Cube Defence","Match.nmMzP8vv2q")
+local bmain = loadstring(game:HttpGet("https://raw.githubusercontent.com/GameSTALkER/ngstloader/main/UIs/DarkGUi.lua"))():CreateWin("Cube Defence","Match.nmMzP8vv2q")
 local main = bmain:CreateTab({name="General"})
 local afkmain = bmain:CreateTab({name="AFK"})
 local towermain = bmain:CreateTab({name="Towers"})
