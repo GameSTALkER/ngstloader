@@ -1,8 +1,8 @@
 -- Hexa Game
 
-local guilib = loadstring(game:HttpGet("https://raw.githubusercontent.com/GameSTALkER/synapse.luas/main/UiLibs/GUILib.lua"))():CreateWindow("Hexa Game", nil)
+local guilib = loadstring(game:HttpGet("https://raw.githubusercontent.com/GameSTALkER/ngstloader/main/UIs/DarkGUi.lua"))():CreateWin("Hexa Game")
 
-guilib:CreateButton('Instant Cookie', function()
+guilib:CreateButton({name='Instant Cookie'}, function()
     local u2 = require(game.ReplicatedStorage.Network);
     for i,hitPart in pairs(workspace.Cookies:GetChildren()) do
         if ((hitPart.CameraPart.CFrame.p - workspace.CurrentCamera.CFrame.p).Magnitude) == 0 then
@@ -14,12 +14,12 @@ guilib:CreateButton('Instant Cookie', function()
     end
 end)
 
-guilib:CreateToggle('Pull Rope', function(state)
+guilib:CreateToggle({name='Pull Rope'}, function(state)
     _G.PRState = state
     while _G.PRState and wait(.04) do game:GetService("ReplicatedStorage").RE.Pull:FireServer() end
 end)
 
-guilib:CreateButton('Name Fake Glasses', function()
+guilib:CreateButton({name='Name Fake Glasses'}, function()
     for i,v in pairs(game:GetService("Workspace").Glass:GetDescendants()) do
         if v.ClassName == "TouchTransmitter" then
             local BillboardGui = Instance.new("BillboardGui")
@@ -42,7 +42,7 @@ guilib:CreateButton('Name Fake Glasses', function()
     end
 end)
 
-guilib:CreateButton('Punch Reach', function() -- Credits: https://v3rmillion.net/member.php?action=profile&uid=1594530
+guilib:CreateButton({name='Punch Reach'}, function() -- Credits: https://v3rmillion.net/member.php?action=profile&uid=1594530
     while wait() do
         pcall(function()
             for i, v in next, game.Players:GetChildren() do
@@ -56,7 +56,7 @@ guilib:CreateButton('Punch Reach', function() -- Credits: https://v3rmillion.net
     end
 end)
 
-guilib:CreateButton('Platform', function()
+guilib:CreateButton({name='Platform'}, function()
     local part = Instance.new("Part")
     part.Parent = game.Workspace.Glass["1"].RealGlass;
     part.CFrame = CFrame.new(-54.05, -15.2, -367.15);
