@@ -4,9 +4,10 @@ _G.anal = false
 if _G.eim == nil then _G.eim = false end
 if _G.PYSSIDESTOIER then _G.PYSSIDESTOIER:Disconnect() end
 
-local main = loadstring(game:HttpGet("https://raw.githubusercontent.com/GameSTALkER/synapse.luas/main/UiLibs/GUILib.lua"))():CreateWindow("Zombie Attack")
+local main = loadstring(game:HttpGet("https://raw.githubusercontent.com/GameSTALkER/ngstloader/main/UIs/DarkGUi.lua"))():CreateWin("Zombie Attack")
+main = main:CreateTab({name="Main"})
 
-main:CreateToggle('Auto PowerUps pickup', function(state)
+main:CreateToggle({name='Auto PowerUps pickup'}, function(state)
     _G.anal = state
     local me = game.Workspace[game.Players.LocalPlayer.Name].HumanoidRootPart
     spawn(function()
@@ -23,12 +24,7 @@ main:CreateToggle('Auto PowerUps pickup', function(state)
     end)
 end)
 
-main:CreateToggle('Ctrl del, Alt collide', function(state)
-    loadstring(game:HttpGet("https://raw.githubusercontent.com/GameSTALkER/synapse.luas/scripts/misc.scripts/CTRL%20Del%2C%20ALT%20Toggle.lua"))()
-end)
-
-
-main:CreateButton('Aim', function()
+main:CreateButton({name='Silent Aim'}, function()
     if not _G.eim then
         local me = game.Players.LocalPlayer
         local hed = "Head"
