@@ -1,6 +1,6 @@
 -- Flee the Facility
 
-local lib = loadstring(game:HttpGet("https://raw.githubusercontent.com/GameSTALkER/synapse.luas/main/UiLibs/GUiLibRewrite.lua"))():CreateWin("Flee The Facility")
+local lib = loadstring(game:HttpGet("https://raw.githubusercontent.com/GameSTALkER/ngstloader/main/UIs/DarkGUi.lua"))():CreateWin("Flee The Facility")
 local guilib = lib:CreateTab({name="General"})
 
 if _G.InstancesFTF == nil then _G.InstancesFTF = 0 end
