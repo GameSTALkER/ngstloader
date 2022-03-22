@@ -1,13 +1,12 @@
+-- Criminal Russia
 
-local _gui = loadstring(game:HttpGet("https://raw.githubusercontent.com/GameSTALkER/synapse.luas/main/UiLibs/GUiLibRewrite.lua"))():CreateWin("AutoFarm GUi")
+local _gui = loadstring(game:HttpGet("https://raw.githubusercontent.com/GameSTALkER/ngstloader/main/UIs/DarkGUi.lua"))():CreateWin("AutoFarm GUi")
 local _works = _gui:CreateTab({name="AutoFarm works"})
 _G.FarmWorks = false
 
 local plr = game.Players.LocalPlayer
 local mychar = plr.Character
 local tw = game:GetService("TweenService")
-
--- tw:Create(mychar.HumanoidRootPart,TweenInfo.new(.1),{CFrame = }):Play()
 
 _works:CreateButton({name='Выключить Фармер', desc="Выключить Фарм денег."},function() _G.FarmWorks = false end)
 _works:CreateButton({name="Работать", desc="Начать зарабатывать за Грузчика."},function()
