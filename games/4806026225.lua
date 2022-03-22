@@ -4,7 +4,6 @@
 _G.autoGrabCrate = true
 
 -- vars
-local nlib = loadstring(game:HttpGet("https://raw.githubusercontent.com/GameSTALkER/synapse.luas/main/UiLibs/NotifyLib.lua"))()
 local me = game.Players.LocalPlayer
 local Main = me.PlayerGui.MainGui.Frame
 
@@ -33,7 +32,6 @@ spawn(function()
         local num = true
         for i,v in ipairs(game.Workspace:GetChildren()) do
             if v.Name == "Basic" and _G.autoGrabCrate then
-                if num then nlib:GenNotify(1, "BottomLeft","Dark",nil,"Tween","Crate grabber","Unboxing crate",.8) end
                 num = false
                 v.CanCollide = false
                 v.CFrame = player.CFrame
