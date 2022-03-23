@@ -7,7 +7,7 @@ local plr = game:GetService("Players").LocalPlayer
 
 tab1:CreateToggle({name="Toggle Ragdoll",exec=true},function(state)
     for i,v in pairs(plr.Character:GetChildren()) do
-        if (v.ClassName == "LocalScript" or v.ClassName == "Script") and v.Name == "RagdollMe" then 
+        if (v.ClassName == "LocalScript" or v.ClassName == "Script") and table.find({"Falling down","READ ME","Swimming","StartRagdoll","Pushed","KillScript","RagdollMe"},v.Name) then 
             v.Disabled = not state
             
         end
