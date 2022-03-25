@@ -3706,8 +3706,10 @@ for _,s in pairs(game.Players.LocalPlayer.Character:GetDescendants()) do
     end
 end end)
 
+-- other scripts
 getgenv().ngstloader:CustomScript("InfY","https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source")
 getgenv().ngstloader:CustomScript("OwlHub","https://raw.githubusercontent.com/CriShoux/OwlHub/master/OwlHub.txt")
+getgenv().ngstloader:CustomScript("Eclipse Hub","https://raw.githubusercontent.com/Ethanoj1/EclipseMM2/master/Script")
 
 loadstring(game:HttpGet("https://raw.githubusercontent.com/GameSTALkER/ngstloader/main/scripts/AutoExec.lua"))() -- autoExec
 
