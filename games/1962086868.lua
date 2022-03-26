@@ -1,3 +1,4 @@
+-- Tower of Hell
 
 local gui = ngstloader:AddMenu("ToHell")
 gui = gui:AddTab("General")
