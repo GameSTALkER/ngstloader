@@ -1,7 +1,7 @@
 -- Criminal Russia
 
-local _gui = loadstring(game:HttpGet("https://raw.githubusercontent.com/GameSTALkER/ngstloader/main/UIs/DarkGUi.lua"))():CreateWin("AutoFarm GUi")
-local _works = _gui:CreateTab({name="AutoFarm works"})
+local _gui = ngstloader:AddMenu("AutoFarm GUi")
+local _works = _gui:AddTab("AutoFarm works")
 _G.FarmWorks = false
 
 local plr = game.Players.LocalPlayer
@@ -9,7 +9,7 @@ local mychar = plr.Character
 local tw = game:GetService("TweenService")
 
 _works:CreateButton({name='Выключить Фармер', desc="Выключить Фарм денег."},function() _G.FarmWorks = false end)
-_works:CreateButton({name="Работать", desc="Начать зарабатывать за Грузчика."},function()
+_works:CreateButton({name="Начать зарабатывать за Грузчика."},function()
     _G.FarmWorks = false
     repeat wait() until not mychar:FindFirstChild("Коробка") or _G.FarmWorks == false
     _G.FarmWorks = true
@@ -22,7 +22,7 @@ _works:CreateButton({name="Работать", desc="Начать зарабат�
     end
 
 end)
-_works:CreateButton({name="Работать", desc="Начать зарабатывать на Заводе."},function()
+_works:CreateButton({name="Начать зарабатывать на Заводе."},function()
     _G.FarmWorks = false
     repeat wait() until not plr.Backpack:FindFirstChild("Лом") or _G.FarmWorks == false
     _G.FarmWorks = true
