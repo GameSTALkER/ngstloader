@@ -1,3 +1,4 @@
+-- Build A Boat For Treasure
 
 local menu = ngstloader:AddMenu("AutoFarm")
 menu = menu:AddTab("General")
