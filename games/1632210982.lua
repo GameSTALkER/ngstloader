@@ -4,8 +4,8 @@ _G.anal = false
 if _G.eim == nil then _G.eim = false end
 if _G.PYSSIDESTOIER then _G.PYSSIDESTOIER:Disconnect() end
 
-local main = loadstring(game:HttpGet("https://raw.githubusercontent.com/GameSTALkER/ngstloader/main/UIs/DarkGUi.lua"))():CreateWin("Zombie Attack")
-main = main:CreateTab({name="Main"})
+local main = ngstloader:AddMenu("Zombie Attack")
+main = main:AddTab("Main")
 
 main:CreateToggle({name='Auto PowerUps pickup'}, function(state)
     _G.anal = state
