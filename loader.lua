@@ -166,6 +166,44 @@ function lib:init(loader_name,available_games_url)
         end
     
     end -- remove old shit
+
+    local config_folder = "./nGSTLoaderConfig.json"
+    local function config_get(var,ifnil)
+        if not isfile(config_folder) then writefile(config_folder, "{}") end
+        local file = readfile(config_folder)
+        local json;
+        resp,err = pcall(function() json = game:GetService("HttpService"):JSONDecode(file) end)
+        if not resp then
+            warn(config_folder.." is corruped. recreating...")
+            writefile(config_folder, "{}")
+            json = {}
+
+        end
+        if json[var] ~= nil then json[var] = json[var]
+        else 
+            json[var] = ifnil
+            writefile(config_folder, game:GetService("HttpService"):JSONEncode(json))
+        end
+
+        return json[var]
+
+    end
+    local function config_save(var,save)
+        if not isfile(config_folder) then writefile(config_folder, "{}") end
+        local file = readfile(config_folder)
+        local json;
+        resp,err = pcall(function() json = HttpService:JSONDecode(file) end)
+        if not resp then
+            warn(config_folder.." is corruped. recreating...")
+            writefile(config_folder, {})
+            json = {}
+
+        end
+        json[var] = save
+        writefile(config_folder, HttpService:JSONEncode(json))
+
+    end
+
     getgenv().GreenCumLoaderHorseBabyUhhHello = {}
     -- settings
     local settings = {
@@ -1363,7 +1401,8 @@ function lib:init(loader_name,available_games_url)
     	local ismenuopened = true
 	    local ismousernables = UIS.MouseIconEnabled
 
-    	local lashchoosenkey = "X"
+
+    	local lashchoosenkey = config_get("HideKey","X")
     	Key.Text = lashchoosenkey
     	
     	-- function
@@ -1395,6 +1434,7 @@ function lib:init(loader_name,available_games_url)
             if input.KeyCode.Value == 0 or enter then return end
     		if iskeychanging then
     			lashchoosenkey = input.KeyCode.Name
+                config_save("HideKey",lashchoosenkey)
     			Key.Text = lashchoosenkey
     			iskeychanging = false
     		elseif input.KeyCode.Name == tostring(Key.Text) then
