@@ -1,7 +1,7 @@
 -- Hexa Game
 
-local guilib = loadstring(game:HttpGet("https://raw.githubusercontent.com/GameSTALkER/ngstloader/main/UIs/DarkGUi.lua"))():CreateWin("Hexa Game")
-guilib = guilib:CreateTab({name="Main"})
+local guilib = ngstloader:AddMenu("Hexa")
+guilib = guilib:AddTab("Main")
 guilib:CreateButton({name='Instant Cookie'}, function()
     local u2 = require(game.ReplicatedStorage.Network);
     for i,hitPart in pairs(workspace.Cookies:GetChildren()) do
