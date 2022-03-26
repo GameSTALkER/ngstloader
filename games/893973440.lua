@@ -1,7 +1,7 @@
 -- Flee the Facility 
 
-local lib = loadstring(game:HttpGet("https://raw.githubusercontent.com/GameSTALkER/ngstloader/main/UIs/DarkGUi.lua"))():CreateWin("Flee The Facility")
-local guilib = lib:CreateTab({name="General"})
+local guilib = getgenv().ngstloader:AddMenu("Flee The Facility")
+guilib = guilib:AddTab("General")
 
 if _G.InstancesFTF == nil then _G.InstancesFTF = 0 end
 if _G.players == nil then _G.players = false end
@@ -22,7 +22,7 @@ guilib:CreateToggle({name='Never fail hacking', state=_G.neverfailhack, desc="Au
 guilib:CreateBind({name="fun.",desc="funny.",key="Z"},function() game:GetService("Players").LocalPlayer.Character:WaitForChild("Humanoid"):ChangeState(0) end)
 -------------------------------------------------------------------
 
-spawn (function()
+spawn(function()
 	_G.InstancesFTF = _G.InstancesFTF + 1
 	while true do
 		if _G.InstancesFTF > 1 then
