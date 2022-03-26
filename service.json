@@ -16,8 +16,12 @@
      },
 
     "2286901071": {"author": "nGameSTALkER", 
-                    "script": true,
-                    "lobby": true
+                   "script": true,
+                   "lobby": true
+     },
+    
+    "1962086868": {"author": "nGameSTALkER",
+                   "script": true
      },
     
     "2356303743": {"author": "nGameSTALkER", 
@@ -39,6 +43,11 @@
 
     "5256165620": {"author": false, 
                    "script": true
+     },
+    
+    "537413528": {"author": "nGameSTALkER",
+                  "script": true    
+    
      },
 
     "5591597781": {"author": "nGameSTALkER", 
