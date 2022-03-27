@@ -6,7 +6,7 @@ local Hats = {[1] = {}, [2] = {}}
 local topart = {Character.Head}
 
 for i,v in pairs(Character:GetChildren()) do
-    if v.ClassName == "Accessory" then
+    if v.ClassName == "Accessory" and v.Name == "Eyes" then
         table.insert(Hats[1],v)
         print(v.Name.." added to Hats[1]")
         
