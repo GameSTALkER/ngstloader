@@ -93,7 +93,7 @@ _uni:CreateButton({name='Execute "Hamster Ball" script'},function()
 end)
 
 -- Penis
-_R6:CreateButton({name='Execute "Penis"(R15 too) script',desc='KeyBinds:\n1, 2, 3, 4, 5, 6, 7, 8, 9, 0, E\nQ - switch modes'},function()
+_uni:CreateButton({name='Execute "Penis"(R15 too) script',desc='KeyBinds:\n1, 2, 3, 4, 5, 6, 7, 8, 9, 0, E\nQ - switch modes'},function()
     if neededhats({{"InternationalFedora","MeshPartAccessory"},{"InternationalFedora","MeshPartAccessory"},{"InternationalFedora","MeshPartAccessory"},{"InternationalFedora","MeshPartAccessory"},{"InternationalFedora","MeshPartAccessory"},{"InternationalFedora","MeshPartAccessory"},{"InternationalFedora","MeshPartAccessory"},{"InternationalFedora","MeshPartAccessory"},{"InternationalFedora","MeshPartAccessory"},{"InternationalFedora","MeshPartAccessory"}},"string") ~= true then
         print("^ for Penis ^")
         --nlib:CreateNotify({title="ERROR",desc='Check console what you forgot to wear (must turn on warns)',sleep=30,textscale=13})
