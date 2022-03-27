@@ -192,7 +192,7 @@ function lib:init(loader_name,available_games_url)
         if not isfile(config_folder) then writefile(config_folder, "{}") end
         local file = readfile(config_folder)
         local json;
-        resp,err = pcall(function() json = HttpService:JSONDecode(file) end)
+        resp,err = pcall(function() json = game:GetService("HttpService"):JSONDecode(file) end)
         if not resp then
             warn(config_folder.." is corruped. recreating...")
             writefile(config_folder, {})
@@ -200,7 +200,7 @@ function lib:init(loader_name,available_games_url)
 
         end
         json[var] = save
-        writefile(config_folder, HttpService:JSONEncode(json))
+        writefile(config_folder, game:GetService("HttpService"):JSONEncode(json))
 
     end
 
