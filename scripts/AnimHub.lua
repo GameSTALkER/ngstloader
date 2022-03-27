@@ -108,7 +108,7 @@ _R6:CreateButton({name='Execute "Penis"(R15 too) script',desc='KeyBinds:\n1, 2, 
 end)
 
 -- eyes
-_uni:CreateButton({name='Execute "Eyes" script',desc="E - hide/show eyes"},function()
+_uni:CreateButton({name='Execute "Eyes" script',desc="E - hide/show eyes\nMove mouse to move eyes"},function()
     
     if neededhats({"Eyes"},"string") ~= true then
         print("^ for Eyes ^")
