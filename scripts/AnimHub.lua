@@ -107,6 +107,18 @@ _uni:CreateButton({name='Execute "Hamster Ball" script'},function()
     loadstring(game:HttpGet(dir['uni'].."hamster-ball.lua"))()
 end)
 
+-- eyes
+_uni:CreateButton({name='Execute "Eyes" script'},function()
+    
+    if neededhats({"Eyes"},"string") ~= true then
+        print("^ for Eyes ^")
+        --nlib:CreateNotify({title="ERROR",desc='Check console what you forgot to wear (must turn on warns)',sleep=30,textscale=13})
+        return end
+    
+    loadstring(game:HttpGet(dir['uni'].."netless.lua"))()
+    loadstring(game:HttpGet(dir['uni'].."eyes.lua"))()
+end)
+
 -- bang
 _uni:CreateInput({name="Write Player Name to bang", ac={game:GetService("Players"):GetChildren(),{"Name","DisplayName"}}},function(_)
     _G.choosenbang = ""
