@@ -71,14 +71,12 @@ do
 end
 
 HatManage(2, function(myhat) -- position
-    if myhat.Name:lower():find("eyes") then myhat.Position = Vector3.new(0,-30,-0.5)
+    if myhat.Name:lower():find("eyes") then myhat.Position = Vector3.new(0,0.15,-0.5)
     end
     
 end)
 
-local Player = game.Players.LocalPlayer
-
-local Head = Player.Character:WaitForChild("Head")
+local Head = Character:WaitForChild("Head")
 
 if getgenv().ou3e4wasvdkuxBAIoNST ~= nil then getgenv().ou3e4wasvdkuxBAIoNST:Disconnect() end
 getgenv().ou3e4wasvdkuxBAIoNST = game:GetService("RunService").RenderStepped:Connect(function() 
