@@ -44,21 +44,6 @@ _R6:CreateButton({name='Execute "Sex Doll" script',desc='KeyBinds:\nZ, Q, X, E, 
     loadstring(game:HttpGet(dir['r6'].."Doll.lua"))()
 end)
 
--- Penis ~ R6
-_R6:CreateButton({name='Execute "Penis"(R15 too) script',desc='KeyBinds:\n1, 2, 3, 4, 5, 6, 7, 8, 9, 0, E\nQ - switch modes'},function()
-    if neededhats({{"InternationalFedora","MeshPartAccessory"},{"InternationalFedora","MeshPartAccessory"},{"InternationalFedora","MeshPartAccessory"},{"InternationalFedora","MeshPartAccessory"},{"InternationalFedora","MeshPartAccessory"},{"InternationalFedora","MeshPartAccessory"},{"InternationalFedora","MeshPartAccessory"},{"InternationalFedora","MeshPartAccessory"},{"InternationalFedora","MeshPartAccessory"},{"InternationalFedora","MeshPartAccessory"}},"string") ~= true then
-        print("^ for Penis ^")
-        --nlib:CreateNotify({title="ERROR",desc='Check console what you forgot to wear (must turn on warns)',sleep=30,textscale=13})
-        return
-    end
-    --if game.Players.LocalPlayer.Character.Humanoid.RigType == Enum.HumanoidRigType.R15 then
-        --nlib:CreateNotify({title="ERROR",desc='Recommend you chage RigType to R6',sleep=30,textscale=13}) end
-          
-    loadstring(game:HttpGet(dir['uni'].."hatshow.lua"))()
-    loadstring(game:HttpGet(dir['uni'].."netless.lua"))()
-    loadstring(game:HttpGet(dir['r6'].."Penis.lua"))()
-end)
-
 -- spider man
 _R6:CreateButton({name='Execute "Spider Man" script',desc='Keybinds:\nQ, E'},function()
     if game.Players.LocalPlayer.Character.Humanoid.RigType == Enum.HumanoidRigType.R15 then
@@ -107,8 +92,23 @@ _uni:CreateButton({name='Execute "Hamster Ball" script'},function()
     loadstring(game:HttpGet(dir['uni'].."hamster-ball.lua"))()
 end)
 
+-- Penis
+_R6:CreateButton({name='Execute "Penis"(R15 too) script',desc='KeyBinds:\n1, 2, 3, 4, 5, 6, 7, 8, 9, 0, E\nQ - switch modes'},function()
+    if neededhats({{"InternationalFedora","MeshPartAccessory"},{"InternationalFedora","MeshPartAccessory"},{"InternationalFedora","MeshPartAccessory"},{"InternationalFedora","MeshPartAccessory"},{"InternationalFedora","MeshPartAccessory"},{"InternationalFedora","MeshPartAccessory"},{"InternationalFedora","MeshPartAccessory"},{"InternationalFedora","MeshPartAccessory"},{"InternationalFedora","MeshPartAccessory"},{"InternationalFedora","MeshPartAccessory"}},"string") ~= true then
+        print("^ for Penis ^")
+        --nlib:CreateNotify({title="ERROR",desc='Check console what you forgot to wear (must turn on warns)',sleep=30,textscale=13})
+        return
+    end
+    --if game.Players.LocalPlayer.Character.Humanoid.RigType == Enum.HumanoidRigType.R15 then
+        --nlib:CreateNotify({title="ERROR",desc='Recommend you chage RigType to R6',sleep=30,textscale=13}) end
+          
+    loadstring(game:HttpGet(dir['uni'].."hatshow.lua"))()
+    loadstring(game:HttpGet(dir['uni'].."netless.lua"))()
+    loadstring(game:HttpGet(dir['r6'].."Penis.lua"))()
+end)
+
 -- eyes
-_uni:CreateButton({name='Execute "Eyes" script'},function()
+_uni:CreateButton({name='Execute "Eyes" script',desc="E - hide/show eyes"},function()
     
     if neededhats({"Eyes"},"string") ~= true then
         print("^ for Eyes ^")
