@@ -93,7 +93,7 @@ _uni:CreateButton({name='Execute "Hamster Ball" script'},function()
 end)
 
 -- Penis
-_uni:CreateButton({name='Execute "Penis"(R15 too) script',desc='KeyBinds:\n1, 2, 3, 4, 5, 6, 7, 8, 9, 0, E\nQ - switch modes'},function()
+_uni:CreateButton({name='Execute "Penis"(R15 too) script',desc='KeyBinds:\n1, 2, 3, 4, 5, 6, 7, 8, 9, 0, E\nQ - switch modes\nR - Drag penis (via cursor)'},function()
     if neededhats({{"InternationalFedora","MeshPartAccessory"},{"InternationalFedora","MeshPartAccessory"},{"InternationalFedora","MeshPartAccessory"},{"InternationalFedora","MeshPartAccessory"},{"InternationalFedora","MeshPartAccessory"},{"InternationalFedora","MeshPartAccessory"},{"InternationalFedora","MeshPartAccessory"},{"InternationalFedora","MeshPartAccessory"},{"InternationalFedora","MeshPartAccessory"},{"InternationalFedora","MeshPartAccessory"}},"string") ~= true then
         print("^ for Penis ^")
         --nlib:CreateNotify({title="ERROR",desc='Check console what you forgot to wear (must turn on warns)',sleep=30,textscale=13})
@@ -104,7 +104,7 @@ _uni:CreateButton({name='Execute "Penis"(R15 too) script',desc='KeyBinds:\n1, 2,
           
     loadstring(game:HttpGet(dir['uni'].."hatshow.lua"))()
     loadstring(game:HttpGet(dir['uni'].."netless.lua"))()
-    loadstring(game:HttpGet(dir['r6'].."Penis.lua"))()
+    loadstring(game:HttpGet(dir['uni'].."penis.lua"))()
 end)
 
 -- eyes
