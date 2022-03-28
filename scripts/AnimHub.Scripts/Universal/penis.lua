@@ -3,6 +3,7 @@ local settings = {
     WeldPart = "Torso", -- weld pp to part named as ...
 
     hiden = Vector3.new(0,-10,0),
+    drag = Vector3.new(0,0,0),
     
     balls = {
         [1] = Vector3.new(0.4,-1.3,-0.5),
@@ -292,7 +293,7 @@ local function Frames(key)
             active = "R1"
             if toggles.Rotation[1] then
                 HatManage(2, function(myhat, num)
-                    if num == 3 then myhat.Rotation     = Vector3.new(0,0,0)
+                    if num == 3 then myhat.Rotation     = Vector3.new(0,0,0); settings.drag = Vector3.new(0,0,0)
                     elseif num == 4 then myhat.Rotation = Vector3.new(-2,0,0)
                     elseif num == 5 then myhat.Rotation = Vector3.new(-2,0,0)
                     elseif num == 6 then myhat.Rotation = Vector3.new(-2,0,0)
@@ -305,7 +306,7 @@ local function Frames(key)
 
             else
                 HatManage(2, function(myhat, num)
-                    if num == 3 then myhat.Rotation     = Vector3.new(0,0,0)
+                    if num == 3 then myhat.Rotation     = Vector3.new(0,0,0); settings.drag = Vector3.new(0,0,0)
                     elseif num == 4 then myhat.Rotation = Vector3.new(2,0,0)
                     elseif num == 5 then myhat.Rotation = Vector3.new(2,0,0)
                     elseif num == 6 then myhat.Rotation = Vector3.new(2,0,0)
@@ -323,7 +324,7 @@ local function Frames(key)
             active = "R2"
             if toggles.Rotation[2] then
                 HatManage(2, function(myhat, num)
-                    if num == 3 then myhat.Rotation     = Vector3.new(5,0,0)
+                    if num == 3 then myhat.Rotation     = Vector3.new(5,0,0); settings.drag = Vector3.new(5,0,0)
                     elseif num == 4 then myhat.Rotation = Vector3.new(5,0,0)
                     elseif num == 5 then myhat.Rotation = Vector3.new(5,0,0)
                     elseif num == 6 then myhat.Rotation = Vector3.new(4,0,0)
@@ -335,7 +336,7 @@ local function Frames(key)
                 end)
             else
                 HatManage(2, function(myhat, num)
-                    if num == 3 then myhat.Rotation     = Vector3.new(24,0,0)
+                    if num == 3 then myhat.Rotation     = Vector3.new(24,0,0); settings.drag = Vector3.new(24,0,0)
                     elseif num == 4 then myhat.Rotation = Vector3.new(6,0,0)
                     elseif num == 5 then myhat.Rotation = Vector3.new(2,0,0)
                     elseif num == 6 then myhat.Rotation = Vector3.new(-2,0,0)
@@ -352,7 +353,7 @@ local function Frames(key)
             active = "R3"
             if toggles.Rotation[3] then
                 HatManage(2, function(myhat, num)
-                    if num == 3 then myhat.Rotation     = Vector3.new(45,0,0)
+                    if num == 3 then myhat.Rotation     = Vector3.new(45,0,0); settings.drag = Vector3.new(45,0,0)
                     elseif num == 4 then myhat.Rotation = Vector3.new(5,0,0)
                     elseif num == 5 then myhat.Rotation = Vector3.new(5,0,0)
                     elseif num == 6 then myhat.Rotation = Vector3.new(4,0,0)
@@ -365,7 +366,7 @@ local function Frames(key)
                 
             else
                 HatManage(2, function(myhat, num)
-                    if num == 3 then myhat.Rotation     = Vector3.new(45,0,0)
+                    if num == 3 then myhat.Rotation     = Vector3.new(45,0,0); settings.drag = Vector3.new(45,0,0)
                     elseif num == 4 then myhat.Rotation = Vector3.new(45,15,0)
                     elseif num == 5 then myhat.Rotation = Vector3.new(0,40,0)
                     elseif num == 6 then myhat.Rotation = Vector3.new(0,-45,0)
@@ -383,7 +384,7 @@ local function Frames(key)
             active = "R4"
             if toggles.Rotation[4] then
                 HatManage(2, function(myhat, num)
-                    if num == 3 then myhat.Rotation     = Vector3.new(83,0,0)
+                    if num == 3 then myhat.Rotation     = Vector3.new(83,0,0); settings.drag = Vector3.new(83,0,0)
                     elseif num == 4 then myhat.Rotation = Vector3.new(5,0,0)
                     elseif num == 5 then myhat.Rotation = Vector3.new(6,0,0)
                     elseif num == 6 then myhat.Rotation = Vector3.new(3,0,0)
@@ -396,7 +397,7 @@ local function Frames(key)
                 
             else
                 HatManage(2, function(myhat, num)
-                    if num == 3 then myhat.Rotation     = Vector3.new(83,30,-5)
+                    if num == 3 then myhat.Rotation     = Vector3.new(83,30,-5); settings.drag = Vector3.new(83,30,-5)
                     elseif num == 4 then myhat.Rotation = Vector3.new(5,-5,5)
                     elseif num == 5 then myhat.Rotation = Vector3.new(6,-6,5)
                     elseif num == 6 then myhat.Rotation = Vector3.new(80,1,25)
@@ -413,7 +414,7 @@ local function Frames(key)
             if active == "R5" then toggles.Rotation[5] = not toggles.Rotation[8] end
             active = "R5"
             HatManage(2, function(myhat, num)
-                if num == 3 then myhat.Rotation     = Vector3.new(0,0,0)
+                if num == 3 then myhat.Rotation     = Vector3.new(0,0,0); settings.drag = Vector3.new(0,0,0)
                 elseif num == 4 then myhat.Rotation = Vector3.new(-2,0,0)
                 elseif num == 5 then myhat.Rotation = Vector3.new(-2,0,0)
                 elseif num == 6 then myhat.Rotation = Vector3.new(-2,0,0)
@@ -428,7 +429,7 @@ local function Frames(key)
             if active == "R6" then toggles.Rotation[6] = not toggles.Rotation[6] end
             active = "R6"
             HatManage(2, function(myhat, num)
-                if num == 3 then myhat.Rotation     = Vector3.new(0,0,0)
+                if num == 3 then myhat.Rotation     = Vector3.new(0,0,0); settings.drag = Vector3.new(0,0,0)
                 elseif num == 4 then myhat.Rotation = Vector3.new(-2,0,0)
                 elseif num == 5 then myhat.Rotation = Vector3.new(-2,0,0)
                 elseif num == 6 then myhat.Rotation = Vector3.new(-2,0,0)
@@ -443,7 +444,7 @@ local function Frames(key)
             if active == "R7" then toggles.Rotation[7] = not toggles.Rotation[7] end
             active = "R7"
             HatManage(2, function(myhat, num)
-                if num == 3 then myhat.Rotation     = Vector3.new(0,0,0)
+                if num == 3 then myhat.Rotation     = Vector3.new(0,0,0); settings.drag = Vector3.new(0,0,0)
                 elseif num == 4 then myhat.Rotation = Vector3.new(-2,0,0)
                 elseif num == 5 then myhat.Rotation = Vector3.new(-2,0,0)
                 elseif num == 6 then myhat.Rotation = Vector3.new(-2,0,0)
@@ -458,7 +459,7 @@ local function Frames(key)
             if active == "R8" then toggles.Rotation[8] = not toggles.Rotation[8] end
             active = "R8"
             HatManage(2, function(myhat, num)
-                if num == 3 then myhat.Rotation     = Vector3.new(0,0,0)
+                if num == 3 then myhat.Rotation     = Vector3.new(0,0,0); settings.drag = Vector3.new(0,0,0)
                 elseif num == 4 then myhat.Rotation = Vector3.new(-2,0,0)
                 elseif num == 5 then myhat.Rotation = Vector3.new(-2,0,0)
                 elseif num == 6 then myhat.Rotation = Vector3.new(-2,0,0)
@@ -477,6 +478,10 @@ end
 
 local ischanging = false
 local isdraggable = false
+local thepp;
+HatManage(2, function(myhat,n)
+    if n == 3 then thepp = myhat end
+end)
 if getgenv().iuoweasefhdiuohaws9e ~= nil then getgenv().iuoweasefhdiuohaws9e:Disconnect() end
 if getgenv().wliaeilrshdfioq ~= nil then getgenv().wliaeilrshdfioq:Disconnect(); getgenv().wliaeilrshdfioq = nil end
 getgenv().iuoweasefhdiuohaws9e = game:GetService("UserInputService").InputBegan:Connect(function(key,enter)
@@ -512,19 +517,14 @@ getgenv().iuoweasefhdiuohaws9e = game:GetService("UserInputService").InputBegan:
     elseif key == "r" then
         isdraggable = not isdraggable
         if isdraggable then
-            local thepp;
-            HatManage(2, function(myhat,n)
-                print(n)
-                if n == 3 then thepp = myhat end
-            end)
             getgenv().wliaeilrshdfioq = game:GetService("RunService").RenderStepped:Connect(function() 
                 local m = game:GetService("Players").LocalPlayer:GetMouse()
-                local x = 35
-                thepp.Rotation = Vector3.new(-((m.Y-(m.ViewSizeY/2))/(x/2)),-((m.X-(m.ViewSizeX/2))/x),0) -- idk how to do better...
+                local x = 15
+                thepp.Rotation = Vector3.new(-((m.Y-(m.ViewSizeY/2))/x),-((m.X-(m.ViewSizeX/2))/x),0) -- idk how to do better...
                 
             end)
 
-        else getgenv().wliaeilrshdfioq:Disconnect(); getgenv().wliaeilrshdfioq = nil end
+        else getgenv().wliaeilrshdfioq:Disconnect(); getgenv().wliaeilrshdfioq = nil; thepp.Rotation = settings.drag end
 
     end
     --wait(0.25)
