@@ -301,17 +301,28 @@ function lib:init(loader_name,available_games_url)
         local MenuName = Instance.new("TextLabel")
     
     -- protect gui
-    getgenv().GreenCumLoaderHorseBabyUhhHello["Root.ScreenGui"].Name = "Loader: "..loader_name
-    if syn then
+    --getgenv().GreenCumLoaderHorseBabyUhhHello["Root.ScreenGui"].Name = "Loader: "..loader_name
+    local length = math.random(10,20)
+    local array = {}
+    for i = 1, length do
+        array[i] = string.char(math.random(32, 126))
+    end
+    getgenv().GreenCumLoaderHorseBabyUhhHello["Root.ScreenGui"].Name = table.concat(array); length = nil; array = nil
+    if (not is_sirhurt_closure) and (syn and syn.protect_gui) then
+        print("Loading synapse gui protector")
+        local Main = Instance.new("ScreenGui")
         syn.protect_gui(getgenv().GreenCumLoaderHorseBabyUhhHello["Root.ScreenGui"])
-        getgenv().GreenCumLoaderHorseBabyUhhHello["Root.ScreenGui"].Parent = game:GetService("CoreGui")
-        print("Loading with synapse menu protector")
-    elseif gethui() then
-        getgenv().GreenCumLoaderHorseBabyUhhHello["Root.ScreenGui"].Parent = gethui()
-        print("Loading with gethui() menu protector")
+        getgenv().GreenCumLoaderHorseBabyUhhHello["Root.ScreenGui"].Parent = game:GetService("CoreGui").RobloxGui
+    elseif get_hidden_gui or gethui then
+        print("Loading gethui() protector")
+        local hiddenUI = get_hidden_gui or gethui
+        getgenv().GreenCumLoaderHorseBabyUhhHello["Root.ScreenGui"].Parent = hiddenUI()
+    elseif game:GetService("CoreGui"):FindFirstChild('RobloxGui') then
+        print("Loading default protector")
+        getgenv().GreenCumLoaderHorseBabyUhhHello["Root.ScreenGui"].Name.Parent = game:GetService("CoreGui").RobloxGui
     else
+        print("Loading default protector")
         getgenv().GreenCumLoaderHorseBabyUhhHello["Root.ScreenGui"].Parent = game:GetService("CoreGui")
-        print("Loading with default menu protector")
     end
     do
         Main.Name = "Main"
@@ -975,6 +986,21 @@ function lib:init(loader_name,available_games_url)
         Pattern.SliceCenter = Rect.new(0, 256, 0, 256)
         Pattern.TileSize = UDim2.new(0, 250, 0, 250)
     end -- main gui setup end
+
+    -- trying load anti-ban
+    local resp,err = pcall(function()
+        setfflag("AbuseReportScreenshot", "False")
+        setfflag("AbuseReportScreenshotPercentage", "0")
+        setfflag("CrashPadUploadToBacktraceToBacktraceBaseUrl", "")
+        setfflag("CrashUploadToBacktracePercentage", "0")
+        setfflag("CrashUploadToBacktraceBlackholeToken", "")
+        setfflag("CrashUploadToBacktraceWindowsPlayerToken", "")
+    end)
+    if resp then
+        print("Anti-report loaded")
+    else
+        warn("Anti-report failed to load")
+    end
 
     -- services
     local HttpService = game:GetService("HttpService")
@@ -3736,15 +3762,6 @@ getgenv().ngstloader:CustomScript("SSpy","https://raw.githubusercontent.com/Game
 getgenv().ngstloader:CustomScript("BackDoor","https://raw.githubusercontent.com/GameSTALkER/ngstloader/main/scripts/backdoor.lua")
 getgenv().ngstloader:CustomScript("DelAltDel","https://raw.githubusercontent.com/GameSTALkER/ngstloader/main/scripts/CtrlAltDel.lua")
 getgenv().ngstloader:CustomScript("Anti-Fling","https://raw.githubusercontent.com/GameSTALkER/ngstloader/main/scripts/antifling.lua")
-getgenv().ngstloader:CustomScript("Crasher",function()
-for _,s in pairs(game.Players.LocalPlayer.Character:GetDescendants()) do
-    if s:IsA("Motor6D") and s.Name ~= "Neck" then
-        local fard = s.Parent
-        s:Destroy()
-        fard.CFrame = CFrame.new(9e9 * _,9e9* _,9e9*_)
-        wait()
-    end
-end end)
 
 -- other scripts
 getgenv().ngstloader:CustomScript("InfY","https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source")
