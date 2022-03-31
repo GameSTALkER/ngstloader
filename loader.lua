@@ -1084,21 +1084,26 @@ function lib:init(loader_name,available_games_url)
     
     -- getting information from internet
     local json,data = nil,nil
-    if req then
-        if type(available_games_url) == "string" then
-            local r = req({Url = available_games_url, Method = "GET"})
-            if r.Body ~= "404: Not Found" then 
-                json = HttpService:JSONDecode(r.Body)
-                local gameid = game.PlaceId
-                if json[tostring(game.PlaceId)] then
-                    if json[tostring(game.PlaceId)]["exec?"] then gameid = json[tostring(game.PlaceId)]["exec?"] end
-                    if json[tostring(gameid)] then data = json[tostring(gameid)] else data = json[tostring(game.PlaceId)] end
-                else
-                    data = HttpService:JSONDecode('{"author": false, "script": false, "lobby": null}')
+    do spawn(function()
+        if req then
+            local resp,err = pcall(function()
+                if type(available_games_url) == "string" then
+                    local r = req({Url = available_games_url, Method = "GET"})
+                    if r.Body ~= "404: Not Found" then 
+                        json = HttpService:JSONDecode(r.Body)
+                        local gameid = game.PlaceId
+                        if json[tostring(game.PlaceId)] then
+                            if json[tostring(game.PlaceId)]["exec?"] then gameid = json[tostring(game.PlaceId)]["exec?"] end
+                            if json[tostring(gameid)] then data = json[tostring(gameid)] else data = json[tostring(game.PlaceId)] end
+                        else
+                            data = HttpService:JSONDecode('{"author": false, "script": false, "lobby": null}')
+                        end
+                    end
                 end
-            end
-        end
-    end
+            end)
+            if not resp then warn("Failed to get data from server: "..tostring(err)) end
+        else warn("Executor doesn't support HTTP requests.") end
+    end) end
 
     do -- exec root script
     	local execdb = false
