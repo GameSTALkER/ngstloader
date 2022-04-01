@@ -33,7 +33,7 @@ end
 local Hats = {[1] = {}, [2] = {}}
 
 for i,v in pairs(Character:GetChildren()) do
-    if v.ClassName == "Accessory" and (v.Name == "MeshPartAccessory" or v.Name == "InternationalFedora") then
+    if v.ClassName == "Accessory" and (v.Name == "MeshPartAccessory" or v.Name == "InternationalFedora" or v.Name == "International Fedora") then
         table.insert(Hats[1],v)
         print(v.Name.." added to Hats[1]")
         
