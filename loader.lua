@@ -149,8 +149,8 @@
 
 local lib = {}
 function lib:init(loader_name,available_games_url)
-    if table.find({6808416928},game.PlaceId) then warn("Prevented loader from load in this game to avoid ban.") end
-    if type(loader_name) ~= "string" then warn("You must provide arg in lig:init(Name*)"); return end
+    if table.find({6808416928},game.PlaceId) then warn("Prevented loader from load in this game to avoid ban."); return
+    elseif type(loader_name) ~= "string" then warn("You must provide arg in lig:init(Name*)"); return end
     repeat wait() until game:IsLoaded() and game:GetService("CoreGui")
 
     -- old instance removal
