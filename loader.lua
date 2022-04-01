@@ -1084,7 +1084,7 @@ function lib:init(loader_name,available_games_url)
     
     -- getting information from internet
     local json,data = nil,nil
-    do spawn(function()
+    do
         if req then
             local resp,err = pcall(function()
                 if type(available_games_url) == "string" then
@@ -1103,7 +1103,7 @@ function lib:init(loader_name,available_games_url)
             end)
             if not resp then warn("Failed to get data from server: "..tostring(err)) end
         else warn("Executor doesn't support HTTP requests.") end
-    end) end
+    end
 
     do -- exec root script
     	local execdb = false
