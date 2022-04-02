@@ -1531,6 +1531,9 @@ function lib:init(loader_name,available_games_url)
     	-- function
     	if ismenuopened then TweenService:Create(camera,TweenInfo.new(.15),{FieldOfView = getgenv().GreenCumLoaderHorseBabyUhhHello["Root.deffov"] - 20}):Play() end
     	local function AppAction()
+            if deviceid == "Mobile" then
+                ShowKeyBind.Visible = not ismenuopened
+            end
     		if ismenuopened == false then
                 UIS.MouseIconEnabled = ismousernables
     			TweenService:Create(Main,TweenInfo.new(.15),{Position = UDim2.new(posto,0,1.3,0)}):Play()
@@ -1600,11 +1603,13 @@ function lib:init(loader_name,available_games_url)
             end)
         else
             HideKeyBind.MouseButton1Click:Connect(function()
+                MenuDragging3 = false
                 ismenuopened = false
                 AppAction()
             end)
             local MenuDragging3 = false
             ShowKeyBind.MouseButton1Click:Connect(function()
+                MenuDragging3 = false
                 ismenuopened = not ismenuopened
                 AppAction()
             end)
@@ -1614,7 +1619,7 @@ function lib:init(loader_name,available_games_url)
             
             end)
             UIS.InputEnded:Connect(function(key)
-                if key.UserInputType == Enum.UserInputType.MouseButton1 then
+                if key.UserInputType == Enum.UserInputType.Touch then
                     MenuDragging3 = false
                 end
             end)
@@ -1623,7 +1628,7 @@ function lib:init(loader_name,available_games_url)
                     local MousePos = UIS:GetMouseLocation()
                     local X = MousePos.X
                     local Y = MousePos.Y - 30
-                    TweenService:Create(ShowKeyBind,TweenInfo.new(.25),{Position = UDim2.new(0,X,0,Y)}):Play()
+                    TweenService:Create(ShowKeyBind,TweenInfo.new(.15),{Position = UDim2.new(0,X,0,Y)}):Play()
                 end
             end)
 
