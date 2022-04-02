@@ -325,18 +325,18 @@ function lib:init(loader_name,available_games_url)
         print("Loading default protector")
         getgenv().GreenCumLoaderHorseBabyUhhHello["Root.ScreenGui"].Parent = game:GetService("CoreGui")
     end
-    local deviceid = nil
+    local deviceid = "Mobile"
     -- getting player platform
-    if (game:GetService("UserInputService").TouchEnabled and not game:GetService("UserInputService").MouseEnabled) then
-		deviceid = "Mobile"
-    else deviceid = "PC" end
+    --if (game:GetService("UserInputService").TouchEnabled and not game:GetService("UserInputService").MouseEnabled) then
+	--	deviceid = "Mobile"
+    --else deviceid = "PC" end
     do
         Main.Name = "Main"
         Main.Parent = getgenv().GreenCumLoaderHorseBabyUhhHello["Root.ScreenGui"]
         Main.AnchorPoint = Vector2.new(0.5, 0.5)
         Main.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
         Main.BackgroundTransparency = 1.000
-        if deviceid == "PC" then Main.Position = UDim2.new(0.5, 0, 0.5, 0) else Main.Position = UDim2.new(0.45, 0, 0.5, 0) end
+        Main.Position = UDim2.new(0.5, 0, 0.5, 0)
         Main.Size = UDim2.new(0, 765, 0, 300)
         Main.ZIndex = settings.ZIndex+1
         Main.Image = "rbxassetid://3570695787"
@@ -1444,7 +1444,9 @@ function lib:init(loader_name,available_games_url)
     	local ismenuopened = true
 	    local ismousernables = UIS.MouseIconEnabled
 
-
+        local posto = nil
+        if deviceid == "Mobile" then posto = 0.45 else posto = 0.5 end
+            
     	local lashchoosenkey = config_get("HideKey","X")
     	Key.Text = lashchoosenkey
     	
@@ -1453,7 +1455,7 @@ function lib:init(loader_name,available_games_url)
     	local function AppAction()
     		if ismenuopened == false then
                 UIS.MouseIconEnabled = ismousernables
-    			TweenService:Create(Main,TweenInfo.new(.15),{Position = UDim2.new(0.5,0,1.3,0)}):Play()
+    			TweenService:Create(Main,TweenInfo.new(.15),{Position = UDim2.new(posto,0,1.3,0)}):Play()
     			TweenService:Create(DarkBg,TweenInfo.new(.15),{BackgroundTransparency = 1.00}):Play()
     			TweenService:Create(Pattern,TweenInfo.new(.1),{ImageTransparency = 1.00}):Play()
     			TweenService:Create(camera,TweenInfo.new(.15),{FieldOfView = getgenv().GreenCumLoaderHorseBabyUhhHello["Root.deffov"]}):Play()
@@ -1461,7 +1463,7 @@ function lib:init(loader_name,available_games_url)
                 ismousernables = UIS.MouseIconEnabled
                 getgenv().GreenCumLoaderHorseBabyUhhHello["Root.deffov"] = camera.FieldOfView
             	UIS.MouseIconEnabled = true
-    			TweenService:Create(Main,TweenInfo.new(.15),{Position = UDim2.new(0.5,0,0.5,0)}):Play()
+    			TweenService:Create(Main,TweenInfo.new(.15),{Position = UDim2.new(posto,0,0.5,0)}):Play()
     			TweenService:Create(DarkBg,TweenInfo.new(.15),{BackgroundTransparency = 0.15}):Play()
     			TweenService:Create(Pattern,TweenInfo.new(.1),{ImageTransparency = 0}):Play()
     			TweenService:Create(camera,TweenInfo.new(.15),{FieldOfView = getgenv().GreenCumLoaderHorseBabyUhhHello["Root.deffov"] - 20}):Play()
@@ -3044,7 +3046,8 @@ function lib:init(loader_name,available_games_url)
                 end
             end
             function lib3:CreateBind(fsettings,callback)
-                if type(fsettings) ~= "table" then error("["..menu_name.."-"..tab_name.."] ~ 1st arg of <CreateBind> must be table type");return end
+                if deviceid == "Mobile" then warn("Binds are not supported for mobile devices.")
+                elseif type(fsettings) ~= "table" then error("["..menu_name.."-"..tab_name.."] ~ 1st arg of <CreateBind> must be table type");return end
                 callback = callback or function() end
                 counters['binds'] = counters['binds'] + 1
 
