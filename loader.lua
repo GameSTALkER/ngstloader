@@ -243,6 +243,11 @@ function lib:init(loader_name,available_games_url)
             }
         }
     }
+    local deviceid = nil
+    -- getting player platform
+    if (game:GetService("UserInputService").TouchEnabled and not game:GetService("UserInputService").MouseEnabled) then
+		deviceid = "Mobile"
+    else deviceid = "PC" end
 
     -- gui setup
     getgenv().GreenCumLoaderHorseBabyUhhHello["Root.ScreenGui"] = Instance.new("ScreenGui")
@@ -284,10 +289,19 @@ function lib:init(loader_name,available_games_url)
       local Top = Instance.new("Frame")
        local LoaderName = Instance.new("ImageLabel")
         local Title = Instance.new("TextLabel")
-       local HideKeyBind = Instance.new("ImageLabel")
-        local KeyChanger = Instance.new("TextButton")
-        local KeyBg = Instance.new("ImageLabel")
-         local Key = Instance.new("TextLabel")
+        -- Hide Key
+        local HideKeyBind,KeyChanger,KeyBg,Key
+        if deviceid == "PC" then
+            print("ok")
+            HideKeyBind = Instance.new("ImageLabel")
+             KeyChanger = Instance.new("TextButton")
+             KeyBg = Instance.new("ImageLabel")
+              Key = Instance.new("TextLabel")
+        else
+            HideKeyBind = Instance.new("TextButton")
+             KeyBg = Instance.new("ImageLabel")
+        end
+
       local Rejoin = Instance.new("ImageLabel")
        local Reconn = Instance.new("TextButton")
 
@@ -325,11 +339,6 @@ function lib:init(loader_name,available_games_url)
         print("Loading default protector")
         getgenv().GreenCumLoaderHorseBabyUhhHello["Root.ScreenGui"].Parent = game:GetService("CoreGui")
     end
-    local deviceid = nil
-    -- getting player platform
-    if (game:GetService("UserInputService").TouchEnabled and not game:GetService("UserInputService").MouseEnabled) then
-		deviceid = "Mobile"
-    else deviceid = "PC" end
     do
         Main.Name = "Main"
         Main.Parent = getgenv().GreenCumLoaderHorseBabyUhhHello["Root.ScreenGui"]
@@ -350,6 +359,45 @@ function lib:init(loader_name,available_games_url)
             local UIScale = Instance.new("UIScale",Main)
             UIScale.Scale = 0.700
             
+            local btn = Instance.new("ScreenGui")
+            ShowKeyBind = Instance.new("TextButton")
+            local bg = Instance.new("ImageLabel")
+
+            btn.Name = "ShowKey"
+            btn.Parent = getgenv().GreenCumLoaderHorseBabyUhhHello["Root.ScreenGui"]
+
+            ShowKeyBind.Name = "Bind"
+            ShowKeyBind.Parent = btn
+            ShowKeyBind.AnchorPoint = Vector2.new(0.5, 0.5)
+            ShowKeyBind.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+            ShowKeyBind.BackgroundTransparency = 1.000
+            ShowKeyBind.BorderSizePixel = 0
+            ShowKeyBind.Position = UDim2.new(0.0474452563, 0, 0.0839813352, 0)
+            ShowKeyBind.Size = UDim2.new(0, 25, 0, 25)
+            ShowKeyBind.ZIndex = settings.ZIndex+50
+            ShowKeyBind.Font = Enum.Font.Ubuntu
+            ShowKeyBind.Text = "GL"
+            ShowKeyBind.TextColor3 = Color3.fromRGB(200, 200, 200)
+            ShowKeyBind.TextScaled = true
+            ShowKeyBind.Active = true
+            ShowKeyBind.TextSize = 14.000
+            ShowKeyBind.TextWrapped = true
+
+            bg.Name = "bg"
+            bg.Parent = ShowKeyBind
+            bg.AnchorPoint = Vector2.new(0.5, 0.5)
+            bg.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+            bg.BackgroundTransparency = 1.000
+            bg.Position = UDim2.new(0.5, 0, 0.5, 0)
+            bg.Selectable = true
+            bg.Size = UDim2.new(1.1, 0, 1.1, 0)
+            bg.ZIndex = settings.ZIndex+49
+            bg.Image = "rbxassetid://3570695787"
+            bg.ImageColor3 = Color3.fromRGB(15, 15, 15)
+            bg.ScaleType = Enum.ScaleType.Slice
+            bg.SliceCenter = Rect.new(100, 100, 100, 100)
+            bg.SliceScale = 0.080
+
         end
         
         Body.Name = "Body"
@@ -772,76 +820,109 @@ function lib:init(loader_name,available_games_url)
         Title.TextWrapped = true
         Title.TextXAlignment = Enum.TextXAlignment.Left
         
-        HideKeyBind.Name = "HideKeyBind"
-        HideKeyBind.Parent = Top
-        HideKeyBind.AnchorPoint = Vector2.new(1, 0.5)
-        HideKeyBind.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-        HideKeyBind.BackgroundTransparency = 1.000
-        HideKeyBind.ClipsDescendants = true
-        HideKeyBind.Position = UDim2.new(1, 0, 0.5, 0)
-        HideKeyBind.Size = UDim2.new(0.163068727, 0, 1, 0)
-        HideKeyBind.ZIndex = settings.ZIndex+2
-        HideKeyBind.Image = "rbxassetid://3570695787"
-        HideKeyBind.ImageColor3 = Color3.fromRGB(28, 28, 28)
-        HideKeyBind.ImageTransparency = 0.100
-        HideKeyBind.ScaleType = Enum.ScaleType.Slice
-        HideKeyBind.SliceCenter = Rect.new(100, 100, 100, 100)
-        HideKeyBind.SliceScale = 0.080
-        
-        KeyChanger.Name = "KeyChanger"
-        KeyChanger.Parent = HideKeyBind
-        KeyChanger.AnchorPoint = Vector2.new(0, 0.5)
-        KeyChanger.BackgroundColor3 = Color3.fromRGB(26, 26, 26)
-        KeyChanger.BackgroundTransparency = 1.000
-        KeyChanger.BorderSizePixel = 0
-        KeyChanger.Position = UDim2.new(0.0501244068, 0, 0.5, 0)
-        KeyChanger.Size = UDim2.new(0.646933317, 0, 0.900000036, 0)
-        KeyChanger.ZIndex = settings.ZIndex+3
-        KeyChanger.Modal = true
-        KeyChanger.Font = Enum.Font.Ubuntu
-        KeyChanger.Text = "Show/Hide Key"
-        KeyChanger.TextColor3 = Color3.fromRGB(200, 200, 200)
-        KeyChanger.TextSize = 16.000
-        KeyChanger.TextWrapped = true
-        KeyChanger.TextXAlignment = Enum.TextXAlignment.Left
-        
-        KeyBg.Name = "KeyBg"
-        KeyBg.Parent = HideKeyBind
-        KeyBg.AnchorPoint = Vector2.new(0.5, 0.5)
-        KeyBg.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-        KeyBg.BackgroundTransparency = 1.000
-        KeyBg.Position = UDim2.new(0.859271586, 0, 0.5, 0)
-        KeyBg.Size = UDim2.new(0.185205981, 0, 0.85, 0)
-        KeyBg.ZIndex = settings.ZIndex+3
-        KeyBg.Image = "rbxassetid://3570695787"
-        KeyBg.ImageColor3 = Color3.fromRGB(20, 20, 20)
-        KeyBg.ImageTransparency = 0.100
-        KeyBg.ScaleType = Enum.ScaleType.Slice
-        KeyBg.SliceCenter = Rect.new(100, 100, 100, 100)
-        KeyBg.SliceScale = 0.080
-        
-        Key.Name = "Key"
-        Key.Parent = KeyBg
-        Key.AnchorPoint = Vector2.new(0.5, 0.5)
-        Key.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-        Key.BackgroundTransparency = 1.000
-        Key.BorderSizePixel = 0
-        Key.ClipsDescendants = true
-        Key.Position = UDim2.new(0.5, 0, 0.5, 0)
-        Key.Size = UDim2.new(0.95, 0, 0.95, 0)
-        Key.ZIndex = settings.ZIndex+4
-        Key.Font = Enum.Font.Ubuntu
-        Key.Text = "?"
-        Key.TextColor3 = Color3.fromRGB(200, 200, 200)
-        Key.TextScaled = true
-        Key.TextSize = 18.000
-        Key.TextWrapped = true
-        
+        if deviceid == "PC" then
+            HideKeyBind.Name = "HideKeyBind"
+            HideKeyBind.Parent = Top
+            HideKeyBind.AnchorPoint = Vector2.new(1, 0.5)
+            HideKeyBind.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+            HideKeyBind.BackgroundTransparency = 1.000
+            HideKeyBind.ClipsDescendants = true
+            HideKeyBind.Position = UDim2.new(1, 0, 0.5, 0)
+            HideKeyBind.Size = UDim2.new(0.163068727, 0, 1, 0)
+            HideKeyBind.ZIndex = settings.ZIndex+2
+            HideKeyBind.Image = "rbxassetid://3570695787"
+            HideKeyBind.ImageColor3 = Color3.fromRGB(28, 28, 28)
+            HideKeyBind.ImageTransparency = 0.100
+            HideKeyBind.ScaleType = Enum.ScaleType.Slice
+            HideKeyBind.SliceCenter = Rect.new(100, 100, 100, 100)
+            HideKeyBind.SliceScale = 0.080
+            
+            KeyChanger.Name = "KeyChanger"
+            KeyChanger.Parent = HideKeyBind
+            KeyChanger.AnchorPoint = Vector2.new(0, 0.5)
+            KeyChanger.BackgroundColor3 = Color3.fromRGB(26, 26, 26)
+            KeyChanger.BackgroundTransparency = 1.000
+            KeyChanger.BorderSizePixel = 0
+            KeyChanger.Position = UDim2.new(0.0501244068, 0, 0.5, 0)
+            KeyChanger.Size = UDim2.new(0.646933317, 0, 0.900000036, 0)
+            KeyChanger.ZIndex = settings.ZIndex+3
+            KeyChanger.Modal = true
+            KeyChanger.Font = Enum.Font.Ubuntu
+            KeyChanger.Text = "Show/Hide Key"
+            KeyChanger.TextColor3 = Color3.fromRGB(200, 200, 200)
+            KeyChanger.TextSize = 16.000
+            KeyChanger.TextWrapped = true
+            KeyChanger.TextXAlignment = Enum.TextXAlignment.Left
+            
+            KeyBg.Name = "KeyBg"
+            KeyBg.Parent = HideKeyBind
+            KeyBg.AnchorPoint = Vector2.new(0.5, 0.5)
+            KeyBg.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+            KeyBg.BackgroundTransparency = 1.000
+            KeyBg.Position = UDim2.new(0.859271586, 0, 0.5, 0)
+            KeyBg.Size = UDim2.new(0.185205981, 0, 0.85, 0)
+            KeyBg.ZIndex = settings.ZIndex+3
+            KeyBg.Image = "rbxassetid://3570695787"
+            KeyBg.ImageColor3 = Color3.fromRGB(20, 20, 20)
+            KeyBg.ImageTransparency = 0.100
+            KeyBg.ScaleType = Enum.ScaleType.Slice
+            KeyBg.SliceCenter = Rect.new(100, 100, 100, 100)
+            KeyBg.SliceScale = 0.080
+            
+            Key.Name = "Key"
+            Key.Parent = KeyBg
+            Key.AnchorPoint = Vector2.new(0.5, 0.5)
+            Key.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+            Key.BackgroundTransparency = 1.000
+            Key.BorderSizePixel = 0
+            Key.ClipsDescendants = true
+            Key.Position = UDim2.new(0.5, 0, 0.5, 0)
+            Key.Size = UDim2.new(0.95, 0, 0.95, 0)
+            Key.ZIndex = settings.ZIndex+4
+            Key.Font = Enum.Font.Ubuntu
+            Key.Text = "?"
+            Key.TextColor3 = Color3.fromRGB(200, 200, 200)
+            Key.TextScaled = true
+            Key.TextSize = 18.000
+            Key.TextWrapped = true
+        else
+            HideKeyBind.Name = "HideKeyBind"
+            HideKeyBind.Parent = Top
+            HideKeyBind.AnchorPoint = Vector2.new(1, 0)
+            HideKeyBind.BackgroundColor3 = Color3.fromRGB(28, 28, 28)
+            HideKeyBind.BackgroundTransparency = 1.000
+            HideKeyBind.BorderSizePixel = 0
+            HideKeyBind.Position = UDim2.new(0.995, 0, 0, 0)
+            HideKeyBind.Size = UDim2.new(0, 30, 0, 25)
+            HideKeyBind.ZIndex = settings.ZIndex+3
+            HideKeyBind.Font = Enum.Font.Ubuntu
+            HideKeyBind.Text = "X"
+            HideKeyBind.TextColor3 = Color3.fromRGB(200, 200, 200)
+            HideKeyBind.TextScaled = true
+            HideKeyBind.TextSize = 14.000
+            HideKeyBind.TextWrapped = true
+
+            KeyBg.Name = "KeyBg"
+            KeyBg.Parent = HideKeyBind
+            KeyBg.Active = true
+            KeyBg.AnchorPoint = Vector2.new(0.5, 0.5)
+            KeyBg.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+            KeyBg.BackgroundTransparency = 1.000
+            KeyBg.Position = UDim2.new(0.5, 0, 0.5, 0)
+            KeyBg.Selectable = true
+            KeyBg.Size = UDim2.new(1, 0, 1, 0)
+            KeyBg.ZIndex = settings.ZIndex+2
+            KeyBg.Image = "rbxassetid://3570695787"
+            KeyBg.ImageColor3 = Color3.fromRGB(28, 28, 28)
+            KeyBg.ScaleType = Enum.ScaleType.Slice
+            KeyBg.SliceCenter = Rect.new(100, 100, 100, 100)
+            KeyBg.SliceScale = 0.080
+        end
         Rejoin.Name = "Rejoin"
         Rejoin.Parent = Top
         Rejoin.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
         Rejoin.BackgroundTransparency = 1.000
-        Rejoin.Position = UDim2.new(0.7, 0, 0, 0)
+        if deviceid == "PC" then Rejoin.Position = UDim2.new(0.7, 0, 0, 0) else Rejoin.Position = UDim2.new(0.8, 0, 0, 0) end
         Rejoin.Size = UDim2.new(0, 100, 0, 25)
         Rejoin.ZIndex = settings.ZIndex+3
         Rejoin.Image = "rbxassetid://3570695787"
@@ -1446,9 +1527,6 @@ function lib:init(loader_name,available_games_url)
 
         local posto = nil
         if deviceid == "Mobile" then posto = 0.45 else posto = 0.5 end
-            
-    	local lashchoosenkey = config_get("HideKey","X")
-    	Key.Text = lashchoosenkey
     	
     	-- function
     	if ismenuopened then TweenService:Create(camera,TweenInfo.new(.15),{FieldOfView = getgenv().GreenCumLoaderHorseBabyUhhHello["Root.deffov"] - 20}):Play() end
@@ -1473,50 +1551,83 @@ function lib:init(loader_name,available_games_url)
     	AppAction()
         
     	-- Show/Hide Menu
-        local isonbtn = false
-        local c = toRGB(HideKeyBind.ImageColor3)
-    	getgenv().GreenCumLoaderHorseBabyUhhHello["Root.HideKeyBind"] = UIS.InputBegan:Connect(function(input,enter)
-            if input.KeyCode.Value == 0 or enter then return end
-    		if iskeychanging then
-    			lashchoosenkey = input.KeyCode.Name
-                config_save("HideKey",lashchoosenkey)
-    			Key.Text = lashchoosenkey
-    			iskeychanging = false
-    		elseif input.KeyCode.Name == tostring(Key.Text) then
+        if deviceid == "PC" then
+            local lashchoosenkey = config_get("HideKey","X")
+            Key.Text = lashchoosenkey
+            local isonbtn = false
+            local c = toRGB(HideKeyBind.ImageColor3)
+            getgenv().GreenCumLoaderHorseBabyUhhHello["Root.HideKeyBind"] = UIS.InputBegan:Connect(function(input,enter)
+                if input.KeyCode.Value == 0 or enter then return end
+                if iskeychanging then
+                    lashchoosenkey = input.KeyCode.Name
+                    config_save("HideKey",lashchoosenkey)
+                    Key.Text = lashchoosenkey
+                    iskeychanging = false
+                elseif input.KeyCode.Name == tostring(Key.Text) then
+                    ismenuopened = not ismenuopened
+                    AppAction()
+                end
+            end)
+        
+            -- Change Key
+            KeyChanger.MouseButton1Up:Connect(function()
+                click("up",c,HideKeyBind,Key,isonbtn,"root")
+                TweenService:Create(KeyChanger,TweenInfo.new(.25),{TextColor3 = Color3.fromRGB(150,150,150)}):Play()
+                if isonbtn then TweenService:Create(KeyChanger,TweenInfo.new(.25),{TextColor3 = Color3.fromRGB(200,200,200)}):Play() end
+
+                if Key.Text == "?" then
+                    iskeychanging = false
+                    Key.Text = lashchoosenkey
+                else
+                    Key.Text = "?"
+                    iskeychanging = true
+                end
+            end)
+            KeyChanger.MouseButton1Down:Connect(function()
+                click("down",c,HideKeyBind,Key,isonbtn,"root")
+                TweenService:Create(KeyChanger,TweenInfo.new(.25),{TextColor3 = Color3.fromRGB(150,150,150)}):Play()
+
+            end)
+            KeyChanger.MouseEnter:Connect(function()
+                isonbtn = true
+                click("enter",c,HideKeyBind,Key,isonbtn,"root")
+                TweenService:Create(KeyChanger,TweenInfo.new(.25),{TextColor3 = Color3.fromRGB(255,255,255)}):Play()
+            end)
+            KeyChanger.MouseLeave:Connect(function()
+                isonbtn = false
+                click("leave",c,HideKeyBind,Key,isonbtn,"root")
+                TweenService:Create(KeyChanger,TweenInfo.new(.25),{TextColor3 = Color3.fromRGB(200,200,200)}):Play()
+            end)
+        else
+            HideKeyBind.MouseButton1Click:Connect(function()
+                ismenuopened = false
+                AppAction()
+            end)
+            local MenuDragging3 = false
+            ShowKeyBind.MouseButton1Click:Connect(function()
                 ismenuopened = not ismenuopened
                 AppAction()
-    		end
-    	end)
-    
-    	-- Change Key
-    	KeyChanger.MouseButton1Up:Connect(function()
-            click("up",c,HideKeyBind,Key,isonbtn,"root")
-            TweenService:Create(KeyChanger,TweenInfo.new(.25),{TextColor3 = Color3.fromRGB(150,150,150)}):Play()
-            if isonbtn then TweenService:Create(KeyChanger,TweenInfo.new(.25),{TextColor3 = Color3.fromRGB(200,200,200)}):Play() end
+            end)
 
-    		if Key.Text == "?" then
-    			iskeychanging = false
-    			Key.Text = lashchoosenkey
-    		else
-    			Key.Text = "?"
-    			iskeychanging = true
-    		end
-    	end)
-    	KeyChanger.MouseButton1Down:Connect(function()
-            click("down",c,HideKeyBind,Key,isonbtn,"root")
-            TweenService:Create(KeyChanger,TweenInfo.new(.25),{TextColor3 = Color3.fromRGB(150,150,150)}):Play()
+            ShowKeyBind.MouseButton1Down:Connect(function()
+                MenuDragging3 = true
+            
+            end)
+            UIS.InputEnded:Connect(function(key)
+                if key.UserInputType == Enum.UserInputType.MouseButton1 then
+                    MenuDragging3 = false
+                end
+            end)
+            UIS.InputChanged:Connect(function()
+                if MenuDragging3 then
+                    local MousePos = UIS:GetMouseLocation()
+                    local X = MousePos.X
+                    local Y = MousePos.Y - 30
+                    TweenService:Create(ShowKeyBind,TweenInfo.new(.25),{Position = UDim2.new(0,X,0,Y)}):Play()
+                end
+            end)
 
-        end)
-    	KeyChanger.MouseEnter:Connect(function()
-            isonbtn = true
-            click("enter",c,HideKeyBind,Key,isonbtn,"root")
-            TweenService:Create(KeyChanger,TweenInfo.new(.25),{TextColor3 = Color3.fromRGB(255,255,255)}):Play()
-        end)
-    	KeyChanger.MouseLeave:Connect(function()
-            isonbtn = false
-            click("leave",c,HideKeyBind,Key,isonbtn,"root")
-            TweenService:Create(KeyChanger,TweenInfo.new(.25),{TextColor3 = Color3.fromRGB(200,200,200)}):Play()
-        end)
+        end
     end
     do -- ExecMe.Execscript 
     	local defexectxt = ExecMe.Text
