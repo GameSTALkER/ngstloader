@@ -325,11 +325,11 @@ function lib:init(loader_name,available_games_url)
         print("Loading default protector")
         getgenv().GreenCumLoaderHorseBabyUhhHello["Root.ScreenGui"].Parent = game:GetService("CoreGui")
     end
-    local deviceid = "Mobile"
+    local deviceid = nil
     -- getting player platform
-    --if (game:GetService("UserInputService").TouchEnabled and not game:GetService("UserInputService").MouseEnabled) then
-	--	deviceid = "Mobile"
-    --else deviceid = "PC" end
+    if (game:GetService("UserInputService").TouchEnabled and not game:GetService("UserInputService").MouseEnabled) then
+		deviceid = "Mobile"
+    else deviceid = "PC" end
     do
         Main.Name = "Main"
         Main.Parent = getgenv().GreenCumLoaderHorseBabyUhhHello["Root.ScreenGui"]
