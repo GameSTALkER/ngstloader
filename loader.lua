@@ -325,13 +325,18 @@ function lib:init(loader_name,available_games_url)
         print("Loading default protector")
         getgenv().GreenCumLoaderHorseBabyUhhHello["Root.ScreenGui"].Parent = game:GetService("CoreGui")
     end
+    local deviceid = nil
+    -- getting player platform
+    if (game:GetService("UserInputService").TouchEnabled and not game:GetService("UserInputService").MouseEnabled) then
+		deviceid = "Mobile"
+    else deviceid = "PC" end
     do
         Main.Name = "Main"
         Main.Parent = getgenv().GreenCumLoaderHorseBabyUhhHello["Root.ScreenGui"]
         Main.AnchorPoint = Vector2.new(0.5, 0.5)
         Main.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
         Main.BackgroundTransparency = 1.000
-        Main.Position = UDim2.new(0.499636352, 0, 0.5, 0)
+        if deviceid == "PC" then Main.Position = UDim2.new(0.5, 0, 0.5, 0) else Main.Position = UDim2.new(0.45, 0, 0.5, 0) end
         Main.Size = UDim2.new(0, 765, 0, 300)
         Main.ZIndex = settings.ZIndex+1
         Main.Image = "rbxassetid://3570695787"
@@ -340,6 +345,12 @@ function lib:init(loader_name,available_games_url)
         Main.ScaleType = Enum.ScaleType.Slice
         Main.SliceCenter = Rect.new(100, 100, 100, 100)
         Main.SliceScale = 0.080
+        
+        if deviceid == "Mobile" then
+            local UIScale = Instance.new("UIScale",Main)
+            UIScale.Scale = 0.700
+            
+        end
         
         Body.Name = "Body"
         Body.Parent = Main
