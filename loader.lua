@@ -3903,6 +3903,7 @@ getgenv().ngstloader:CustomScript("Anti-Fling","https://raw.githubusercontent.co
 getgenv().ngstloader:CustomScript("InfY","https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source")
 getgenv().ngstloader:CustomScript("OwlHub","https://raw.githubusercontent.com/CriShoux/OwlHub/master/OwlHub.txt")
 getgenv().ngstloader:CustomScript("Eclipse Hub","https://raw.githubusercontent.com/Ethanoj1/EclipseMM2/master/Script")
+getgenv().ngstloader:CustomScript("Chat Byppaser","https://the-shed.xyz/roblox/scripts/ChatBypass")
 
 loadstring(game:HttpGet("https://raw.githubusercontent.com/GameSTALkER/ngstloader/main/scripts/AutoExec.lua"))() -- autoExec
 
