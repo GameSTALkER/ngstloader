@@ -148,8 +148,32 @@
 
 
 local lib = {}
-function lib:init(loader_name,available_games_url)
-    if table.find({6808416928},game.PlaceId) then warn("Prevented loader from load in this game to avoid ban."); return
+function lib:init(loader_name,available_games_url,init_settings)
+    local loader_settings = {
+        risky_mode = false
+    }
+    if init_settings ~= nil then
+        if type(init_settings) == "table" then
+            for i,v in pairs(init_settings) do
+                if table.find({"risky_mode","risky"},i:lower()) then
+                    if type(v) == "boolean" then
+                        loader_settings.risky_mode = v
+                    else warn("\""..i.."\" must be boolean")
+                    end
+                elseif table.find({"update_channel"},i:lower()) then
+                    if type(v) == "string" then
+                        loader_settings.risky_mode = v
+                    else warn("\""..i.."\" must be string")
+                    end
+                else warn("\""..i.."\" is not a valid setting")
+                end
+            end
+        else warn("[ngstloader] init_settings must be table")
+        end
+    else init_settings = nil
+    end
+
+    if table.find({6808416928},game.PlaceId) and loader_settings.risky_mode == true then warn("Prevented loader from load in this game to avoid ban."); return
     elseif type(loader_name) ~= "string" then warn("You must provide arg in lig:init(Name*)"); return end
     repeat wait() until game:IsLoaded() and game:GetService("CoreGui")
 
