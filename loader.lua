@@ -148,9 +148,13 @@
 
 
 local lib = {}
-function lib:init(loader_name,available_games_url,init_settings)
+function lib:init(loader_name,init_settings)
     local loader_settings = {
-        risky_mode = false
+        risky_mode = false,
+        blacklisted_games = {
+            6808416928;  -- AIMBLOX
+        },
+        service = nil
     }
     if init_settings ~= nil then
         if type(init_settings) == "table" then
@@ -158,22 +162,21 @@ function lib:init(loader_name,available_games_url,init_settings)
                 if table.find({"risky_mode","risky"},i:lower()) then
                     if type(v) == "boolean" then
                         loader_settings.risky_mode = v
-                    else warn("\""..i.."\" must be boolean")
-                    end
-                elseif table.find({"update_channel"},i:lower()) then
-                    if type(v) == "string" then
-                        loader_settings.risky_mode = v
-                    else warn("\""..i.."\" must be string")
-                    end
-                else warn("\""..i.."\" is not a valid setting")
-                end
+                        
+                    else warn("\""..i.."\" must be boolean") end
+                    
+                elseif i:lower() == "service" then
+                    loader_settings.service = tostring(v)
+                    
+                else warn("\""..i.."\" is not a valid setting") end
+                
             end
-        else warn("[ngstloader] init_settings must be table")
-        end
-    else init_settings = nil
-    end
+            
+        else warn("init_settings must be table") end
+        
+    else init_settings = nil end
 
-    if table.find({6808416928},game.PlaceId) and loader_settings.risky_mode == true then warn("Prevented loader from load in this game to avoid ban."); return
+    if table.find(loader_settings.blacklisted_games, game.PlaceId) and loader_settings.risky_mode ~= true then warn("Prevented loader from load in this game to avoid ban."); return
     elseif type(loader_name) ~= "string" then warn("You must provide arg in lig:init(Name*)"); return end
     repeat wait() until game:IsLoaded() and game:GetService("CoreGui")
 
@@ -1203,8 +1206,8 @@ function lib:init(loader_name,available_games_url,init_settings)
     do
         if req then
             local resp,err = pcall(function()
-                if type(available_games_url) == "string" then
-                    local r = req({Url = available_games_url, Method = "GET"})
+                if type(loader_settings.service) == "string" then
+                    local r = req({Url = loader_settings.service, Method = "GET"})
                     if r.Body ~= "404: Not Found" then 
                         json = HttpService:JSONDecode(r.Body)
                         local gameid = game.PlaceId
@@ -3914,7 +3917,7 @@ function lib:init(loader_name,available_games_url,init_settings)
     end
     return lib2
 end
-getgenv().ngstloader = lib:init("nGSTLoader","https://raw.githubusercontent.com/GameSTALkER/ngstloader/main/service.json")
+getgenv().ngstloader = lib:init("nGSTLoader",{risky=false,service="https://raw.githubusercontent.com/GameSTALkER/ngstloader/main/service.json"})
 
 
 getgenv().ngstloader:CustomScript("AnimHub","https://raw.githubusercontent.com/GameSTALkER/ngstloader/main/scripts/AnimHub.lua")
