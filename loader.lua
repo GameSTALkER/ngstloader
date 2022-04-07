@@ -319,7 +319,6 @@ function lib:init(loader_name,init_settings)
         -- Hide Key
         local HideKeyBind,KeyChanger,KeyBg,Key
         if deviceid == "PC" then
-            print("ok")
             HideKeyBind = Instance.new("ImageLabel")
              KeyChanger = Instance.new("TextButton")
              KeyBg = Instance.new("ImageLabel")
@@ -399,7 +398,7 @@ function lib:init(loader_name,init_settings)
             ShowKeyBind.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
             ShowKeyBind.BackgroundTransparency = 1.000
             ShowKeyBind.BorderSizePixel = 0
-            ShowKeyBind.Position = UDim2.new(0.0474452563, 0, 0.0839813352, 0)
+            ShowKeyBind.Position = UDim2.new(0.5, 0, 0.5, 0)
             ShowKeyBind.Size = UDim2.new(0, 25, 0, 25)
             ShowKeyBind.ZIndex = settings.ZIndex+50
             ShowKeyBind.Font = Enum.Font.Ubuntu
@@ -1151,8 +1150,8 @@ function lib:init(loader_name,init_settings)
     	local khm = buttons * (tosize.CellSize.Y.Offset + tosize.CellPadding.Y.Offset)
     	TweenService:Create(instance,TweenInfo.new(.1),{CanvasSize = UDim2.new(0,0,0,khm)}):Play()
     	
-        callback = function() end
-        callback( buttons) end)
+        callback = function() end or nil
+        if callback ~= nil then callback(buttons) end end)
     end
     local function click(type,c,i1,i2,fisonbtn,setting)
         local i2type = "TextColor3"
@@ -1399,6 +1398,8 @@ function lib:init(loader_name,init_settings)
                         if v.GameId ~= nil then teleport_connection = tps:TeleportToPlaceInstance(v.PlaceId, v.GameId, player)
                         else teleport_connection = tps:Teleport(v.PlaceId) end
                     end)
+                    autosizeY(Friends_2,nil)
+                    Friends_2.CanvasSize = UDim2.new(0,0,0,0)
                 end
                 if frinds == 0 then uhh_tmp();TweenService:Create(nofriends,TweenInfo.new(.1),{ImageTransparency = 0}):Play()
                 else uhh_tmp();TweenService:Create(friends,TweenInfo.new(.1),{ImageTransparency = 0}):Play() end
@@ -1443,6 +1444,7 @@ function lib:init(loader_name,init_settings)
                         
                         end
                     end)
+                    Friends_2.CanvasSize = UDim2.new(0,0,0,0)
                     for i,v in pairs(Friends_2:GetChildren()) do
                         spawn(function()
                             if v.ClassName ~= "UIGridLayout" and v.ClassName ~= "LocalScript" then
@@ -1552,14 +1554,18 @@ function lib:init(loader_name,init_settings)
     	local ismenuopened = true
 	    local ismousernables = UIS.MouseIconEnabled
 
+        local ShowKeyBindBtn
         local posto = nil
-        if deviceid == "Mobile" then posto = 0.45 else posto = 0.5 end
+        if deviceid == "Mobile" then 
+            posto = 0.45 
+            ShowKeyBindBtn = ShowKeyBind -- idk why it wont work without this
+        else posto = 0.5 end
     	
     	-- function
     	if ismenuopened then TweenService:Create(camera,TweenInfo.new(.15),{FieldOfView = getgenv().GreenCumLoaderHorseBabyUhhHello["Root.deffov"] - 20}):Play() end
     	local function AppAction()
             if deviceid == "Mobile" then
-                ShowKeyBind.Visible = not ismenuopened
+                ShowKeyBindBtn.Visible = not ismenuopened
             end
     		if ismenuopened == false then
                 UIS.MouseIconEnabled = ismousernables
@@ -1629,19 +1635,19 @@ function lib:init(loader_name,init_settings)
                 TweenService:Create(KeyChanger,TweenInfo.new(.25),{TextColor3 = Color3.fromRGB(200,200,200)}):Play()
             end)
         else
-            HideKeyBind.MouseButton1Click:Connect(function()
+            HideKeyBind.MouseButton1Click:Connect(function() -- menu icon
                 MenuDragging3 = false
                 ismenuopened = false
                 AppAction()
             end)
             local MenuDragging3 = false
-            ShowKeyBind.MouseButton1Click:Connect(function()
+            ShowKeyBindBtn.MouseButton1Click:Connect(function() -- icon hide
                 MenuDragging3 = false
                 ismenuopened = not ismenuopened
                 AppAction()
             end)
 
-            ShowKeyBind.MouseButton1Down:Connect(function()
+            ShowKeyBindBtn.MouseButton1Down:Connect(function()
                 MenuDragging3 = true
             
             end)
@@ -1655,7 +1661,7 @@ function lib:init(loader_name,init_settings)
                     local MousePos = UIS:GetMouseLocation()
                     local X = MousePos.X
                     local Y = MousePos.Y - 30
-                    TweenService:Create(ShowKeyBind,TweenInfo.new(.15),{Position = UDim2.new(0,X,0,Y)}):Play()
+                    TweenService:Create(ShowKeyBindBtn,TweenInfo.new(.15),{Position = UDim2.new(0,X,0,Y)}):Play()
                 end
             end)
 
