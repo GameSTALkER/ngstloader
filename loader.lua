@@ -154,6 +154,7 @@ function lib:init(loader_name,init_settings)
         blacklisted_games = {
             6808416928;  -- AIMBLOX
         },
+        device = nil,
         service = nil
     }
     if init_settings ~= nil then
@@ -167,6 +168,14 @@ function lib:init(loader_name,init_settings)
                     
                 elseif i:lower() == "service" then
                     loader_settings.service = tostring(v)
+
+                elseif table.find({"device","platform"},i:lower()) then
+                    if type(v) == "string" and (v:lower() == "pc" or v:lower() == "mobile") then
+                        if v:lower() == "pc" then loader_settings.device = "PC" 
+                        elseif v:lower() == "mobile" then loader_settings.device = "Mobile" 
+                        else warn("Unsupported platform provided") end
+
+                    end
                     
                 else warn("\""..i.."\" is not a valid setting") end
                 
@@ -270,11 +279,12 @@ function lib:init(loader_name,init_settings)
             }
         }
     }
-    local deviceid = nil
     -- getting player platform
-    if (game:GetService("UserInputService").TouchEnabled and not game:GetService("UserInputService").MouseEnabled) then
-		deviceid = "Mobile"
-    else deviceid = "PC" end
+    if loader_settings.device == nil then
+        if (game:GetService("UserInputService").TouchEnabled and not game:GetService("UserInputService").MouseEnabled) then
+	    	loader_settings.device = "Mobile"
+        else loader_settings.device = "PC" end
+    end
 
     -- gui setup
     getgenv().GreenCumLoaderHorseBabyUhhHello["Root.ScreenGui"] = Instance.new("ScreenGui")
@@ -308,6 +318,7 @@ function lib:init(loader_name,init_settings)
          local Friends_2 = Instance.new("ScrollingFrame")
          local UIGridLayout_2 = Instance.new("UIGridLayout")
         local GameImage = Instance.new("ImageLabel")
+         local GameImageCorner = Instance.new("UICorner")
         local GameName = Instance.new("ImageLabel")
          local Text_2 = Instance.new("TextLabel")
         local UnsupportReason = Instance.new("ImageLabel")
@@ -318,7 +329,7 @@ function lib:init(loader_name,init_settings)
         local Title = Instance.new("TextLabel")
         -- Hide Key
         local HideKeyBind,KeyChanger,KeyBg,Key
-        if deviceid == "PC" then
+        if loader_settings.device == "PC" then
             HideKeyBind = Instance.new("ImageLabel")
              KeyChanger = Instance.new("TextButton")
              KeyBg = Instance.new("ImageLabel")
@@ -366,6 +377,8 @@ function lib:init(loader_name,init_settings)
         getgenv().GreenCumLoaderHorseBabyUhhHello["Root.ScreenGui"].Parent = game:GetService("CoreGui")
     end
     do
+        getgenv().GreenCumLoaderHorseBabyUhhHello["Root.ScreenGui"].ZIndexBehavior = Enum.ZIndexBehavior.Global
+
         Main.Name = "Main"
         Main.Parent = getgenv().GreenCumLoaderHorseBabyUhhHello["Root.ScreenGui"]
         Main.AnchorPoint = Vector2.new(0.5, 0.5)
@@ -381,7 +394,7 @@ function lib:init(loader_name,init_settings)
         Main.SliceCenter = Rect.new(100, 100, 100, 100)
         Main.SliceScale = 0.080
         
-        if deviceid == "Mobile" then
+        if loader_settings.device == "Mobile" then
             local UIScale = Instance.new("UIScale",Main)
             UIScale.Scale = 0.700
             
@@ -741,6 +754,10 @@ function lib:init(loader_name,init_settings)
         GameImage.ZIndex = settings.ZIndex+3
         GameImage.Image = "rbxasset://textures/ui/GuiImagePlaceholder.png"
         
+        GameImageCorner.Name = "Corner"
+        GameImageCorner.Parent = GameImage
+        GameImageCorner.CornerRadius = UDim.new(0,8)
+
         GameName.Name = "GameName"
         GameName.Parent = RootGeneral
         GameName.AnchorPoint = Vector2.new(0, 0.5)
@@ -821,7 +838,7 @@ function lib:init(loader_name,init_settings)
         LoaderName.BackgroundTransparency = 1.000
         LoaderName.ClipsDescendants = true
         LoaderName.Position = UDim2.new(0, 0, 0.5, 0)
-        LoaderName.Size = UDim2.new(0.0311879404, 0, 1.00000024, 0)
+        LoaderName.Size = UDim2.new(0.0311879404, 0, 1, 0)
         LoaderName.ZIndex = settings.ZIndex+1
         LoaderName.Image = "rbxassetid://3570695787"
         LoaderName.ImageColor3 = Color3.fromRGB(28, 28, 28)
@@ -846,7 +863,7 @@ function lib:init(loader_name,init_settings)
         Title.TextWrapped = true
         Title.TextXAlignment = Enum.TextXAlignment.Left
         
-        if deviceid == "PC" then
+        if loader_settings.device == "PC" then
             HideKeyBind.Name = "HideKeyBind"
             HideKeyBind.Parent = Top
             HideKeyBind.AnchorPoint = Vector2.new(1, 0.5)
@@ -854,7 +871,7 @@ function lib:init(loader_name,init_settings)
             HideKeyBind.BackgroundTransparency = 1.000
             HideKeyBind.ClipsDescendants = true
             HideKeyBind.Position = UDim2.new(1, 0, 0.5, 0)
-            HideKeyBind.Size = UDim2.new(0.163068727, 0, 1, 0)
+            HideKeyBind.Size = UDim2.new(0.163, 0, 1, 0)
             HideKeyBind.ZIndex = settings.ZIndex+2
             HideKeyBind.Image = "rbxassetid://3570695787"
             HideKeyBind.ImageColor3 = Color3.fromRGB(28, 28, 28)
@@ -869,8 +886,8 @@ function lib:init(loader_name,init_settings)
             KeyChanger.BackgroundColor3 = Color3.fromRGB(26, 26, 26)
             KeyChanger.BackgroundTransparency = 1.000
             KeyChanger.BorderSizePixel = 0
-            KeyChanger.Position = UDim2.new(0.0501244068, 0, 0.5, 0)
-            KeyChanger.Size = UDim2.new(0.646933317, 0, 0.900000036, 0)
+            KeyChanger.Position = UDim2.new(0.05, 0, 0.5, 0)
+            KeyChanger.Size = UDim2.new(0.646933317, 0, 0.9, 0)
             KeyChanger.ZIndex = settings.ZIndex+3
             KeyChanger.Modal = true
             KeyChanger.Font = Enum.Font.Ubuntu
@@ -919,7 +936,7 @@ function lib:init(loader_name,init_settings)
             HideKeyBind.BackgroundTransparency = 1.000
             HideKeyBind.BorderSizePixel = 0
             HideKeyBind.Position = UDim2.new(0.995, 0, 0, 0)
-            HideKeyBind.Size = UDim2.new(0, 30, 0, 25)
+            HideKeyBind.Size = UDim2.new(0, 30, 1, 0)
             HideKeyBind.ZIndex = settings.ZIndex+3
             HideKeyBind.Font = Enum.Font.Ubuntu
             HideKeyBind.Text = "X"
@@ -948,8 +965,8 @@ function lib:init(loader_name,init_settings)
         Rejoin.Parent = Top
         Rejoin.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
         Rejoin.BackgroundTransparency = 1.000
-        if deviceid == "PC" then Rejoin.Position = UDim2.new(0.7, 0, 0, 0) else Rejoin.Position = UDim2.new(0.8, 0, 0, 0) end
-        Rejoin.Size = UDim2.new(0, 100, 0, 25)
+        if loader_settings.device == "PC" then Rejoin.Position = UDim2.new(0.72, 0, 0, 0) else Rejoin.Position = UDim2.new(0.84, 0, 0, 0) end
+        Rejoin.Size = UDim2.new(0, 80, 1, 0)
         Rejoin.ZIndex = settings.ZIndex+3
         Rejoin.Image = "rbxassetid://3570695787"
         Rejoin.ImageColor3 = Color3.fromRGB(28, 28, 28)
@@ -1367,7 +1384,7 @@ function lib:init(loader_name,init_settings)
                     PlrName.TextColor3 = Color3.fromRGB(255, 255, 255)
                     PlrName.TextWrapped = true
                     PlrName.TextTransparency = 1
-                    PlrName.Text = v.UserName.."\n"..v.DisplayName
+                    if v.UserName ~= v.DisplayName then PlrName.Text = v.UserName.."\n"..v.DisplayName else PlrName.Text = v.UserName end
                     PlrName.TextSize = 6
                     local frbg = Instance.new("ImageLabel")
                     frbg.Name = "bg"
@@ -1384,6 +1401,8 @@ function lib:init(loader_name,init_settings)
                     frbg.ScaleType = Enum.ScaleType.Slice
                     frbg.SliceCenter = Rect.new(100, 100, 100, 100)
                     frbg.SliceScale = 0.080
+
+                    local GymId = v.GameId or v.JobId or nil
                     TweenService:Create(newFrame,TweenInfo.new(0.25),{ImageTransparency = 0}):Play()
                     PlrName.MouseEnter:Connect(function()
                         TweenService:Create(frbg,TweenInfo.new(0.25),{ImageTransparency = 0.75}):Play()
@@ -1395,8 +1414,8 @@ function lib:init(loader_name,init_settings)
                     end)
                     newFrame.MouseButton1Click:Connect(function()
                         tps:TeleportCancel()
-                        if v.GameId ~= nil then teleport_connection = tps:TeleportToPlaceInstance(v.PlaceId, v.GameId, player)
-                        else teleport_connection = tps:Teleport(v.PlaceId) end
+                        if GymId ~= nil then tps:TeleportToPlaceInstance(v.PlaceId, GymId, player)
+                        else tps:Teleport(v.PlaceId, player) end
                     end)
                     autosizeY(Friends_2,nil)
                     Friends_2.CanvasSize = UDim2.new(0,0,0,0)
@@ -1528,7 +1547,17 @@ function lib:init(loader_name,init_settings)
                     tps:TeleportCancel()
 	            	tps:TeleportToPlaceInstance(game.PlaceId, game.JobId, game:GetService("Players").LocalPlayer)
 	            end)
+	            Reconn.MouseButton2Up:Connect(function()
+                    click("up",c,Rejoin,Reconn,isonbtn,"root")
+
+                    tps:TeleportCancel()
+	            	tps:Teleport(game.PlaceId, game:GetService("Players").LocalPlayer)
+	            end)
 	            Reconn.MouseButton1Down:Connect(function()
+                    click("down",c,Rejoin,Reconn,isonbtn,"root")
+
+	            end)
+	            Reconn.MouseButton2Down:Connect(function()
                     click("down",c,Rejoin,Reconn,isonbtn,"root")
 
 	            end)
@@ -1556,7 +1585,7 @@ function lib:init(loader_name,init_settings)
 
         local ShowKeyBindBtn
         local posto = nil
-        if deviceid == "Mobile" then 
+        if loader_settings.device == "Mobile" then 
             posto = 0.45 
             ShowKeyBindBtn = ShowKeyBind -- idk why it wont work without this
         else posto = 0.5 end
@@ -1564,7 +1593,7 @@ function lib:init(loader_name,init_settings)
     	-- function
     	if ismenuopened then TweenService:Create(camera,TweenInfo.new(.15),{FieldOfView = getgenv().GreenCumLoaderHorseBabyUhhHello["Root.deffov"] - 20}):Play() end
     	local function AppAction()
-            if deviceid == "Mobile" then
+            if loader_settings.device == "Mobile" then
                 ShowKeyBindBtn.Visible = not ismenuopened
             end
     		if ismenuopened == false then
@@ -1587,7 +1616,7 @@ function lib:init(loader_name,init_settings)
     	AppAction()
         
     	-- Show/Hide Menu
-        if deviceid == "PC" then
+        if loader_settings.device == "PC" then
             local lashchoosenkey = config_get("HideKey","X")
             Key.Text = lashchoosenkey
             local isonbtn = false
@@ -1919,6 +1948,7 @@ function lib:init(loader_name,init_settings)
             NewMenuButton.ZIndex = settings.ZIndex+3
             NewMenuButton.Font = Enum.Font.Ubuntu
             NewMenuButton.Text = ""
+            NewMenuButton.Active = true
             NewMenuButton.TextColor3 = Color3.fromRGB(255, 255, 255)
             NewMenuButton.TextSize = 16.000
             NewMenuButton.TextWrapped = true
@@ -1964,6 +1994,7 @@ function lib:init(loader_name,init_settings)
             close_icon.Position = UDim2.new(0.885, 0, 0.5, 0)
             close_icon.Size = UDim2.new(0, 15, 0, 15)
             close_icon.ZIndex = settings.ZIndex+6
+            close_icon.Active = true
             close_icon.Image = "rbxassetid://3926305904"
             close_icon.ImageColor3 = Color3.fromRGB(80, 80, 80)
             close_icon.ImageRectOffset = Vector2.new(284, 4)
@@ -2189,6 +2220,7 @@ function lib:init(loader_name,init_settings)
             info.ZIndex = settings.ZIndex+5
             info.Font = Enum.Font.SourceSans
             info.Text = ""
+            info.Active = true
             info.TextColor3 = Color3.fromRGB(0, 0, 0)
             info.TextSize = 14.000
             
@@ -2285,9 +2317,9 @@ function lib:init(loader_name,init_settings)
             local c = toRGB(NewMenuBg.ImageColor3)
             local isutingthis = false
             NewMenuButton.MouseButton1Up:Connect(function()
+                click("up",c,NewMenuBg,NewMenuTitle,isonbtn,'cm')
                 if not isutingthis then return end
                 isutingthis = false
-                click("down",c,NewMenuBg,NewMenuTitle,isonbtn,'cm')
                 if isstillcd then return
                 elseif NewMenuButton.Name == activepage['m'].Name then return end
                 isstillcd = true
@@ -2427,6 +2459,7 @@ function lib:init(loader_name,init_settings)
                     Button.ZIndex = settings.ZIndex+3
                     Button.Font = Enum.Font.Ubuntu
                     Button.Text = ""
+                    Button.Active = true
                     Button.TextColor3 = Color3.fromRGB(255, 255, 255)
                     Button.TextSize = 16.000
 
@@ -2576,6 +2609,7 @@ function lib:init(loader_name,init_settings)
                     Toggle.ZIndex = settings.ZIndex+3
                     Toggle.Font = Enum.Font.Ubuntu
                     Toggle.Text = ""
+                    Toggle.Active = true
                     Toggle.TextColor3 = Color3.fromRGB(255, 255, 255)
                     Toggle.TextSize = 16.000
 
@@ -2733,6 +2767,7 @@ function lib:init(loader_name,init_settings)
                     Input.ZIndex = settings.ZIndex+5
                     Input.Font = Enum.Font.Ubuntu
                     Input.Text = ""
+                    Input.Active = true
                     Input.TextColor3 = Color3.fromRGB(255, 255, 255)
                     Input.TextTransparency = 1
                     Input.ClearTextOnFocus = false
@@ -2792,6 +2827,7 @@ function lib:init(loader_name,init_settings)
                     icon.Size = UDim2.new(0, 25, 0, 25)
                     icon.ZIndex = settings.ZIndex+5
                     icon.Image = "rbxassetid://3926305904"
+                    icon.Active = true
                     icon.ImageColor3 = Color3.fromRGB(200, 200, 200)
                     icon.ImageRectOffset = Vector2.new(284, 644)
                     icon.ImageRectSize = Vector2.new(36, 36)
@@ -2989,6 +3025,7 @@ function lib:init(loader_name,init_settings)
                     Slider.ZIndex = settings.ZIndex+3
                     Slider.Font = Enum.Font.Ubuntu
                     Slider.Text = ""
+                    Slider.Active = true
                     Slider.TextColor3 = Color3.fromRGB(255, 255, 255)
                     Slider.TextSize = 16.000
 
@@ -3060,6 +3097,7 @@ function lib:init(loader_name,init_settings)
                     slider.ZIndex = settings.ZIndex+3
                     slider.Font = Enum.Font.SourceSans
                     slider.Text = ""
+                    slider.Active = true
                     slider.TextColor3 = Color3.fromRGB(0, 0, 0)
                     slider.TextSize = 14.000
                     
@@ -3195,7 +3233,7 @@ function lib:init(loader_name,init_settings)
                 end
             end
             function lib3:CreateBind(fsettings,callback)
-                if deviceid == "Mobile" then warn("Binds are not supported for mobile devices.")
+                if loader_settings.device == "Mobile" then warn("Binds are not supported for mobile devices.")
                 elseif type(fsettings) ~= "table" then error("["..menu_name.."-"..tab_name.."] ~ 1st arg of <CreateBind> must be table type");return end
                 callback = callback or function() end
                 counters['binds'] = counters['binds'] + 1
@@ -3235,6 +3273,7 @@ function lib:init(loader_name,init_settings)
                     Bind.ZIndex = settings.ZIndex+3
                     Bind.Font = Enum.Font.Ubuntu
                     Bind.Text = ""
+                    Bind.Active = true
                     Bind.TextColor3 = Color3.fromRGB(255, 255, 255)
                     Bind.TextSize = 16.000
 
@@ -3419,6 +3458,7 @@ function lib:init(loader_name,init_settings)
                     Label.ZIndex = settings.ZIndex+3
                     Label.Font = Enum.Font.Ubuntu
                     Label.Text = ""
+                    Label.Active = true
                     Label.TextColor3 = Color3.fromRGB(255, 255, 255)
                     Label.TextSize = 16.000
 
@@ -3592,6 +3632,7 @@ function lib:init(loader_name,init_settings)
                     List.ZIndex = settings.ZIndex+3
                     List.Font = Enum.Font.Ubuntu
                     List.Text = ""
+                    List.Active = true
                     List.TextColor3 = Color3.fromRGB(255, 255, 255)
                     List.TextSize = 16.000
 
@@ -3799,6 +3840,7 @@ function lib:init(loader_name,init_settings)
                             Button.ZIndex = settings.ZIndex+28
                             Button.Font = Enum.Font.Ubuntu
                             Button.Text = lname
+                            Button.Active = true
                             Button.TextColor3 = Color3.fromRGB(200, 200, 200)
                             Button.TextSize = 14.000
                             
@@ -3923,7 +3965,7 @@ function lib:init(loader_name,init_settings)
     end
     return lib2
 end
-getgenv().ngstloader = lib:init("nGSTLoader",{risky=false,service="https://raw.githubusercontent.com/GameSTALkER/ngstloader/main/service.json"})
+getgenv().ngstloader = lib:init("nGSTLoader",{risky=false,device=nil,service="https://raw.githubusercontent.com/GameSTALkER/ngstloader/main/service.json"})
 
 
 getgenv().ngstloader:CustomScript("AnimHub","https://raw.githubusercontent.com/GameSTALkER/ngstloader/main/scripts/AnimHub.lua")
