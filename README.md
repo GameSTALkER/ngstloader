@@ -16,6 +16,7 @@
 <p><a href="https://www.roblox.com/games/5591597781">Tower Defense Simulator</a></p>
 <p><a href="https://www.roblox.com/games/6284583030">Pet Simulator X</a></p>
 <p><a href="https://www.roblox.com/games/6447798030">Funky Friday</a></h3></p>
+<p><a href="https://www.roblox.com/games/6961824067">Fling Things and People</a></h3></p>
 <p><a href="https://www.roblox.com/games/7094672259">Criminal Russia</a></h3></p>
 <p><a href="https://www.roblox.com/games/7555007091">Hexa Game</a></p>
 <p><a href="https://www.roblox.com/games/7584496019">99% Fail</a></p>
