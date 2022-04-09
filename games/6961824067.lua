@@ -44,26 +44,13 @@ gui:CreateSlider({name="Throw power", min=750, def=throw_limit, max=10000}, func
     debug.setconstant(throw[1], throw[2], throw_limit)
 
 end)
-local isserverlagging = false
-gui:CreateToggle({name="Lag players (press multiple times)", desc="Lag players(you don't get lags)\nRejoin to remove lag"}, function(_)
-    isserverlagging = _
-    if _ then
-        spawn(function()
-            for i,v in pairs(game.workspace:GetDescendants()) do
-                game:GetService("ReplicatedStorage").CharacterEvents.Beam:FireServer(unpack({[1] = "make",[2] = v,[3] = Vector3.new(0,0,0)}))
-                wait()
-                if not isserverlagging then break end
-            end
-        end)
-    else
-        spawn(function()
-            for i,v in pairs(game.workspace:GetDescendants()) do
-                game:GetService("ReplicatedStorage").CharacterEvents.Beam:FireServer(unpack({[1] = "destroy",[2] = v}))
-                wait()
-                if isserverlagging then break end
-            end
-        end)
-    end
+gui:CreateButton({name="Lag players", desc="Lags players(you don't get lags)"}, function()
+    spawn(function()
+        for i,v in pairs(game.workspace:GetDescendants()) do
+            game:GetService("ReplicatedStorage").CharacterEvents.Beam:FireServer(unpack({[1] = "make",[2] = v,[3] = Vector3.new(0,0,0)}))
+            wait()
+        end
+    end)
 end)
 getgenv().getgoodgetlaydog = false
 gui:CreateToggle({name="Make everyone around you lay", desc="Really funny :)"},function(_)
@@ -77,10 +64,13 @@ gui:CreateToggle({name="Make everyone around you lay", desc="Really funny :)"},f
                             game:GetService("ReplicatedStorage").GrabEvents.SetNetworkOwner:FireServer(unpack({[1] = v.Character.HumanoidRootPart,[2] = "player"}))
                         end
                     end)
-                    wait()
                 end
                 wait()
             end
         end)
     end
+end)
+gui:CreateBind({name="Lay (for escape only)", key="Q"},function()
+    game:GetService("ReplicatedStorage").GrabEvents.SetNetworkOwner:FireServer(unpack({[1] = plrs.LocalPlayer.Character.HumanoidRootPart,[2] = "player"}))
+    
 end)
