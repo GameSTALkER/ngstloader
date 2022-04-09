@@ -118,7 +118,7 @@ function lib:CreateWin(title, configid)
      if syn then
          syn.protect_gui(ScreenGui)
          ScreenGui.Parent = game:GetService("CoreGui")
-     elseif getexecutorname() == "ScriptWare" then
+     elseif get_hidden_gui or gethui then
          ScreenGui.Parent = gethui()
      else
          ScreenGui.Parent = game:GetService("CoreGui")
