@@ -72,5 +72,6 @@ gui:CreateToggle({name="Make everyone around you lay", desc="Really funny :)"},f
 end)
 gui:CreateBind({name="Lay (for escape only)", key="Q",loop=true},function()
     game:GetService("ReplicatedStorage").GrabEvents.SetNetworkOwner:FireServer(unpack({[1] = plrs.LocalPlayer.Character.HumanoidRootPart,[2] = "player"}))
-    
+    game:GetService("ReplicatedStorage").CharacterEvents.Beam:FireServer(unpack({[1] = "destroy",[2] = plrs.LocalPlayer.Character.HumanoidRootPart}))
+
 end)
