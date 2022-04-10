@@ -201,7 +201,7 @@ afkmain:CreateToggle({name="Auto Drop Cash", state=false, cfg=false, desc="Autom
         end
     end)
 end)
-afkmain:CreateLabel({text="Place name", desc="Place Cash receiver name"}, function(_)
+afkmain:CreateInput({text="Place name", desc="Place Cash receiver name"}, function(_)
     scriptvars["CashReceiver"] = _
 end)
 afkmain:CreateToggle({name="Chase",state=false,cfg=false,desc="Chase the cash receiver"}, function(_)
@@ -214,8 +214,9 @@ afkmain:CreateToggle({name="Chase",state=false,cfg=false,desc="Chase the cash re
                 if getCashValue() > (assets.minCash - 1) then
                     local tpMe = game.Players.LocalPlayer.Character.Humanoid
                     local function _TEMPTEL(sec,to)
-                    local gg = sTween:Create(myPart,TweenInfo.new(sec),{CFrame = to}):Play()
-			        gg.Completed:Wait()
+                        spawn(function()
+                        local gg = sTween:Create(myPart,TweenInfo.new(sec),{CFrame = to}):Play()
+			            wait(sec) end)
                     end
                     repeat _TEMPTEL(.1,game.Players[scriptvars["CashReceiver"]].Character.HumanoidRootPart.CFrame);game:GetService("ReplicatedStorage").Events.CashDropEvent:FireServer() until getCashValue() < 250 or scriptvars["ChasingTarget"] == false
                     _TEMPTEL(.1,oldpos)
