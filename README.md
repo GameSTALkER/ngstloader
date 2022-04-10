@@ -9,6 +9,7 @@
 <p><a href="https://www.roblox.com/games/2356303743">Cube Defense</a></p>
 <p><a href="https://www.roblox.com/games/1962086868">Tower of Hell</a></p>
 <p><a href="https://www.roblox.com/games/3101667897">Legends Of Speed</a> + <a href="https://www.roblox.com/games/3276265788">world 2</a></p>
+<p><a href="https://www.roblox.com/games/3388553819">Captive: Redux</a></p>
 <p><a href="https://www.roblox.com/games/4490140733">My Restaurant!</a></p>
 <p><a href="https://www.roblox.com/games/4806026225">Defender's Depot</a></p>
 <p><a href="https://www.roblox.com/games/5256165620">3-2-1 Blast Off Simulator</a></p>
