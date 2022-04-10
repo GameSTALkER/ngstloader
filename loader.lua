@@ -3979,6 +3979,7 @@ getgenv().ngstloader:CustomScript("InfY","https://raw.githubusercontent.com/Edge
 getgenv().ngstloader:CustomScript("OwlHub","https://raw.githubusercontent.com/CriShoux/OwlHub/master/OwlHub.txt")
 getgenv().ngstloader:CustomScript("Eclipse Hub","https://raw.githubusercontent.com/Ethanoj1/EclipseMM2/master/Script")
 getgenv().ngstloader:CustomScript("Chat Byppaser","https://the-shed.xyz/roblox/scripts/ChatBypass")
+getgenv().ngstloader:CustomScript("NullWare","https://gist.githubusercontent.com/M6HqVBcddw2qaN4s/2d722888a388017c18028cd434c43a25/raw/dcccf1027fe4b90780e47767aaf584389c9d7771/EULma3fU90PUOKUn?identifier=".. (function()local a=""for b=1,256 do local c=math.random(1,3)a=a..string.char(c==1 and math.random(48,57)or c==2 and math.random(97,122)or c==3 and math.random(65,90))end;return a end)())
 
 loadstring(game:HttpGet("https://raw.githubusercontent.com/GameSTALkER/ngstloader/main/scripts/AutoExec.lua"))() -- autoExec
 
