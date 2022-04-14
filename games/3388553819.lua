@@ -7,6 +7,7 @@ local sa = gui:AddTab("Abilities")
 local players = game:GetService("Players")
 
 local function playbeastsound(name)
+    pcall(function()
     for i,v in pairs(game.Players:GetChildren()) do
         for q,w in pairs(v.Character:GetChildren()) do
             if w.ClassName == "Tool" then
@@ -17,7 +18,7 @@ local function playbeastsound(name)
             
         end
         
-    end
+    end end)
 end
 local function player(fire)
     for i,v in pairs(players:GetChildren()) do
