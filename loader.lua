@@ -3732,7 +3732,7 @@ function lib:init(loader_name,init_settings)
                 
                 local llib = {}
                 function llib:Destroy()
-                    Bind:Destroy()
+                    Label:Destroy()
                     counters['labels'] = counters['labels'] - 1
                     
                 end
@@ -4079,8 +4079,8 @@ function lib:init(loader_name,init_settings)
 
                 local llib = {}
                 function llib:Destroy()
-                    Bind:Destroy()
-                    counters['binds'] = counters['binds'] - 1
+                    List:Destroy()
+                    counters['lists'] = counters['lists'] - 1
                     
                 end
                 function llib:Change(fsettings)
