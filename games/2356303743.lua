@@ -87,9 +87,10 @@ local function gettowertoupg()
     end
 end
 local iueasehfoa
+local sfdjlasdg = false
 iueasehfoa = main:CreateToggle({name="Cash collector", desc="Automaticly collects cash"}, function(_)
     scriptvars["ACC1"] = _
-    if scriptvars["ACC1"] then
+    if scriptvars["ACC1"] and not sfdjlasdg then
         spawn(function()
             while wait() do
                 local _TEMP = false
@@ -102,7 +103,7 @@ iueasehfoa = main:CreateToggle({name="Cash collector", desc="Automaticly collect
                                 else wait(.1);fireproximityprompt(v:FindFirstChild("ProximityPrompt"), 3) end
                             elseif fireproximityprompt then wait(.1);fireproximityprompt(v:FindFirstChild("ProximityPrompt"), 3)
                             elseif keypress and keyrelease then keypress(0x46);wait(.12);keyrelease(0x46) 
-                            else iueasehfoa:Change({name="Unsupported on your executor :(",toggle=false}) end
+                            else iueasehfoa:Change({name="Unsupported on your executor :(",state=false});sfdjlasdg=true;break end
                         end
                     elseif not scriptvars["ACC1"] then break end
                 end
