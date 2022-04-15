@@ -2282,24 +2282,27 @@ function lib:init(loader_name,init_settings)
 
             local llib = {}
             function llib:Desc(new_string)
-                new_string = tostring(new_string)
-                TweenService:Create(desc,TweenInfo.new(.25),{TextTransparency = 1}):Play()
-                wait(.25)
-                desc.Text = new_string
-                TweenService:Create(desc,TweenInfo.new(.25),{TextTransparency = 0}):Play()
-                if new_string == "" then
-                    info.Active = false
-                    info.Selectable = false
-                    TweenService:Create(iicon,TweenInfo.new(.25),{ImageTransparency = 1}):Play()
+                spawn(function()
+                    new_string = tostring(new_string)
+                    TweenService:Create(desc,TweenInfo.new(.25),{TextTransparency = 1}):Play()
                     wait(.25)
-                    info.Visible = false
-                else
-                    info.Visible = true
-                    TweenService:Create(iicon,TweenInfo.new(.25),{ImageTransparency = 0}):Play()
-                    wait(.25)
-                    info.Active = true
-                    info.Selectable = true
-                end
+                    desc.Text = new_string
+                    descstring = new_string
+                    TweenService:Create(desc,TweenInfo.new(.25),{TextTransparency = 0}):Play()
+                    if new_string == "" then
+                        info.Active = false
+                        info.Selectable = false
+                        TweenService:Create(iicon,TweenInfo.new(.25),{ImageTransparency = 1}):Play()
+                        wait(.25)
+                        info.Visible = false
+                    else
+                        info.Visible = true
+                        TweenService:Create(iicon,TweenInfo.new(.25),{ImageTransparency = 0}):Play()
+                        wait(.25)
+                        info.Active = true
+                        info.Selectable = true
+                    end
+                end)
                 
             end
 
@@ -2564,6 +2567,27 @@ function lib:init(loader_name,init_settings)
                         click_count = 0
 
                     end
+                    function llib:Destroy()
+                        Button:Destroy()
+                        counters['buttons'] = counters['buttons'] - 1
+                        
+                    end
+                    function llib:Change(fsettings)
+                        if type(fsettings) == "table" then
+                            for k,v in pairs(fsettings) do
+                                k = tostring(k):lower()
+                                if table.find({"name","title"},k) then
+                                    toapply['name'] = tostring(v)
+                                    title.Text = toapply['name']
+                                elseif table.find({'desc','description'},k) then
+                                    toapply['desc'] = tostring(v)
+                                    info:Desc(toapply['desc'])
+                                else
+                                    warn("["..menu_name.."-"..tab_name.."] ~ Unknown key given: \""..k.."\" in <CreateButton ("..save['num']..")>")
+                                end
+                            end
+                        else warn("not table format provided") end
+                    end
 
                     return llib
                 end
@@ -2647,7 +2671,6 @@ function lib:init(loader_name,init_settings)
                     state.Parent = Toggle
                     state.AnchorPoint = Vector2.new(0.5, 0.5)
                     state.BackgroundTransparency = 1.000
-                    state.LayoutOrder = 8
                     state.Position = UDim2.new(0.032, 0, 0.505, 0)
                     if not toapply['state'] then state.Rotation = 180 else state.Rotation = 0 end
                     state.Size = UDim2.new(0, 20, 0, 20)
@@ -2673,7 +2696,6 @@ function lib:init(loader_name,init_settings)
                         if db then return end
                         db = true
                         toggle_state = not toggle_state
-                        callback(toggle_state)
                         local r = 0
                         if not toggle_state then r = 180 end
                         TweenService:Create(state,TweenInfo.new(.25),{Rotation = r}):Play()
@@ -2692,6 +2714,7 @@ function lib:init(loader_name,init_settings)
                             TweenService:Create(state,TweenInfo.new(.25),{ImageColor3 = cc}):Play()
 
                         end
+                        callback(toggle_state)
                         db = false
                     end)
                 
@@ -2726,6 +2749,34 @@ function lib:init(loader_name,init_settings)
                         TweenService:Create(state,TweenInfo.new(.25),{ImageColor3 = cc}):Play()
                     
                     end)
+                    local llib = {}
+                    function llib:Destroy()
+                        Toggle:Destroy()
+                        counters['toggles'] = counters['toggles'] - 1
+                        
+                    end
+                    function llib:Change(fsettings)
+                        if type(fsettings) == "table" then
+                            for k,v in pairs(fsettings) do
+                                k = tostring(k):lower()
+                                if table.find({"name","title"},k) then
+                                    toapply['name'] = tostring(v)
+                                    title_2.Text = toapply['name']
+                                elseif table.find({'desc','description'},k) then
+                                    toapply['desc'] = tostring(v)
+                                    info:Desc(toapply['desc'])
+                                elseif k == 'state' then
+                                    if type(v) == "boolean" then
+                                        toapply['state'] = v
+                                        if not toapply['state'] then state.Rotation = 180 else state.Rotation = 0 end
+                                        if not toapply['state'] then state.ImageColor3 = Color3.fromRGB(150, 0, 0) else state.ImageColor3 = Color3.fromRGB(0, 150, 0) end
+                                    else warn("["..menu_name.."-"..tab_name.."] ~ key \""..k.."\" must have \"boolean type\" in <CreateToggle ("..save['num']..")>") end
+                                else warn("["..menu_name.."-"..tab_name.."] ~ Unknown key given: \""..k.."\" in <CreateToggle ("..save['num']..")>") end
+                            end
+                        else warn("not table provided") end
+                    end
+                    
+                    return llib
                 end
             end
             function lib3:CreateInput(fsettings,callback)
@@ -2965,6 +3016,34 @@ function lib:init(loader_name,init_settings)
                     
                     end)
                 end
+
+                local llib = {}
+                function llib:Destroy()
+                    Input:Destroy()
+                    counters['inputs'] = counters['inputs'] - 1
+                    
+                end
+                function llib:Change(fsettings)
+                    if type(fsettings) == "table" then
+                        for k,v in pairs(fsettings) do
+                            k = tostring(k):lower()
+                            if table.find({"name","title"},k) then
+                                toapply['name'] = tostring(v)
+                                title.Text = toapply['name']
+                            elseif table.find({'desc','description'},k) then
+                                toapply['desc'] = tostring(v)
+                                info:Desc(toapply['desc'])
+                            elseif table.find({'ac','autocomplete'},k) then
+                                local resp,err = pcall(function() toapply['ac'][1] = v[1];toapply['ac'][2] = v[2] end)
+                                if not resp then warn("["..menu_name.."-"..tab_name.."] ~ "..err) end
+                            else
+                                warn("["..menu_name.."-"..tab_name.."] ~ Unknown key given: \""..k.."\" in <CreateInput ("..save['num']..")>")
+                            end
+                        end 
+                    else warn("not a table provided") end
+                end
+                
+                return llib
 
             end
             function lib3:CreateSlider(fsettings,callback)
@@ -3231,6 +3310,46 @@ function lib:init(loader_name,init_settings)
                     
                     end)
                 end
+                
+                local llib = {}
+                function llib:Destroy()
+                    Slider:Destroy()
+                    counters['sliders'] = counters['sliders'] - 1
+                     
+                end
+                function llib:Change(fsettings)
+                    if type(fsettings) == "table" then
+                        for k,v in pairs(fsettings) do
+                            k = tostring(k):lower()
+                            if table.find({"name","title"},k) then
+                                toapply['name'] = tostring(v)
+                                title.Text = toapply['name']
+                            elseif table.find({'desc','description'},k) then
+                                toapply['desc'] = tostring(v)
+                                info:Desc(toapply['desc'])
+                            elseif table.find({'min','minimum'},k) then
+                                if tonumber(v) then toapply['min'] = tonumber(v) 
+                                else warn("["..menu_name.."-"..tab_name.."] ~ key \""..k.."\" must have \"int type\" in <CreateSlider ("..save['num']..")>") end
+                            elseif table.find({'def','default',"start"},k) then
+                                if tonumber(v) then toapply['def'] = tonumber(v) 
+                                else warn("["..menu_name.."-"..tab_name.."] ~ key \""..k.."\" must have \"int type\" in <CreateSlider ("..save['num']..")>") end
+                            elseif table.find({'max','maximum'},k) then
+                                if tonumber(v) then toapply['max'] = tonumber(v) 
+                                else warn("["..menu_name.."-"..tab_name.."] ~ key \""..k.."\" must have \"int type\" in <CreateSlider ("..save['num']..")>") end
+                            else warn("["..menu_name.."-"..tab_name.."] ~ Unknown key given: \""..k.."\" in <CreateSlider ("..save['num']..")>") end
+                        end
+                        if toapply["min"] >= toapply["max"] then 
+                            toapply["min"] = toapply["min"] - toapply["max"] 
+                            warn("["..menu_name.."-"..tab_name.."] ~ Incorrect value set in \"min\", new value is: "..toapply['min']..", <CreateSlider ("..save['num']..")>")
+                        end
+                        if toapply['def'] < toapply["min"] or toapply['def'] > toapply["max"] then
+                            toapply['def'] = toapply["min"] 
+                            warn("["..menu_name.."-"..tab_name.."] ~ Incorrect value set in \"def\", new value is: "..toapply['def']..", <CreateSlider ("..save['num']..")>")
+                        end
+                    else warn("not table provided") end
+                end
+                
+                return llib
             end
             function lib3:CreateBind(fsettings,callback)
                 if loader_settings.device == "Mobile" then warn("Binds are not supported for mobile devices.")
@@ -3420,6 +3539,36 @@ function lib:init(loader_name,init_settings)
                     end)
 
                 end
+                
+                
+                local llib = {}
+                function llib:Destroy()
+                    Bind:Destroy()
+                    counters['binds'] = counters['binds'] - 1
+                    
+                end
+                function llib:Change(fsettings)
+                    if type(fsettings) == "table" then
+                        for k,v in pairs(fsettings) do
+                            k = tostring(k):lower()
+                            if table.find({"name","title"},k) then
+                                toapply['name'] = tostring(v)
+                                title.Text = toapply['name']
+                            elseif table.find({'desc','description'},k) then
+                                toapply['desc'] = tostring(v)
+                                info:Desc(toapply['desc'])
+                            elseif table.find({'key','bind'},k) then
+                                toapply['key'] = tostring(v)
+                                Key.Text = toapply['key']
+                            elseif table.find({'loop','looping'},k) then
+                                if type(v) == "boolean" then toapply['loop'] = v
+                                else warn("["..menu_name.."-"..tab_name.."] ~ key \""..k.."\" must have \"boolean type\" in <CreateBind ("..save['num']..")>") end
+                            else warn("["..menu_name.."-"..tab_name.."] ~ Unknown key given: \""..k.."\" in <CreateBind ("..save['num']..")>") end
+                        end
+                    else warn("not table provided") end
+                end
+                
+                return llib
             end
             function lib3:CreateLabel(fsettings)
                 if type(fsettings) ~= "table" then error("["..menu_name.."-"..tab_name.."] ~ 1st arg of <CreateLabel> must be table type");return end
@@ -3533,7 +3682,7 @@ function lib:init(loader_name,init_settings)
                     local db = false
                     local isutingthis = false
                     Label.MouseButton1Up:Connect(function()
-                        if not isutingthis then return end
+                        if not isutingthis or tostring(toapply['clip']) == "" then return end
                         isutingthis = false
                         TweenService:Create(bg_4,TweenInfo.new(.25),{ImageColor3 = Color3.fromRGB(c.R,c.G,c.B)}):Play()
                         TweenService:Create(icon,TweenInfo.new(.25),{ImageColor3 = Color3.fromRGB(200,200,200)}):Play() 
@@ -3555,6 +3704,7 @@ function lib:init(loader_name,init_settings)
                 
                     -- visual
                     Label.MouseButton1Down:Connect(function()
+                        if tostring(toapply['clip']) == "" then return end
                         isutingthis = true
                         TweenService:Create(bg_4,TweenInfo.new(.25),{ImageColor3 = Color3.fromRGB(c.R-settings.cm.label.ratio,c.G-settings.cm.label.ratio,c.B-settings.cm.label.ratio)}):Play()
                         TweenService:Create(title,TweenInfo.new(.25),{TextColor3 = Color3.fromRGB(150, 150, 150)}):Play()
@@ -3579,6 +3729,31 @@ function lib:init(loader_name,init_settings)
                     
                     end)
                 end
+                
+                local llib = {}
+                function llib:Destroy()
+                    Bind:Destroy()
+                    counters['labels'] = counters['labels'] - 1
+                    
+                end
+                function llib:Change(fsettings)
+                    if type(fsettings) == "table" then
+                        for k,v in pairs(fsettings) do
+                            k = tostring(k):lower()
+                            if table.find({"name","title"},k) then
+                                toapply['name'] = tostring(v)
+                                title.Text = toapply['name']
+                            elseif table.find({'desc','description'},k) then
+                                toapply['desc'] = tostring(v)
+                                info:Desc(toapply['desc'])
+                            elseif table.find({'clip','clipboard','copy'},k) then
+                                toapply['clip'] = tostring(v)
+                            else warn("["..menu_name.."-"..tab_name.."] ~ Unknown key given: \""..k.."\" in <CreateLabel ("..save['num']..")>") end
+                        end
+                    else warn("not table provided") end
+                end
+                
+                return llib
             end
             function lib3:CreateList(fsettings,callback)
                 if type(fsettings) ~= "table" then error("["..menu_name.."-"..tab_name.."] ~ 1st arg of <CreateList> must be table type");return end
@@ -3902,8 +4077,31 @@ function lib:init(loader_name,init_settings)
                 local khm = #toapply['btns'] * (UIGridLayout.CellSize.Y.Offset + UIGridLayout.CellPadding.Y.Offset)
                 TweenService:Create(List1,TweenInfo.new(.1),{CanvasSize = UDim2.new(0,0,0,khm)}):Play()
 
-                local ulib = {}
-                function ulib:Active(new_value)
+                local llib = {}
+                function llib:Destroy()
+                    Bind:Destroy()
+                    counters['binds'] = counters['binds'] - 1
+                    
+                end
+                function llib:Change(fsettings)
+                    if type(fsettings) == "table" then
+                        for k,v in pairs(fsettings) do
+                            k = tostring(k):lower()
+                            if table.find({"name","title"},k) then
+                                toapply['name'] = tostring(v)
+                                title.Text = toapply['name']
+                            elseif table.find({'desc','description'},k) then
+                                toapply['desc'] = tostring(v)
+                                info:Desc(toapply['desc'])
+                            elseif k == "multi" then
+                                if type(v) == "boolean" then
+                                    toapply['multi'] = v
+                                else warn("["..menu_name.."-"..tab_name.."] ~ key \""..k.."\" must have \"boolean type\" in <CreateList ("..save['num']..")>") end
+                            else warn("["..menu_name.."-"..tab_name.."] ~ Unknown key given: \""..k.."\" in <CreateList ("..save['num']..")>") end
+                        end
+                    else warn("not table provided") end
+                end
+                function llib:Active(new_value)
                     if new_value ~= nil then spawn(function()
                         for i,v in pairs(toapply['btns']) do
                             if type(v) == "string" then
@@ -3920,10 +4118,9 @@ function lib:init(loader_name,init_settings)
                         end end)
                     end
 
-
                 end
 
-                return ulib
+                return llib
                 
             end
             autosizeY(Menu1_2,function(_) if _ > 4 then TweenService:Create(Menu1_2,TweenInfo.new(.1),{Position = UDim2.new(0.57, 0,0.5, 0)}):Play() end; end)
