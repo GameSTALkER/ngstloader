@@ -75,39 +75,25 @@ gui:CreateBind({name="Lay (for escape only)", key="Q",loop=true},function()
     game:GetService("ReplicatedStorage").CharacterEvents.Beam:FireServer(unpack({[1] = "destroy",[2] = plrs.LocalPlayer.Character.HumanoidRootPart}))
 
 end)
-local function waitor(seconds)
-    local timespent = 0
-    while timespent<=seconds do
-        timespent = timespent + 1
-        if not _G.autofarming then break end
-        wait(1)
-        
-    end
-    return 0
-    
-end
 gui:CreateToggle({name="Auto casino",desc="Automaticly collect cash from casino"},function(_)
-    _G.autofarming = _
-    wait(1.5)
-    
-    if not _G.autofarming then return end
+    getgenv().autofarming = _
+
+    if not getgenv().autofarming then return end
     spawn(function()
-        while _G.autofarming do
+        while getgenv().autofarming do
+            
             local mychar = game.Players.LocalPlayer.Character
             local pos = mychar.HumanoidRootPart.CFrame
             local casino = game.workspace.Slots.Slots.SlotHandle.Handle
-            game:GetService("TweenService"):Create(mychar.HumanoidRootPart,TweenInfo.new(.1),{CFrame = casino.CFrame}):Play()
-            wait(0.5)
-            game:GetService("ReplicatedStorage").GrabEvents.SetNetworkOwner:FireServer(unpack({[1] = casino,[2] = "player"}))
-            wait(0.3)
-            game:GetService("TweenService"):Create(mychar.HumanoidRootPart,TweenInfo.new(.1),{CFrame = pos}):Play()
-        
-            local timespent = 0
-            while timespent<=(60*5) do
-                timespent = timespent + 1
-                if not _G.autofarming then break end
-                wait(1)
-                
+            local timel = game:GetService("Workspace").Slots.Slots.Screen.SlotGui.TimeLeftFrame.TimeText
+            
+            repeat wait(1) until timel.Text == "0:00" or getgenv().autofarming == false
+            if getgenv().autofarming then
+                game:GetService("TweenService"):Create(mychar.HumanoidRootPart,TweenInfo.new(.1),{CFrame = casino.CFrame}):Play()
+                wait(0.5)
+                game:GetService("ReplicatedStorage").GrabEvents.SetNetworkOwner:FireServer(unpack({[1] = casino,[2] = "player"}))
+                wait(0.3)
+                game:GetService("TweenService"):Create(mychar.HumanoidRootPart,TweenInfo.new(.1),{CFrame = pos}):Play()
             end
         
         end
