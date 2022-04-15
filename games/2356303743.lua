@@ -86,8 +86,8 @@ local function gettowertoupg()
         return obj.Parent.Parent.Parent.Parent.Parent.Parent.Parent
     end
 end
-
-main:CreateToggle({name="Cash collector", desc="Automaticly collects cash"}, function(_)
+local iueasehfoa
+iueasehfoa = main:CreateToggle({name="Cash collector", desc="Automaticly collects cash"}, function(_)
     scriptvars["ACC1"] = _
     if scriptvars["ACC1"] then
         spawn(function()
@@ -97,8 +97,12 @@ main:CreateToggle({name="Cash collector", desc="Automaticly collects cash"}, fun
                     if scriptvars["ACC1"] and v.Name == "CashDrop" then -- money collector
                         if (v.Position - myPart.Position).magnitude <= 20 then
                             sTween:Create(v,TweenInfo.new(.12),{CFrame = myPart.CFrame}):Play()
-                            if iswindowactive() then _TEMP = true
-                            else wait(.1);fireproximityprompt(v:FindFirstChild("ProximityPrompt"), 3) end
+                            if iswindowactive then
+                                if iswindowactive() then _TEMP = true
+                                else wait(.1);fireproximityprompt(v:FindFirstChild("ProximityPrompt"), 3) end
+                            elseif fireproximityprompt then wait(.1);fireproximityprompt(v:FindFirstChild("ProximityPrompt"), 3)
+                            elseif keypress and keyrelease then keypress(0x46);wait(.12);keyrelease(0x46) 
+                            else iueasehfoa:Change({name="Unsupported on your executor :(",toggle=false}) end
                         end
                     elseif not scriptvars["ACC1"] then break end
                 end
@@ -215,10 +219,12 @@ afkmain:CreateToggle({name="Chase",state=false,cfg=false,desc="Chase the cash re
                     local tpMe = game.Players.LocalPlayer.Character.Humanoid
                     local function _TEMPTEL(sec,to)
                         spawn(function()
-                        local gg = sTween:Create(myPart,TweenInfo.new(sec),{CFrame = to}):Play()
-			            wait(sec) end)
+                            local gg = sTween:Create(myPart,TweenInfo.new(sec),{CFrame = to}):Play()
+                            wait(sec+0.1)
+                            game:GetService("ReplicatedStorage").Events.CashDropEvent:FireServer()
+                        end)
                     end
-                    repeat _TEMPTEL(.1,game.Players[scriptvars["CashReceiver"]].Character.HumanoidRootPart.CFrame);game:GetService("ReplicatedStorage").Events.CashDropEvent:FireServer() until getCashValue() < 250 or scriptvars["ChasingTarget"] == false
+                    repeat _TEMPTEL(.1,game.Players[scriptvars["CashReceiver"]].Character.HumanoidRootPart.CFrame);wait() until getCashValue() < 250 or scriptvars["ChasingTarget"] == false
                     _TEMPTEL(.1,oldpos)
                 end
             end
