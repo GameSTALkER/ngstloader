@@ -45,3 +45,12 @@ zxc = gui:CreateButton({name="Collect words"},function()
 	zxc:Change({name="Collect words"})
 	
 end)
+
+gui:CreateButton({name="Get 5 UGC"},function()
+	game:GetService("ReplicatedStorage").TGSItemShops_BuyItem:InvokeServer(unpack({[1] = "UGC_Boombox",[2] = 0}))
+	game:GetService("ReplicatedStorage").TGSItemShops_BuyItem:InvokeServer(unpack({[1] = "UGC_FrogHat",[2] = 0}))
+	game:GetService("ReplicatedStorage").TGSItemShops_BuyItem:InvokeServer(unpack({[1] = "UGC_Wings",[2] = 0}))
+	game:GetService("ReplicatedStorage").TGSItemShops_BuyItem:InvokeServer(unpack({[1] = "UGC_DanceMove",[2] = 0}))
+	game:GetService("ReplicatedStorage").TGSItemShops_BuyItem:InvokeServer(unpack({[1] = "UGC_PeaceSign",[2] = 0}))
+	
+end)
