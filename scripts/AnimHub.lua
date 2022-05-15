@@ -118,6 +118,16 @@ _uni:CreateButton({name='Execute "Eyes" script',desc="E - hide/show eyes\nMove m
     loadstring(game:HttpGet(dir['uni'].."netless.lua"))()
     loadstring(game:HttpGet(dir['uni'].."eyes.lua"))()
 end)
+_uni:CreateButton({name='Execute "Wings" script',desc="Keybinds - Q, E, R, T"},function()
+    
+    if neededhats({"black metal wings"},"string") ~= true then
+        print("^ for Wings ^")
+        --nlib:CreateNotify({title="ERROR",desc='Check console what you forgot to wear (must turn on warns)',sleep=30,textscale=13})
+        return end
+    
+    loadstring(game:HttpGet(dir['uni'].."netless.lua"))()
+    loadstring(game:HttpGet(dir['uni'].."wings.lua"))()
+end)
 
 -- bang
 _uni:CreateInput({name="Write Player Name to bang", ac={game:GetService("Players"):GetChildren(),{"Name","DisplayName"}}},function(_)
