@@ -10,10 +10,12 @@ local plr = game:GetService("Players").LocalPlayer
 btn[1] = tab1:CreateToggle({name="Toggle Ragdoll",exec=true},function(state)
     local rg = plr.Character:FindFirstChild("RagdollMe")
     local rg1 = plr.Character:FindFirstChild("StartRagdoll")
+    local p = plr.Character:FindFirstChild("Pushed")
     
-    if rg ~= nil and rg1 ~= nil then
+    if rg ~= nil and rg1 ~= nil and p ~= nil then
         rg.Disabled = not state
         rg1.Disabled = not state
+        p.Disabled = not state
     else
         btn[1]:Change({name="Reset character",state=false})
         wait(1)
