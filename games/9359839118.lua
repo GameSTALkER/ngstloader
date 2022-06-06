@@ -55,7 +55,7 @@ end
 
 -- fault cathcer
 spawn(function()
-    game:GetService("Players").SeemlySasha.PlayerGui.NotificationUI.Notifications.ActiveNotifications.ChildAdded:Connect(function(a)
+    game:GetService("Players").LocalPlayer.PlayerGui.NotificationUI.Notifications.ActiveNotifications.ChildAdded:Connect(function(a)
         local text = a.Primary.BodyText.Text
         if text == "Not enough fuel to refill this car. Buy more and try again." then
             if getgenv().restock_items == true then
