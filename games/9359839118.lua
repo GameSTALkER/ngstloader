@@ -154,10 +154,11 @@ elements[7] = page1:CreateToggle({state=getgenv().cashier,name="Cashier"},functi
                 wait_for_energy()
                 for i,v in pairs(game:GetService("Workspace").Checkouts:GetChildren()) do
                     for q,w in pairs(v.Items:GetChildren()) do
-                        repeat wait(.1) until w.Root.Scan.Enabled == true
-                        game:GetService("ReplicatedStorage").Remote:FireServer(unpack({[1] = "ScanItem",[2] = w,[3] = v}))
-                        wait(wait_item["cashier"])
-
+                        pcall(function()
+                            repeat wait(.1) until w.Root.Scan.Enabled == true
+                            game:GetService("ReplicatedStorage").Remote:FireServer(unpack({[1] = "ScanItem",[2] = w,[3] = v}))
+                            wait(wait_item["cashier"])
+                        end)
                     end
 
                 end
