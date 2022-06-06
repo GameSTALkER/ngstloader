@@ -1850,26 +1850,30 @@ end
 
 --- Shuts down the remote spy
 function shutdown()
+    UserInputService.MouseIconEnabled = true
+
+
     if schedulerconnect then
-        schedulerconnect:Disconnect()
+        pcall(function() schedulerconnect:Disconnect() end)
+        
     end
     for _, connection in pairs(connections) do
         coroutine.wrap(function()
-            connection:Disconnect()
+            pcall(function()  connection:Disconnect() end)
         end)()
     end
-    SimpleSpy2:Destroy()
-    hookfunction(remoteEvent.FireServer, originalEvent)
-    hookfunction(remoteFunction.InvokeServer, originalFunction)
+    pcall(function() SimpleSpy2:Destroy() end)
+    pcall(function() hookfunction(remoteEvent.FireServer, originalEvent) end)
+    pcall(function() hookfunction(remoteFunction.InvokeServer, originalFunction) end)
     if hookmetamethod then
         if original then
-            hookmetamethod(game, "__namecall", original)
+            pcall(function() hookmetamethod(game, "__namecall", original) end)
         end
     else
-        gm = gm or getrawmetatable(game)
-        setreadonly(gm, false)
-        gm.__namecall = original
-        setreadonly(gm, true)
+        pcall(function() gm = gm or getrawmetatable(game) end)
+        pcall(function() setreadonly(gm, false) end)
+        pcall(function() gm.__namecall = original end)
+        pcall(function() setreadonly(gm, true) end)
     end
     _G.SimpleSpyExecuted = false
 end
