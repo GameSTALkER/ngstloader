@@ -2767,9 +2767,10 @@ function lib:init(loader_name,init_settings)
                                     info:Desc(toapply['desc'])
                                 elseif k == 'state' then
                                     if type(v) == "boolean" then
-                                        toapply['state'] = v
-                                        if not toapply['state'] then state.Rotation = 180 else state.Rotation = 0 end
-                                        if not toapply['state'] then state.ImageColor3 = Color3.fromRGB(150, 0, 0) else state.ImageColor3 = Color3.fromRGB(0, 150, 0) end
+                                        toggle_state = v
+                                        if not toggle_state then state.Rotation = 180 else state.Rotation = 0 end
+                                        if not toggle_state then state.ImageColor3 = Color3.fromRGB(150, 0, 0) else state.ImageColor3 = Color3.fromRGB(0, 150, 0) end
+                                        callback(toggle_state)
                                     else warn("["..menu_name.."-"..tab_name.."] ~ key \""..k.."\" must have \"boolean type\" in <CreateToggle ("..save['num']..")>") end
                                 else warn("["..menu_name.."-"..tab_name.."] ~ Unknown key given: \""..k.."\" in <CreateToggle ("..save['num']..")>") end
                             end
