@@ -104,7 +104,7 @@ page1:CreateToggle({state=getgenv().clean_spots,name="Clean spots"},function(t)
     if getgenv().clean_spots == true and getgenv().is_executed == false then
         spawn(function()
             while wait(wait_time) and getgenv().clean_spots == true and getgenv().is_executed == false do
-                local thespot = game:GetService("Workspace"):FindFirstChild("Spot") or nil
+                local thespot = game:GetService("Workspace").Stains:FindFirstChild("Spot") or nil
                 if thespot ~= nil then
                     game:GetService("ReplicatedStorage").Remote:FireServer(unpack({[1] = "Clean",[2] = thespot.Clean}))
                 end
