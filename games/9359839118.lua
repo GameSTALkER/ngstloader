@@ -235,9 +235,9 @@ elements[6] = page1:CreateToggle({state=getgenv().clean_solars,name="Clean Solar
     end
 
 end)
-elements[4] = page1:CreateToggle({name="Restock items",desc="Restock items (fuel)"},function(t)
+elements[4] = page1:CreateToggle({state=getgenv().restock_items,name="Restock items",desc="Restock items (fuel)"},function(t)
     getgenv().restock_items = t
 end)
-elements[5] = page1:CreateToggle({name="Use client money",desc="If station have not enough money will use your money"},function(t)
+elements[5] = page1:CreateToggle({state=getgenv().use_client_money,name="Use client money",desc="If station have not enough money will use your money"},function(t)
     getgenv().use_client_money = t
 end)
