@@ -7,7 +7,7 @@ local wait_time = 0.5
 local wait_item = { -- wait time before start clean next thing
     windows = 1.5;
     solar_panels = 0.5;
-    spots = 0.5;
+    spots = 0.1;
     cashier = 0.5;
     fuel_car = 2.5;
 }
@@ -20,14 +20,29 @@ getgenv().cashier = false
 
 getgenv().restock_items = true -- restock items if don't have | if off will stop farm
 getgenv().use_client_money = false -- if not enough money at station bank, use client money?
-getgenv().is_executed = false
-getgenv().is_out_of_energy = false
+getgenv().off_lights = true -- turn off lights on station close
 
 -- dont change this pls
 getgenv().last_position = game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame
 getgenv().last_buy_item = "fuel"
+getgenv().is_out_of_energy = false
 
 -- SOURCE
+
+-- getting some needed stuff
+local power_buttons = {["Shop A/C"] = nil, ["Shop Lights"] = nil}
+spawn(function()
+    for i,v in pairs(game:GetService("Workspace").Ceilings.This:GetDescendants()) do
+        if v.ClassName == "SurfaceGui" then
+            if v.TextLabel.Text == "Shop A/C" or v.TextLabel.Text == "Shop Lights" then
+                v.Parent.Name = "Title"
+                power_buttons[v.TextLabel.Text] = v.Parent.Parent.Part.Power
+            end
+        end
+        
+    end
+
+end)
 
 local elements = {}
 local Tween = game:GetService("TweenService")
@@ -93,11 +108,12 @@ game:GetService("Players").LocalPlayer.Character.Humanoid.StateChanged:Connect(f
 
 end)
 
--- fault cathcer
+-- notifications hook
 spawn(function()
     game:GetService("Players").LocalPlayer.PlayerGui.NotificationUI.Notifications.ActiveNotifications.ChildAdded:Connect(function(a)
         local text = a.Primary.BodyText.Text
         local title = a.Primary["1"].HeaderHolder.Header.Text
+        warn("Notification Title: "..title.." | text: "..text)
         if text == "Not enough fuel to refill this car. Buy more and try again." then
             if getgenv().restock_items == true then
                 Buy("fuel","Station")
@@ -111,16 +127,33 @@ spawn(function()
         elseif title == "Out of Energy" then
             getgenv().is_out_of_energy = true
             Energy()
+        elseif text == "Station is now closed!" and getgenv().off_lights == true then
+            local me = game:GetService('Players').LocalPlayer.Character
+            RMe(1)
+            Tween:Create(me.HumanoidRootPart,TweenInfo.new(.3),{CFrame = power_buttons["Shop Lights"].Parent.CFrame}):Play();wait(.35)
+            if tostring(power_buttons["Shop Lights"].Parent.BrickColor) == "Sea green" then
+                fireproximityprompt(power_buttons["Shop Lights"], 30)
+            end
+            wait(.3)
+            RMe(0)
+        elseif text == "Station is now open!" and getgenv().off_lights == true then
+            local me = game:GetService('Players').LocalPlayer.Character
+            RMe(1)
+            Tween:Create(me.HumanoidRootPart,TweenInfo.new(.3),{CFrame = power_buttons["Shop Lights"].Parent.CFrame}):Play();wait(.35)
+            if tostring(power_buttons["Shop Lights"].Parent.BrickColor) == "Persimmon" then
+                fireproximityprompt(power_buttons["Shop Lights"], 30)
+            end
+            wait(.3)
+            RMe(0)
         end
-        
     end)
 end)
 
 elements[1] = page1:CreateToggle({state=getgenv().fuel_cars,name="Fuel cars"},function(t)
     getgenv().fuel_cars = t
-    if getgenv().fuel_cars == true and getgenv().is_executed == false then
+    if getgenv().fuel_cars == true then
         spawn(function()
-            while wait(wait_time) and getgenv().fuel_cars == true and getgenv().is_executed == false do
+            while wait(wait_time) and getgenv().fuel_cars == true do
                 wait_for_energy()
                 local wrk = game:GetService("Workspace")
                 for i,v in pairs(game:GetService("Workspace"):GetChildren()) do
@@ -148,9 +181,9 @@ elements[1] = page1:CreateToggle({state=getgenv().fuel_cars,name="Fuel cars"},fu
 end)
 elements[7] = page1:CreateToggle({state=getgenv().cashier,name="Cashier"},function(t)
     getgenv().cashier = t
-    if getgenv().cashier == true and getgenv().is_executed == false then
+    if getgenv().cashier == true then
         spawn(function()
-            while wait(wait_time) and getgenv().cashier == true and getgenv().is_executed == false do
+            while wait(wait_time) and getgenv().cashier == true do
                 wait_for_energy()
                 for i,v in pairs(game:GetService("Workspace").Checkouts:GetChildren()) do
                     for q,w in pairs(v.Items:GetChildren()) do
@@ -171,9 +204,9 @@ elements[7] = page1:CreateToggle({state=getgenv().cashier,name="Cashier"},functi
 end)
 elements[2] = page1:CreateToggle({state=getgenv().clean_spots,name="Clean spots"},function(t)
     getgenv().clean_spots = t
-    if getgenv().clean_spots == true and getgenv().is_executed == false then
+    if getgenv().clean_spots == true then
         spawn(function()
-            while wait(wait_time) and getgenv().clean_spots == true and getgenv().is_executed == false do
+            while wait(wait_time) and getgenv().clean_spots == true do
                 wait_for_energy()
                 pcall(function()
                     local thespot = game:GetService("Workspace").Stains:FindFirstChild("Spot") or nil
@@ -191,9 +224,9 @@ elements[2] = page1:CreateToggle({state=getgenv().clean_spots,name="Clean spots"
 end)
 elements[3] = page1:CreateToggle({state=getgenv().clean_windows,name="Clean windows"},function(t)
     getgenv().clean_windows = t
-    if getgenv().clean_windows == true and getgenv().is_executed == false then
+    if getgenv().clean_windows == true then
         spawn(function()
-            while wait(wait_time) and getgenv().clean_windows == true and getgenv().is_executed == false do
+            while wait(wait_time) and getgenv().clean_windows == true do
                 wait_for_energy()
                 for i,v in pairs(game:GetService("Workspace").Windows:GetChildren()) do
                     if v.Attachment.Clean.Enabled == true then
@@ -214,9 +247,9 @@ elements[3] = page1:CreateToggle({state=getgenv().clean_windows,name="Clean wind
 end)
 elements[6] = page1:CreateToggle({state=getgenv().clean_solars,name="Clean Solar panels"},function(t)
     getgenv().clean_solars = t
-    if getgenv().clean_solars == true and getgenv().is_executed == false then
+    if getgenv().clean_solars == true then
         spawn(function()
-            while wait(wait_time) and getgenv().clean_solars == true and getgenv().is_executed == false do
+            while wait(wait_time) and getgenv().clean_solars == true do
                 wait_for_energy()
                 for i,v in pairs(game:GetService("Workspace").Solar.Panels:GetChildren()) do
                     if v.Stand.CleanPosition.Clean.Enabled == true then
@@ -241,4 +274,7 @@ elements[4] = page1:CreateToggle({state=getgenv().restock_items,name="Restock it
 end)
 elements[5] = page1:CreateToggle({state=getgenv().use_client_money,name="Use client money",desc="If station have not enough money will use your money"},function(t)
     getgenv().use_client_money = t
+end)
+elements[8] = page1:CreateToggle({state=getgenv().off_lights,name="Off/On lights on station close/open"},function(t)
+    getgenv().off_lights = t
 end)
