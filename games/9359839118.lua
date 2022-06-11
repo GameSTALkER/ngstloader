@@ -21,11 +21,13 @@ getgenv().cashier = false
 getgenv().restock_items = true -- restock items if don't have | if off will stop farm
 getgenv().use_client_money = false -- if not enough money at station bank, use client money?
 getgenv().off_lights = true -- turn off lights on station close
+getgenv().restock_energy = true
 
 -- dont change this pls
 getgenv().last_position = game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame
 getgenv().last_buy_item = "fuel"
 getgenv().is_out_of_energy = false
+if getgenv().sit_connection ~= nil then getgenv().sit_connection:Disconnect() end
 
 -- SOURCE
 
@@ -90,19 +92,20 @@ local function Energy()
     if tonumber(percent) <= minimun_energy and getgenv().is_out_of_energy == true then
         local me = game:GetService("Players").LocalPlayer.Character
         RMe(1)
-        Tween:Create(me.HumanoidRootPart,TweenInfo.new(.3),{CFrame = game:GetService("Workspace").Ceilings.Sofa.Seat.CFrame}):Play()
-        wait(.3)
         while tonumber(percent) <= minimun_energy and getgenv().is_out_of_energy == true do
-            wait(1.5)
+            if getgenv().restock_energy == true then Tween:Create(me.HumanoidRootPart,TweenInfo.new(.3),{CFrame = game:GetService("Workspace").Ceilings.Sofa.Seat.CFrame}):Play();wait(.3) end
             percent = game:GetService("Players").LocalPlayer.PlayerGui.GameUI.Stamina.Bar.Amount.Text:gsub("%\%","")
+            wait(1.5)
         end
-        me.Humanoid:ChangeState(3) -- jump
+        if getgenv().restock_energy == true then 
+            me.Humanoid:ChangeState(3) -- jump
+            RMe(0)
+        end
         getgenv().is_out_of_energy = false
-        RMe(0)
     end
 end
-game:GetService("Players").LocalPlayer.Character.Humanoid.StateChanged:Connect(function(o,n)
-	if n == Enum.HumanoidStateType.Seated and getgenv().is_out_of_energy == false then
+getgenv().sit_connection = game:GetService("Players").LocalPlayer.Character.Humanoid.StateChanged:Connect(function(o,n)
+	if n == Enum.HumanoidStateType.Seated and getgenv().is_out_of_energy == false and (getgenv().fuel_cars or getgenv().clean_spots or getgenv().clean_windows or getgenv().clean_solars or getgenv().cashier) then
         game:GetService("Players").LocalPlayer.Character.Humanoid:ChangeState(3)
     end
 
@@ -271,6 +274,9 @@ elements[6] = page1:CreateToggle({state=getgenv().clean_solars,name="Clean Solar
 end)
 elements[4] = page1:CreateToggle({state=getgenv().restock_items,name="Restock items",desc="Restock items (fuel)"},function(t)
     getgenv().restock_items = t
+end)
+elements[9] = page1:CreateToggle({state=getgenv().restock_energy,name="Restock energy"},function(t)
+    getgenv().restock_energy = t
 end)
 elements[5] = page1:CreateToggle({state=getgenv().use_client_money,name="Use client money",desc="If station have not enough money will use your money"},function(t)
     getgenv().use_client_money = t
