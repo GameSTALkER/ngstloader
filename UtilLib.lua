@@ -85,14 +85,14 @@ getgenv().CFG = function(location, action)
     local HttpService = game:GetService("HttpService")
     
     if not isfolder(folder) then makefolder(folder) end -- root folder
-    if not isfolder(folder..game.PlaceId) then makefolder(folder..game.PlaceId) end -- root/game folder
-    if not isfile(folder..game.PlaceId..location..file_type) then writefile(folder..game.PlaceId..location..file_type, "{}") end -- root/game/%location folder
+    if not isfolder(folder.."/"..game.PlaceId) then makefolder(folder.."/"..game.PlaceId) end -- root/game folder
+    if not isfile(folder.."/"..game.PlaceId.."/"..location..file_type) then writefile(folder.."/"..game.PlaceId.."/"..location..file_type, "{}") end -- root/game/%location folder
 
     if type(action) == "table" then -- save
         local data = HttpService:JSONEncode(action)
-        writefile(folder..game.PlaceId..location..file_type, data)
+        writefile(folder.."/"..game.PlaceId.."/"..location..file_type, data)
     else -- load
-        local raw_string = readfile(folder..game.PlaceId..location..file_type)
+        local raw_string = readfile(folder.."/"..game.PlaceId.."/"..location..file_type)
         local data = HttpService:JSONDecode(raw_string)
         return data
     end
