@@ -77,22 +77,29 @@ getgenv().neededhats = function(nht,returntype) -- table, available args: "strin
 end
 
 getgenv().CFG = function(location, action)
-    if location == nil then location = tostring(game.PlaceId) end
+    if location == nil then location = "global" end
     if action == nil then action = "get" end
+    location = tostring(location):lower()
 
     local folder = "nGSTLoader" -- root folder
     local file_type = ".txt"
     local HttpService = game:GetService("HttpService")
     
     if not isfolder(folder) then makefolder(folder) end -- root folder
-    if not isfolder(folder.."/"..game.PlaceId) then makefolder(folder.."/"..game.PlaceId) end -- root/game folder
-    if not isfile(folder.."/"..game.PlaceId.."/"..location..file_type) then writefile(folder.."/"..game.PlaceId.."/"..location..file_type, "{}") end -- root/game/%location folder
-
+    if location ~= "global" then
+        folder = folder.."/"..game.PlaceId
+        if not isfolder(folder) then makefolder(folder) end -- root/game folder
+        folder = folder.."/"..game.PlaceId.."/"..location..file_type
+        if not isfile(folder) then writefile(folder, "{}") end -- root/game/%location folder
+    else 
+        folder = folder.."/"..location..file_type
+        if not isfile(folder) then writefile(folder, "{}") end -- root/%location folder
+    end
     if type(action) == "table" then -- save
         local data = HttpService:JSONEncode(action)
-        writefile(folder.."/"..game.PlaceId.."/"..location..file_type, data)
+        writefile(folder, data)
     else -- load
-        local raw_string = readfile(folder.."/"..game.PlaceId.."/"..location..file_type)
+        local raw_string = readfile(folder)
         local data = HttpService:JSONDecode(raw_string)
         return data
     end
