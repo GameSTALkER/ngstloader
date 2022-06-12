@@ -2,10 +2,10 @@
 
 neededhats(hats: table, returntype: "string" or nil)
  returntype: return value at "string"-string or "table"-nil type only if some hats is not found
+ 
+CFG(location: string, action: table(save) or string(load))
 
 ]]--
-if getgenv().isUtilLibLoaded == nil then getgenv().isUtilLibLoaded = false end
-if getgenv().isUtilLibLoaded == true then return "UtilLib | Info: Already loaded." end
 
 getgenv().neededhats = function(nht,returntype) -- table, available args: "string", nil
 	if returntype == nil then returntype = "table" end
@@ -76,4 +76,24 @@ getgenv().neededhats = function(nht,returntype) -- table, available args: "strin
 	if allisdone then return true else return neededhatstoactive end
 end
 
-getgenv().isUtilLibLoaded = true
+getgenv().CFG = function(location, action)
+    if location == nil then location = tostring(game.PlaceId)..".gstconfig" end
+    if action == nil then action = "get" end
+
+    local folder = "nGSTLoader" -- root folder
+    local HttpService = game:GetService("HttpService")
+    
+    if not isfolder(folder) then makefolder(folder) end -- root folder
+    if not isfolder(folder..game.PlaceId) then makefolder(folder..game.PlaceId) end -- root/game folder
+    if not isfile(folder..game.PlaceId..location) then writefile(folder..game.PlaceId..location, "{}") end -- root/game/%location folder
+
+    if type(action) == "table" then -- save
+        local data = HttpService:JSONEncode(action)
+        writefile(folder..game.PlaceId..location, data)
+    else -- load
+        local raw_string = readfile(folder..game.PlaceId..location)
+        local data = HttpService:JSONDecode(raw_string)
+        return data
+    end
+
+end
