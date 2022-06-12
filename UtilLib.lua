@@ -77,21 +77,22 @@ getgenv().neededhats = function(nht,returntype) -- table, available args: "strin
 end
 
 getgenv().CFG = function(location, action)
-    if location == nil then location = tostring(game.PlaceId)..".gstconfig" end
+    if location == nil then location = tostring(game.PlaceId) end
     if action == nil then action = "get" end
 
     local folder = "nGSTLoader" -- root folder
+    local file_type = ".txt"
     local HttpService = game:GetService("HttpService")
     
     if not isfolder(folder) then makefolder(folder) end -- root folder
     if not isfolder(folder..game.PlaceId) then makefolder(folder..game.PlaceId) end -- root/game folder
-    if not isfile(folder..game.PlaceId..location) then writefile(folder..game.PlaceId..location, "{}") end -- root/game/%location folder
+    if not isfile(folder..game.PlaceId..location..file_type) then writefile(folder..game.PlaceId..location..file_type, "{}") end -- root/game/%location folder
 
     if type(action) == "table" then -- save
         local data = HttpService:JSONEncode(action)
-        writefile(folder..game.PlaceId..location, data)
+        writefile(folder..game.PlaceId..location..file_type, data)
     else -- load
-        local raw_string = readfile(folder..game.PlaceId..location)
+        local raw_string = readfile(folder..game.PlaceId..location..file_type)
         local data = HttpService:JSONDecode(raw_string)
         return data
     end
