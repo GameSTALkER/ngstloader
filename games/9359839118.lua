@@ -269,7 +269,7 @@ end))
 
 for i,v in pairs(game:GetService("Workspace").Windows:GetChildren()) do
     table.insert(getgenv().trash_cons,v.Attachment.Clean.Changed:Connect(function()
-        if v.Attachment.Clean.Enabled and getgenv().clean_spots == true then moveTo(v.Position,v.Clean) end
+        if v.Attachment.Clean.Enabled and getgenv().clean_spots == true then moveTo(v.Position,v.Attachment.Clean) end
     end))
 end
 for i,v in pairs(game:GetService("Workspace").Solar.Panels:GetChildren()) do
