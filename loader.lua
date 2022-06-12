@@ -1217,6 +1217,7 @@ function lib:init(loader_name,init_settings)
         end)
     end]]
     
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/GameSTALkER/ngstloader/main/UtilLib.lua"))()
     -- getting information from internet
     local json,data = nil,nil
     do
