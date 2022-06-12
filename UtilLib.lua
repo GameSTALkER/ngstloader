@@ -89,7 +89,7 @@ getgenv().CFG = function(location, action)
     if location ~= "global" then
         folder = folder.."/"..game.PlaceId
         if not isfolder(folder) then makefolder(folder) end -- root/game folder
-        folder = folder.."/"..game.PlaceId.."/"..location..file_type
+        folder = folder.."/"..location..file_type
         if not isfile(folder) then writefile(folder, "{}") end -- root/game/%location folder
     else 
         folder = folder.."/"..location..file_type
