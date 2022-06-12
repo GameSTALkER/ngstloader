@@ -10,7 +10,6 @@ local wait_item = { -- wait time before start clean next thing
     spots = 0.5;
     cashier = 1.5;
     fuel_car = 2.5;
-    travel = 0.1;
 }
 local minimun_energy = 70 -- minimal energy to start work again
 local client_money_limit = 14
@@ -32,7 +31,7 @@ getgenv().is_out_of_energy = false
 getgenv().is_already_moving = false
 
 local is_waiting_for_fuel = false
-local is_noclippin = false
+local is_noclippin = true
 -- connections
 if getgenv().connection == nil then getgenv().connection = {} end
 if getgenv().trash_cons == nil then getgenv().trash_cons = {} end
@@ -59,12 +58,11 @@ spawn(function()
         end
     end
 end)
-if game:GetService("Workspace").Ceilings:FindFirstChild("Doors") then game:GetService("Workspace").Ceilings.Doors:Destroy() end
+
 
 local elements = {}
 local me = game:GetService("Players").LocalPlayer
 local Tween = game:GetService("TweenService")
-local PF = game:GetService("PathfindingService")
 
 -- for actions
 local function wait_for_energy()
@@ -95,6 +93,64 @@ local function Sprint(worker,state)
     else me.Character.Humanoid.WalkSpeed = 10 end
 end
 local function moveTo(targetPoint, promt) -- https://developer.roblox.com/en-us/api-reference/function/Humanoid/MoveTo
+    if promt == "Force" then getgenv().is_already_moving = false;wait(1.5) end
+    repeat wait(1) until getgenv().is_already_moving == false
+    if promt == nil then promt = 0 end
+	local targetReached = false
+	getgenv().is_already_moving = true
+    local humanoid = me.Character.Humanoid
+    --is_noclippin = true
+    if promt ~= "Force" then Sprint("Client",false) end
+    
+	-- listen for the humanoid reaching its target
+	local con_walk
+	con_walk = humanoid.MoveToFinished:Connect(function(reached)
+		targetReached = true
+		con_walk:Disconnect()
+		con_walk = nil
+		if promt and promt ~= 0 then interact(promt) end
+	end)
+ 
+	-- start walking
+	--Sprint("Client",true)
+	humanoid:MoveTo(targetPoint)
+ 
+	-- execute on a new thread so as to not yield function
+	while not targetReached do
+		-- does the humanoid still exist?
+		if not (humanoid and humanoid.Parent) then
+			break
+		end
+		-- has the target changed?
+		if humanoid.WalkToPoint ~= targetPoint then
+			break
+		end
+		
+		if getgenv().is_already_moving == false then
+		    break
+		end
+    
+        if promt and promt ~= 0 and promt ~= "Force" then
+            if not promt.Enabled then print("promt disabled");break end
+        elseif promt == nil then print("promt is nil");break end
+    
+		-- refresh the timeout
+		--Sprint("Client",true)
+		humanoid:MoveTo(targetPoint)
+		wait(1)
+	end
+	--is_noclippin = false
+    --Sprint("Client",false)
+    humanoid:MoveTo(me.Character:FindFirstChild('HumanoidRootPart').Position)
+    getgenv().is_already_moving = false
+	
+	-- disconnect the connection if it is still connected
+	if con_walk then
+		con_walk:Disconnect()
+		con_walk = nil
+	end
+end
+local function moveToAI(targetPoint, promt) -- https://developer.roblox.com/en-us/api-reference/function/Humanoid/MoveTo
     if promt == "Force" then getgenv().is_already_moving = false;wait(1.5) end
     repeat wait(1) until getgenv().is_already_moving == false
     if promt == nil then promt = 0 end
@@ -210,6 +266,8 @@ table.insert(getgenv().connection,game:GetService("Players").LocalPlayer.Charact
 	if obj ~= workspace.Terrain then
 		if is_noclippin == true then
 			obj.CanCollide = false
+		else
+			obj.CanCollide = true
 		end
 	end
 end))
@@ -217,18 +275,16 @@ table.insert(getgenv().connection,game:GetService("Players").LocalPlayer.Charact
 	if obj ~= workspace.Terrain then
 		if is_noclippin == true then
 			obj.CanCollide = false
+		else
+			obj.CanCollide = true
 		end
 	end
-end))
-table.insert(getgenv().connection,game:GetService("UserInputService").InputEnded:Connect(function(key, enter)
-    if enter then return end
-    if table.find({"w","a","s","d"},key.KeyCode.Name:lower()) then getgenv().is_already_moving = false end
 end))
 
 
 local function Energy()
     local percent = game:GetService("Players").LocalPlayer.PlayerGui.GameUI.Stamina.Bar.Amount.Text:gsub("%\%","")
-    if cfg["restock_energy"] == true then Sprint("Client",true);moveTo(game:GetService("Workspace").Interior["Normal Toilet"].Seat.Position + Vector3.new(0,2,0),"Force") end
+    if cfg["restock_energy"] == true then Sprint("Client",true);moveTo(game:GetService("Workspace").Ceilings.Sofa.Seat.Position,"Force") end
     if tonumber(percent) <= minimun_energy and getgenv().is_out_of_energy == true then
         while tonumber(percent) <= minimun_energy and getgenv().is_out_of_energy == true do
             percent = game:GetService("Players").LocalPlayer.PlayerGui.GameUI.Stamina.Bar.Amount.Text:gsub("%\%","")
@@ -374,7 +430,8 @@ elements[7] = page1:CreateToggle({state=cfg["cashier"],name="Cashier",exec=true}
                         pcall(function()
                             wait_for_energy()
                             repeat wait(.1) until w.Root.Scan.Enabled == true
-                            moveTo(w.Root.Scan)
+                            interact(w.Root.Scan)
+                            wait(wait_item["cashier"])
                         end)
                     end
                     
