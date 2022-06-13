@@ -10,7 +10,6 @@ local wait_item = { -- wait time before start clean next thing
     spots = 0.5;
     cashier = 1.5;
     fuel_car = 2.5;
-    travel = 0.1;
 }
 local minimun_energy = 70 -- minimal energy to start work again
 local client_money_limit = 14
@@ -59,12 +58,11 @@ spawn(function()
         end
     end
 end)
-if game:GetService("Workspace").Ceilings:FindFirstChild("Doors") then game:GetService("Workspace").Ceilings.Doors:Destroy() end
+
 
 local elements = {}
 local me = game:GetService("Players").LocalPlayer
 local Tween = game:GetService("TweenService")
-local PF = game:GetService("PathfindingService")
 
 -- for actions
 local function wait_for_energy()
@@ -75,6 +73,7 @@ local function wait_for_energy()
     end
 end
 local function interact(promt)
+    if not fireproximityprompt() then print("Executor unsupported.") end
     if promt.Parent then
         promt = promt.Parent:FindFirstChild(promt.Name)
         if promt then
@@ -128,6 +127,12 @@ local function moveTo(targetPoint, promt) -- https://developer.roblox.com/en-us/
 			break
 		end
 		
+        if (targetPoint - me.Character.HumanoidRootPart.Position).Magnitude <= 5 and promt ~= "Force" then 
+		    targetReached = true
+            if promt and promt ~= 0 then interact(promt) end
+            break
+        end
+            
 		if getgenv().is_already_moving == false then
 		    break
 		end
@@ -151,69 +156,6 @@ local function moveTo(targetPoint, promt) -- https://developer.roblox.com/en-us/
 		con_walk:Disconnect()
 		con_walk = nil
 	end
-end
-local function moveToAI(targetPoint, promt) -- https://developer.roblox.com/en-us/api-reference/function/Humanoid/MoveTo
-    if promt == "Force" then getgenv().is_already_moving = false;wait(1.5) end
-    repeat wait(1) until getgenv().is_already_moving == false
-    if promt == nil then promt = 0 end
-	local targetReached = false
-	getgenv().is_already_moving = true
-    local humanoid = me.Character.Humanoid
-    --is_noclippin = true
-    if promt ~= "Force" then Sprint("Client",false) end
-    
-    local wps = PF:CreatePath()
-    wps:ComputeAsync(me.Character.HumanoidRootPart.Position,targetPoint)
-    wps = wps:GetWaypoints()
- 
-	-- execute on a new thread so as to not yield function
-	while not targetReached do
-		local is_come = false
-	    spawn(function()
-            wait(10)
-            if is_come == false then targetReached = true end
-        end)
-		for i,v in pairs(wps) do
-		    
-		    local walk_con = humanoid.MoveToFinished:Connect(function()
-		        targetReached = true
-		        walk_con:Disconnect()
-	        end)
-    		-- does the humanoid still exist?
-    		if not (humanoid and humanoid.Parent) then
-    		    warn("Died.")
-    			targetReached = true;break
-    		end
-    		
-    		if (targetPoint - me.Character.HumanoidRootPart.Position).Magnitude <= 5 and promt ~= "Force" then 
-    		    targetReached = true
-    		    warn("Finished.")
-    		    if promt and promt ~= 0 then interact(promt) end
-    		    targetReached = true;break
-    	    end
-    		
-    		if getgenv().is_already_moving == false then
-    		    warn("Stopping. (Forced)")
-    		    targetReached = true;break
-    		end
-        
-            if promt and promt ~= 0 and promt ~= "Force" then
-                if not promt.Enabled then print("promt disabled");targetReached = true;break end
-            elseif promt == nil then print("promt is nil");targetReached = true;break end
-    		    
-		    if v.Action == Enum.PathWaypointAction.Jump then humanoid:ChangeState(Enum.HumanoidStateType.Jumping) end
-		    humanoid:MoveTo(v.Position)
-		    humanoid.MoveToFinished:Wait()
-		    
-		end
-		wait(wait_item["travel"])
-		is_come = true
-	end
-
-	
-    humanoid:MoveTo(me.Character:FindFirstChild('HumanoidRootPart').Position)
-    getgenv().is_already_moving = false
-	
 end
 local function RMe(a)
     if a == 1 then
@@ -273,6 +215,8 @@ table.insert(getgenv().connection,game:GetService("Players").LocalPlayer.Charact
 	if obj ~= workspace.Terrain then
 		if is_noclippin == true then
 			obj.CanCollide = false
+		else
+			obj.CanCollide = true
 		end
 	end
 end))
@@ -280,18 +224,16 @@ table.insert(getgenv().connection,game:GetService("Players").LocalPlayer.Charact
 	if obj ~= workspace.Terrain then
 		if is_noclippin == true then
 			obj.CanCollide = false
+		else
+			obj.CanCollide = true
 		end
 	end
-end))
-table.insert(getgenv().connection,game:GetService("UserInputService").InputEnded:Connect(function(key, enter)
-    if enter then return end
-    if table.find({"w","a","s","d"},key.KeyCode.Name:lower()) then getgenv().is_already_moving = false end
 end))
 
 
 local function Energy()
     local percent = game:GetService("Players").LocalPlayer.PlayerGui.GameUI.Stamina.Bar.Amount.Text:gsub("%\%","")
-    if cfg["restock_energy"] == true then Sprint("Client",true);moveTo(game:GetService("Workspace").Interior["Normal Toilet"].Seat.Position + Vector3.new(0,2,0),"Force") end
+    if cfg["restock_energy"] == true then Sprint("Client",true);moveTo(game:GetService("Workspace").Ceilings.Sofa.Seat.Position,"Force") end
     if tonumber(percent) <= minimun_energy and getgenv().is_out_of_energy == true then
         while tonumber(percent) <= minimun_energy and getgenv().is_out_of_energy == true do
             percent = game:GetService("Players").LocalPlayer.PlayerGui.GameUI.Stamina.Bar.Amount.Text:gsub("%\%","")
@@ -438,6 +380,7 @@ elements[7] = page1:CreateToggle({state=cfg["cashier"],name="Cashier",exec=true}
                             wait_for_energy()
                             repeat wait(.1) until w.Root.Scan.Enabled == true
                             moveTo(w.Root.Scan)
+                            wait(wait_item["cashier"])
                         end)
                     end
                     
@@ -489,9 +432,9 @@ elements[8] = page1:CreateToggle({state=cfg["off_lights"],name="Off/On lights on
     CFG("GAS STATION",cfg)
 end)
 
-
+local qtp = queue_on_teleport() or syn.queue_on_teleport()
 game:GetService("Players").LocalPlayer.OnTeleport:Connect(function(State)
     if State == Enum.TeleportState.Started then
-        syn.queue_on_teleport(game:HttpGet("https://raw.githubusercontent.com/GameSTALkER/ngstloader/main/games/9359839118.lua"))
+        qtp(game:HttpGet("https://raw.githubusercontent.com/GameSTALkER/ngstloader/main/games/9359839118.lua"))
     end
 end)
