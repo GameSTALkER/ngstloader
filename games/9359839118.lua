@@ -5,6 +5,7 @@ local main = ngstloader:AddMenu("Gas Station")
 local page1 = main:AddTab("Main")
 
 -- SETTINGS
+local debug = true
 local wait_time = 0.5
 local wait_item = { -- wait time before start clean next thing
     spots = 0.5;
@@ -64,6 +65,11 @@ end)
 local elements = {}
 local me = game:GetService("Players").LocalPlayer
 local Tween = game:GetService("TweenService")
+local Controls = require(me.PlayerScripts.PlayerModule):GetControls()
+
+local function cp(text)
+    if debug then print(text) end 
+end
 
 -- for actions
 local function wait_for_energy()
@@ -78,18 +84,18 @@ local function interact(promt)
         promt = promt.Parent:FindFirstChild(promt.Name)
         if promt then
             if promt.Enabled then
-                print("Interacted with: "..promt.Name)
+                cp("Interacted with: "..promt.Name)
                 fireproximityprompt(promt, 3)
             end
-        else print("Interaction failed.")
+        else cp("Interaction failed.")
         end
-    else print("Interaction failed.")
+    else cp("Interaction failed.")
     end
 end
 -- movement
-local function Sprint(worker,state)
+local function Scp(worker,state)
     if worker:lower() ~= "client" then
-        game:GetService("ReplicatedStorage").Remote:FireServer(unpack({[1] = "Sprinting",[2] = state}))
+        game:GetService("ReplicatedStorage").Remote:FireServer(unpack({[1] = "Scping",[2] = state}))
     elseif state == true then me.Character.Humanoid.WalkSpeed = 21
     else me.Character.Humanoid.WalkSpeed = 10 end
 end
@@ -100,19 +106,21 @@ local function moveTo(targetPoint, promt) -- https://developer.roblox.com/en-us/
 	local targetReached = false
 	getgenv().is_already_moving = true
     local humanoid = me.Character.Humanoid
+    Controls:Disable()
     is_noclippin = true
-    if promt ~= "Force" then Sprint("Client",false) end
+    if promt ~= "Force" then Scp("Client",false) end
     
     local function TaskEnd()
         targetReached = true
         getgenv().is_already_moving = false
         is_noclippin = false
+        Controls:Enable()
     end
     
 	-- listen for the humanoid reaching its target
 	local con_walk
 	con_walk = humanoid.MoveToFinished:Connect(function(reached)
-	    print("Finished.")
+	    cp("Finished.")
 	    TaskEnd()
 		con_walk:Disconnect()
 		con_walk = nil
@@ -120,14 +128,14 @@ local function moveTo(targetPoint, promt) -- https://developer.roblox.com/en-us/
 	end)
  
 	-- start walking
-	--Sprint("Client",true)
+	--Scp("Client",true)
 	humanoid:MoveTo(targetPoint)
  
 	-- execute on a new thread so as to not yield function
 	local attemps = 0
 	while not targetReached do
 	    if attemps >= 150 then 
-	        print("Timeout.")
+	        cp("Timeout.")
 	        TaskEnd()
 	        --break 
         end
@@ -135,37 +143,37 @@ local function moveTo(targetPoint, promt) -- https://developer.roblox.com/en-us/
 	    
         if promt and promt ~= 0 and promt ~= "Force" then
             if not promt.Enabled then 
-                print("Promt disabled.")
+                cp("Promt disabled.")
                 TaskEnd()
                 --break 
             end
         elseif promt == nil then 
-            print("Promt is nil.")
+            cp("Promt is nil.")
             TaskEnd()
             --break 
         end
             
 		if not (humanoid and humanoid.Parent) then
-		    print("Died.")
+		    cp("Died.")
             TaskEnd()
 			--break
 		end
 		
 		if targetPoint ~= humanoid.WalkToPoint then
-		    print("Target changed.")
+		    cp("Target changed.")
             TaskEnd()
             --break
         end
 	    
         if (targetPoint - me.Character.HumanoidRootPart.Position).Magnitude <= 5 and promt ~= "Force" then 
-		    print("Finished. (Fast)")
+		    cp("Finished. (Fast)")
             if promt and promt ~= 0 then interact(promt) end
             TaskEnd()
             --break
         end
         
 		if getgenv().is_already_moving == false then
-		    print("Stopped. (Forced)")
+		    cp("Stopped. (Forced)")
             TaskEnd()
 		    --break
 		end
@@ -173,8 +181,8 @@ local function moveTo(targetPoint, promt) -- https://developer.roblox.com/en-us/
 		humanoid:MoveTo(targetPoint)
 		wait(0.1)
 	end
-	print("Is moving: "..tostring(getgenv().is_already_moving))
-    --Sprint("Client",false)
+	cp("Is moving: "..tostring(getgenv().is_already_moving))
+    --Scp("Client",false)
     humanoid:MoveTo(me.Character:FindFirstChild('HumanoidRootPart').Position)
     --getgenv().is_already_moving = false
     
@@ -242,7 +250,7 @@ end
 -- for actions | avoid stucks
 table.insert(getgenv().connection,game:GetService("Players").LocalPlayer.Character.Humanoid.StateChanged:Connect(function(o,n)
 	if n == Enum.HumanoidStateType.Seated and getgenv().is_out_of_energy == false and (cfg["fuel_cars"] or cfg["clean_spots"] or cfg["cashier"]) then
-        game:GetService("Players").LocalPlayer.Character.Humanoid:ChangeState(3);Sprint("Client",false)
+        game:GetService("Players").LocalPlayer.Character.Humanoid:ChangeState(3);Scp("Client",false)
     end
 
 end))
@@ -277,14 +285,14 @@ spawn(function()
     getgenv().is_already_moving_con = true
     while getgenv().is_already_moving_con == true do
         local attemps = 0
-        repeat wait(0.1);attemps = attemps + 1 until (attemps >= 150 and getgenv().is_already_moving == true) or getgenv().is_already_moving == false
-        if attemps >= 150 then print("Fixed.");getgenv().is_already_moving = false end
+        repeat wait(0.1);attemps = attemps + 1 until (attemps >= 70 and getgenv().is_already_moving == true) or getgenv().is_already_moving == false
+        if attemps >= 70 then cp("Fixed.");Controls:Enable();getgenv().is_already_moving = false end
     end
 end)
 
 local function Energy()
     local percent = game:GetService("Players").LocalPlayer.PlayerGui.GameUI.Stamina.Bar.Amount.Text:gsub("%\%","")
-    if cfg["restock_energy"] == true then Sprint("Client",true);moveTo(game:GetService("Workspace").Ceilings.Sofa.Seat.Position,"Force") end
+    if cfg["restock_energy"] == true then Scp("Client",true);moveTo(game:GetService("Workspace").Ceilings.Sofa.Seat.Position,"Force") end
     if tonumber(percent) <= minimun_energy and getgenv().is_out_of_energy == true then
         while tonumber(percent) <= minimun_energy and getgenv().is_out_of_energy == true do
             percent = game:GetService("Players").LocalPlayer.PlayerGui.GameUI.Stamina.Bar.Amount.Text:gsub("%\%","")
@@ -301,7 +309,7 @@ end
 table.insert(getgenv().connection,game:GetService("Players").LocalPlayer.PlayerGui.NotificationUI.Notifications.ActiveNotifications.ChildAdded:Connect(function(a)
     local text = a.Primary.BodyText.Text
     local title = a.Primary["1"].HeaderHolder.Header.Text
-    warn("Notification Title: "..title.." | text: "..text)
+    cp("Notification Title: "..title.." | text: "..text)
     if text == "Not enough fuel to refill this car. Buy more and try again." then
         if cfg["restock_items"] == true then
             is_waiting_for_fuel = true
@@ -366,12 +374,13 @@ elements[7] = page1:CreateToggle({state=cfg["cashier"],name="Cashier",exec=true}
                 wait_for_energy()
                 for i,v in pairs(game:GetService("Workspace").Checkouts:GetChildren()) do
                     for q,w in pairs(v.Items:GetChildren()) do
-                        pcall(function()
-                            wait_for_energy()
-                            repeat wait(.1) until w.Root.Scan.Enabled == true
-                            moveTo(w.Root.Scan)
-                            wait(wait_item["cashier"])
-                        end)
+                        wait_for_energy()
+                        local promt = w.Root:FindFirstChild("Scan")
+                        if promt then
+                            repeat wait(.1) until promt.Enabled == true
+                            moveTo(w.Root.Position,promt)
+                        end
+                        wait(wait_item["cashier"])
                     end
                     
                 end
