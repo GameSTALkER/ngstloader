@@ -30,6 +30,7 @@ getgenv().last_buy_item = "fuel"
 if getgenv().collide_objects == nil then getgenv().collide_objects = {} end
 getgenv().is_out_of_energy = false
 getgenv().is_already_moving = false
+getgenv().is_already_moving_con = false
 
 local is_waiting_for_fuel = false
 local is_noclippin = false
@@ -102,12 +103,17 @@ local function moveTo(targetPoint, promt) -- https://developer.roblox.com/en-us/
     is_noclippin = true
     if promt ~= "Force" then Sprint("Client",false) end
     
+    local function TaskEnd()
+        targetReached = true
+        getgenv().is_already_moving = false
+        is_noclippin = false
+    end
+    
 	-- listen for the humanoid reaching its target
 	local con_walk
 	con_walk = humanoid.MoveToFinished:Connect(function(reached)
 	    print("Finished.")
-		targetReached = true
-        getgenv().is_already_moving = false
+	    TaskEnd()
 		con_walk:Disconnect()
 		con_walk = nil
 		if promt and promt ~= 0 then interact(promt) end
@@ -120,61 +126,63 @@ local function moveTo(targetPoint, promt) -- https://developer.roblox.com/en-us/
 	-- execute on a new thread so as to not yield function
 	local attemps = 0
 	while not targetReached do
-	    if attemps >= 150 then getgenv().is_already_moving = false;print("Timeouted.");break end -- 15 sec timeout
+	    if attemps >= 150 then 
+	        print("Timeout.")
+	        TaskEnd()
+	        --break 
+        end
+	    attemps = attemps + 1
 	    
         if promt and promt ~= 0 and promt ~= "Force" then
             if not promt.Enabled then 
-                getgenv().is_already_moving = false
                 print("Promt disabled.")
-                break 
+                TaskEnd()
+                --break 
             end
         elseif promt == nil then 
-            getgenv().is_already_moving = false
             print("Promt is nil.")
-            break 
+            TaskEnd()
+            --break 
         end
             
 		if not (humanoid and humanoid.Parent) then
 		    print("Died.")
-            targetReached = true
-            getgenv().is_already_moving = false
-			break
+            TaskEnd()
+			--break
 		end
 		
 		if targetPoint ~= humanoid.WalkToPoint then
 		    print("Target changed.")
-            targetReached = true
-            getgenv().is_already_moving = false
-            break
+            TaskEnd()
+            --break
         end
 	    
         if (targetPoint - me.Character.HumanoidRootPart.Position).Magnitude <= 5 and promt ~= "Force" then 
 		    print("Finished. (Fast)")
-            targetReached = true
-            getgenv().is_already_moving = false
             if promt and promt ~= 0 then interact(promt) end
-            break
+            TaskEnd()
+            --break
         end
         
 		if getgenv().is_already_moving == false then
 		    print("Stopped. (Forced)")
-            targetReached = true
-		    break
+            TaskEnd()
+		    --break
 		end
         
 		humanoid:MoveTo(targetPoint)
 		wait(0.1)
 	end
-	is_noclippin = false
+	print("Is moving: "..tostring(getgenv().is_already_moving))
     --Sprint("Client",false)
     humanoid:MoveTo(me.Character:FindFirstChild('HumanoidRootPart').Position)
-    getgenv().is_already_moving = false
+    --getgenv().is_already_moving = false
     
 	-- disconnect the connection if it is still connected
 	if con_walk then
 		con_walk:Disconnect()
 		con_walk = nil
-        getgenv().is_already_moving = false
+		TaskEnd()
 	end
 end
 local function RMe(a)
@@ -264,7 +272,15 @@ table.insert(getgenv().connection,game:GetService("Players").LocalPlayer.Charact
 		end
 	end
 end))
-
+spawn(function()
+    wait(2.5)
+    getgenv().is_already_moving_con = true
+    while getgenv().is_already_moving_con == true do
+        local attemps = 0
+        repeat wait(1);attemps = attemps + 1 until (attemps >= 15 and getgenv().is_already_moving == true) or getgenv().is_already_moving == false
+        if attemps >= 15 then print("Fixed.");getgenv().is_already_moving = false end
+    end
+end)
 
 local function Energy()
     local percent = game:GetService("Players").LocalPlayer.PlayerGui.GameUI.Stamina.Bar.Amount.Text:gsub("%\%","")
