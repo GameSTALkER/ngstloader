@@ -5,11 +5,11 @@ local main = ngstloader:AddMenu("Gas Station")
 local page1 = main:AddTab("Main")
 
 -- SETTINGS
-local debug = true
+local debug = false
 local wait_time = 0.5
 local wait_item = { -- wait time before start clean next thing
     spots = 0.5;
-    cashier = 1.5;
+    cashier = 2;
     fuel_car = 2.5;
 }
 local minimun_energy = 70 -- minimal energy to start work again
