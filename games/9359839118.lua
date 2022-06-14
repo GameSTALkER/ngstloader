@@ -27,11 +27,12 @@ if cfg["restock_energy"] == nil then cfg["restock_energy"] = true end
 -- dont change this pls
 getgenv().last_position = game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame
 getgenv().last_buy_item = "fuel"
+if getgenv().collide_objects == nil then getgenv().collide_objects = {} end
 getgenv().is_out_of_energy = false
 getgenv().is_already_moving = false
 
 local is_waiting_for_fuel = false
-local is_noclippin = true
+local is_noclippin = false
 -- connections
 if getgenv().connection == nil then getgenv().connection = {} end
 if getgenv().trash_cons == nil then getgenv().trash_cons = {} end
@@ -59,7 +60,6 @@ spawn(function()
     end
 end)
 
-
 local elements = {}
 local me = game:GetService("Players").LocalPlayer
 local Tween = game:GetService("TweenService")
@@ -73,7 +73,6 @@ local function wait_for_energy()
     end
 end
 local function interact(promt)
-    if not fireproximityprompt() then print("Executor unsupported.") end
     if promt.Parent then
         promt = promt.Parent:FindFirstChild(promt.Name)
         if promt then
@@ -100,13 +99,15 @@ local function moveTo(targetPoint, promt) -- https://developer.roblox.com/en-us/
 	local targetReached = false
 	getgenv().is_already_moving = true
     local humanoid = me.Character.Humanoid
-    --is_noclippin = true
+    is_noclippin = true
     if promt ~= "Force" then Sprint("Client",false) end
     
 	-- listen for the humanoid reaching its target
 	local con_walk
 	con_walk = humanoid.MoveToFinished:Connect(function(reached)
+	    print("Finished.")
 		targetReached = true
+        getgenv().is_already_moving = false
 		con_walk:Disconnect()
 		con_walk = nil
 		if promt and promt ~= 0 then interact(promt) end
@@ -117,44 +118,63 @@ local function moveTo(targetPoint, promt) -- https://developer.roblox.com/en-us/
 	humanoid:MoveTo(targetPoint)
  
 	-- execute on a new thread so as to not yield function
+	local attemps = 0
 	while not targetReached do
-		-- does the humanoid still exist?
+	    if attemps >= 150 then getgenv().is_already_moving = false;print("Timeouted.");break end -- 15 sec timeout
+	    
+        if promt and promt ~= 0 and promt ~= "Force" then
+            if not promt.Enabled then 
+                getgenv().is_already_moving = false
+                print("Promt disabled.")
+                break 
+            end
+        elseif promt == nil then 
+            getgenv().is_already_moving = false
+            print("Promt is nil.")
+            break 
+        end
+            
 		if not (humanoid and humanoid.Parent) then
-			break
-		end
-		-- has the target changed?
-		if humanoid.WalkToPoint ~= targetPoint then
+		    print("Died.")
+            targetReached = true
+            getgenv().is_already_moving = false
 			break
 		end
 		
+		if targetPoint ~= humanoid.WalkToPoint then
+		    print("Target changed.")
+            targetReached = true
+            getgenv().is_already_moving = false
+            break
+        end
+	    
         if (targetPoint - me.Character.HumanoidRootPart.Position).Magnitude <= 5 and promt ~= "Force" then 
-		    targetReached = true
+		    print("Finished. (Fast)")
+            targetReached = true
+            getgenv().is_already_moving = false
             if promt and promt ~= 0 then interact(promt) end
             break
         end
-            
+        
 		if getgenv().is_already_moving == false then
+		    print("Stopped. (Forced)")
+            targetReached = true
 		    break
 		end
-    
-        if promt and promt ~= 0 and promt ~= "Force" then
-            if not promt.Enabled then print("promt disabled");break end
-        elseif promt == nil then print("promt is nil");break end
-    
-		-- refresh the timeout
-		--Sprint("Client",true)
+        
 		humanoid:MoveTo(targetPoint)
-		wait(1)
+		wait(0.1)
 	end
-	--is_noclippin = false
+	is_noclippin = false
     --Sprint("Client",false)
     humanoid:MoveTo(me.Character:FindFirstChild('HumanoidRootPart').Position)
     getgenv().is_already_moving = false
-	
+    
 	-- disconnect the connection if it is still connected
 	if con_walk then
 		con_walk:Disconnect()
 		con_walk = nil
+        getgenv().is_already_moving = false
 	end
 end
 local function RMe(a)
@@ -177,28 +197,35 @@ local function BankMoney(needed)
     local commision = game:GetService("Workspace").CommisionTable.SurfaceGui.Content[me.Name].Amount.Text:gsub("%$","")
     if tonumber(bank)-tonumber(bills) >= needed and tonumber(commision) >= needed then return true else return false end
 end
-local function Buy(item_name,cashby)
-    local function item(a,b,c)
-        game:GetService("ReplicatedStorage").Remote:FireServer(unpack({[1] = "BuyItem",[2] = a,[3] = b,[4] = c,[5] = cashby}))
+local function Buy(item_name)
+    local function item(a,b,c,d)
+        if d == nil then return false end
+        game:GetService("ReplicatedStorage").Remote:FireServer(unpack({[1] = "BuyItem",[2] = a,[3] = b,[4] = c,[5] = d}))
+        return true
 
+    end
+    local function cash_source(cash)
+        if BankMoney(cash) then return "Station"
+        elseif BankMoney(cash) then return "Client"
+        else return nil end
     end
     if item_name == "fuel" then
         getgenv().last_buy_item = "fuel"
         local bought = false
         if BankMoney(350) or ClientMoney(350) then
-            item("Syntin Petrol Co","Gasoline 87",7);bought = true
+            bought = item("Syntin Petrol Co","Gasoline 87",7, cash_source(350))
         elseif BankMoney(200) or ClientMoney(200) then
-            item("Syntin Petrol Co","Gasoline 87",6);bought = true
+            bought = item("Syntin Petrol Co","Gasoline 87",6, cash_source(200))
         elseif BankMoney(100) or ClientMoney(100) then
-            item("Syntin Petrol Co","Gasoline 87",5);bought = true
+            bought = item("Syntin Petrol Co","Gasoline 87",5, cash_source(100))
         elseif BankMoney(46) or ClientMoney(46) then
-            item("Syntin Petrol Co","Gasoline 87",4);bought = true
+            bought = item("Syntin Petrol Co","Gasoline 87",4, cash_source(46))
         elseif BankMoney(26) or ClientMoney(26) then
-            item("Syntin Petrol Co","Gasoline 87",3);bought = true
+            bought = item("Syntin Petrol Co","Gasoline 87",3, cash_source(26))
         elseif BankMoney(14) or ClientMoney(14) then
-            item("Syntin Petrol Co","Gasoline 87",2);bought = true
+            bought = item("Syntin Petrol Co","Gasoline 87",2, cash_source(14))
         else repeat wait(1) until (BankMoney(9) or ClientMoney(9)) or cfg["restock_items"] == false
-            if cfg["restock_items"] == true then item("Syntin Petrol Co","Gasoline 87",1);bought = true end
+            if cfg["restock_items"] == true then bought = item("Syntin Petrol Co","Gasoline 87",1,cash_source(9))end
         end
         if bought == true then is_waiting_for_fuel = false end
     end
@@ -214,18 +241,26 @@ end))
 table.insert(getgenv().connection,game:GetService("Players").LocalPlayer.Character.Head.Touched:connect(function(obj)
 	if obj ~= workspace.Terrain then
 		if is_noclippin == true then
+			if obj.CanCollide then table.insert(getgenv().collide_objects,obj) end
 			obj.CanCollide = false
 		else
-			obj.CanCollide = true
+		    for i,v in pairs(getgenv().collide_objects) do
+	            v.CanCollide = true
+	            getgenv().collide_objects[i] = nil
+	        end
 		end
 	end
 end))
 table.insert(getgenv().connection,game:GetService("Players").LocalPlayer.Character.Torso.Touched:connect(function(obj)
 	if obj ~= workspace.Terrain then
 		if is_noclippin == true then
+			if obj.CanCollide then table.insert(getgenv().collide_objects,obj) end
 			obj.CanCollide = false
 		else
-			obj.CanCollide = true
+		    for i,v in pairs(getgenv().collide_objects) do
+	            v.CanCollide = true
+	            getgenv().collide_objects[i] = nil
+	        end
 		end
 	end
 end))
@@ -246,60 +281,6 @@ local function Energy()
     end
 end
 
--- car service
-table.insert(getgenv().trash_cons,game:GetService("Workspace").ChildAdded:Connect(function(v)
-    spawn(function()
-        --wait(wait_item['fuel_car'])
-        if cfg["fuel_cars"] == true and v.ClassName == "Model" and string.find(v.Name:lower(),"car_") then
-            local lid = v:WaitForChild("Lid")
-            local promt = lid:WaitForChild("Refuel") or lid:WaitForChild("FinishFuel")
-            if promt ~= nil then 
-                repeat wait(0.1) until is_waiting_for_fuel == false
-                moveTo(v.Root.Position,promt);wait_for_energy()
-                wait(1)
-                if is_waiting_for_fuel == true then
-                    repeat wait(0.1) until is_waiting_for_fuel == false
-                    moveTo(v.Root.Position,promt);wait_for_energy()
-                end
-            end
-            local promt = lid:WaitForChild("FinishFuel")
-            if promt ~= nil then 
-                moveTo(v.Root.Position,promt);wait_for_energy()
-            end
-        end
-    end)
-end))
--- windows service setup
-for i,v in pairs(game:GetService("Workspace").Windows:GetChildren()) do
-    table.insert(getgenv().trash_cons,v.Attachment.Clean.Changed:Connect(function()
-        if v.Attachment.Clean.Enabled and cfg["clean_spots"] == true then wait_for_energy();moveTo(v.Position,v.Attachment.Clean) end
-    end))
-end
--- solar panels service setup
-for i,v in pairs(game:GetService("Workspace").Solar.Panels:GetChildren()) do
-    table.insert(getgenv().trash_cons,v.Stand.CleanPosition.Clean.Changed:Connect(function()
-        if v.Stand.CleanPosition.Clean.Enabled == true and cfg["clean_spots"] == true then
-            wait_for_energy()
-            RMe(1);interact(v.Stand.CleanPosition.Clean);RMe(0)
-            wait(wait_item["spots"])
-        end
-    end))
-end
--- on spot creation
-table.insert(getgenv().trash_cons,game:GetService("Workspace").Stains.ChildAdded:Connect(function(v)
-    if cfg["clean_spots"] == true and v.ClassName == "Part" and v.Name == "Spot" then
-        wait_for_energy()
-        local promt = v:WaitForChild("Clean")
-        moveTo(v.Position,promt)
-    end
-end))
--- on dirty window creation
-table.insert(getgenv().trash_cons,game:GetService("Workspace").Windows.ChildAdded:Connect(function(v)
-    v.Attachment.Clean.Changed:Connect(function()
-        if v.Attachment.Clean.Enabled and cfg["clean_spots"] == true then wait_for_energy();moveTo(v.Position,v.Clean) end
-    end)
-end))
-
 -- notifications hook
 table.insert(getgenv().connection,game:GetService("Players").LocalPlayer.PlayerGui.NotificationUI.Notifications.ActiveNotifications.ChildAdded:Connect(function(a)
     local text = a.Primary.BodyText.Text
@@ -308,14 +289,14 @@ table.insert(getgenv().connection,game:GetService("Players").LocalPlayer.PlayerG
     if text == "Not enough fuel to refill this car. Buy more and try again." then
         if cfg["restock_items"] == true then
             is_waiting_for_fuel = true
-            Buy("fuel","Station")
+            Buy("fuel")
         else
             is_waiting_for_fuel = true
         end
     elseif string.find(text:lower(),"gasoline") then
         is_waiting_for_fuel = false
     elseif text == "Gas Station can not afford this purchase." and cfg["use_client_money"] == true then
-        Buy(getgenv().last_buy_item,"Client")
+        Buy(getgenv().last_buy_item)
     elseif text == "Only the Manager can purchase more stock when one is present." then
         elements[4]:Change({state=false})
     elseif title == "Out of Energy" then
@@ -346,22 +327,15 @@ elements[1] = page1:CreateToggle({state=cfg["fuel_cars"],name="Fuel cars",exec=t
     CFG("GAS STATION",cfg)
     if cfg["fuel_cars"] == true then
         spawn(function()
-            for i,v in pairs(game:GetService("Workspace"):GetChildren()) do
-                if cfg["fuel_cars"] == true and v.ClassName == "Model" and string.find(v.Name:lower(),"car_") then
-                    spawn(function()
+            while wait(wait_time) and cfg["fuel_cars"] == true do
+                for i,v in pairs(game:GetService("Workspace"):GetChildren()) do
+                    if cfg["fuel_cars"] == true and v.ClassName == "Model" and string.find(v.Name:lower(),"car_") and is_waiting_for_fuel == false then
                         local lid = v:WaitForChild("Lid")
-                        local promt = lid:FindFirstChild("Refuel") or lid:WaitForChild("FinishFuel",10);wait_for_energy()
-                        if promt ~= nil then 
-                            repeat wait(0.1) until is_waiting_for_fuel == false
-                            moveTo(v.Root.Position,promt)
-                            if promt.Name == "Refuel" then
-                                local promt = lid:WaitForChild("FinishFuel",10);wait_for_energy()
-                                if promt ~= nil then 
-                                    moveTo(v.Root.Position,promt)
-                                end
-                            end
+                        local promt = lid:FindFirstChild("Refuel") or lid:FindFirstChild("FinishFuel");wait_for_energy()
+                        if promt ~= nil then
+                            if promt.Enabled then moveTo(v.Root.Position,promt) end
                         end
-                    end)
+                    end
                 end
             end
         end)
@@ -397,19 +371,36 @@ elements[2] = page1:CreateToggle({state=cfg["clean_spots"],name="Clean spots",ex
     CFG("GAS STATION",cfg)
     if cfg["clean_spots"] == true then
         spawn(function()
-            for i,v in pairs(game:GetService("Workspace").Stains:GetChildren()) do
-                wait_for_energy()
-                local promt = v:WaitForChild("Clean")
-                moveTo(v.Position,promt)
+            while wait(wait_time) and cfg["clean_spots"] == true do
+                for i,v in pairs(game:GetService("Workspace").Stains:GetChildren()) do
+                    local promt = v:WaitForChild("Clean")
+                    if promt.Enabled then 
+                        wait_for_energy()
+                        moveTo(v.Position,promt) 
+                    end
+                end
             end
-            for i,v in pairs(game:GetService("Workspace").Windows:GetChildren()) do
-                if v.Attachment.Clean.Enabled then wait_for_energy();moveTo(v.Position,v.Attachment.Clean) end
+        end)
+        spawn(function()
+            while wait(wait_time) and cfg["clean_spots"] == true do
+                for i,v in pairs(game:GetService("Workspace").Windows:GetChildren()) do
+                    local promt = v.Attachment:WaitForChild("Clean")
+                    if promt.Enabled then 
+                        wait_for_energy()
+                        moveTo(v.Position,promt) 
+                    end
+                end
             end
-            for i,v in pairs(game:GetService("Workspace").Solar.Panels:GetChildren()) do
-                if v.Stand.CleanPosition.Clean.Enabled then
-                    wait_for_energy()
-                    RMe(1);interact(v.Stand.CleanPosition.Clean);RMe(0)
-                    wait(wait_item["spots"])
+        end)
+        spawn(function()
+            while wait(wait_time) and cfg["clean_spots"] == true do
+                for i,v in pairs(game:GetService("Workspace").Solar.Panels:GetChildren()) do
+                    local promt = v.Stand.CleanPosition:WaitForChild("Clean")
+                    if promt.Enabled then
+                        wait_for_energy()
+                        RMe(1);interact(promt);RMe(0)
+                        wait(wait_item["spots"])
+                    end
                 end
             end
         end)
@@ -432,9 +423,11 @@ elements[8] = page1:CreateToggle({state=cfg["off_lights"],name="Off/On lights on
     CFG("GAS STATION",cfg)
 end)
 
-local qtp = queue_on_teleport() or syn.queue_on_teleport()
-game:GetService("Players").LocalPlayer.OnTeleport:Connect(function(State)
-    if State == Enum.TeleportState.Started then
-        qtp(game:HttpGet("https://raw.githubusercontent.com/GameSTALkER/ngstloader/main/games/9359839118.lua"))
-    end
+pcall(function()
+    local qtp = queue_on_teleport or (syn and syn.queue_on_teleport)
+    game:GetService("Players").LocalPlayer.OnTeleport:Connect(function(State)
+        if State == Enum.TeleportState.Started then
+            qtp(game:HttpGet("https://raw.githubusercontent.com/GameSTALkER/ngstloader/main/games/9359839118.lua"))
+        end
+    end) 
 end)
