@@ -277,8 +277,8 @@ spawn(function()
     getgenv().is_already_moving_con = true
     while getgenv().is_already_moving_con == true do
         local attemps = 0
-        repeat wait(1);attemps = attemps + 1 until (attemps >= 15 and getgenv().is_already_moving == true) or getgenv().is_already_moving == false
-        if attemps >= 15 then print("Fixed.");getgenv().is_already_moving = false end
+        repeat wait(0.1);attemps = attemps + 1 until (attemps >= 150 and getgenv().is_already_moving == true) or getgenv().is_already_moving == false
+        if attemps >= 150 then print("Fixed.");getgenv().is_already_moving = false end
     end
 end)
 
