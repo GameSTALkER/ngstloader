@@ -2,9 +2,6 @@ local Rme,hat = loadstring(game:HttpGet("https://raw.githubusercontent.com/GameS
 
 Rme(1)
 
-if getgenv().change_mode_key == nil then getgenv().change_mode_key = "q" end
-if getgenv().sprint_key == nil then getgenv().sprint_key = "z" end
-
 IT = Instance.new
 CF = CFrame.new
 VT = Vector3.new
