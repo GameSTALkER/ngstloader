@@ -153,13 +153,17 @@ _uni:CreateButton({name='Stop "Bang" script'},function()
 end)
 
 -- nexo
-_nexo:CreateButton({name="Soldier",desc="Hats needed: 6375552967, 6683695162, 6775283114"},function()
+if getgenv().change_mode_key == nil then getgenv().change_mode_key = "q" end
+if getgenv().hand_move_key == nil then getgenv().hand_move_key = "e" end
+if getgenv().sprint_key == nil then getgenv().sprint_key = "z" end
+
+_nexo:CreateButton({name="Soldier ("..getgenv().change_mode_key..", "..getgenv().sprint_key..")",desc="Hats needed: 6375552967, 6683695162, 6775283114, 63690008(not necessary, for click fling)"},function()
     loadstring(game:HttpGet(dir['nexo'].."cyberpunk.lua"))()
 end)
-_nexo:CreateButton({name="Death Scythe",desc="Hats needed: 6202459318, 6203659107(not necessary)"},function()
+_nexo:CreateButton({name="Death Scythe ("..getgenv().change_mode_key..", "..getgenv().sprint_key..")",desc="Hats needed: 6202459318, 6203659107(not necessary)"},function()
     loadstring(game:HttpGet(dir['nexo'].."death_anim.lua"))()
 end)
-_nexo:CreateButton({name="BoomBox guy",desc="Hats needed: 5975723552"},function()
+_nexo:CreateButton({name="BoomBox guy ("..getgenv().change_mode_key..", "..getgenv().sprint_key..", "..getgenv().hand_move_key..")",desc="Hats needed: 5975723552"},function()
     loadstring(game:HttpGet(dir['nexo'].."DJEban_anim.lua"))()
 end)
 _nexo:CreateButton({name="Angel"},function()
