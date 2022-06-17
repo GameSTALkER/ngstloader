@@ -1,8 +1,8 @@
 local Rme,hat = loadstring(game:HttpGet("https://raw.githubusercontent.com/GameSTALkER/ngstloader/main/scripts/AnimHub.Scripts/nexoR/core.lua"))()
 
-getgenv().key1 = "q" -- boombox
-getgenv().key2 = "e" -- hand
-getgenv().key3 = "z" -- sprint
+getgenv().change_mode_key = "q" -- boombox
+getgenv().hand_move_key = "e" -- hand
+getgenv().sprint_key = "z" -- sprint
 
 Rme(1)
 
@@ -54,15 +54,15 @@ ModeChange = 'off'
 ModeChange2 = 'off'
 game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = 8
 mode=m.KeyDown:Connect(function(a)
-if a == key1:lower() and ModeChange == 'off' then
+if a == getgenv().change_mode_key:lower() and ModeChange == 'off' then
 ModeChange = 'on'
-elseif a == key1:lower() and ModeChange == 'on' then
+elseif a == getgenv().change_mode_key:lower() and ModeChange == 'on' then
 ModeChange = 'off'
-elseif a == key2:lower() and ModeChange2 == "off" then
+elseif a == getgenv().hand_move_key:lower() and ModeChange2 == "off" then
     ModeChange2 = 'on'
-elseif a == key2:lower() and ModeChange2 == "on" then
+elseif a == getgenv().hand_move_key:lower() and ModeChange2 == "on" then
     ModeChange2 = 'off'
-elseif a == key3:lower() then
+elseif a == getgenv().sprint_key:lower() then
 if game.Players.LocalPlayer.Character.Humanoid.WalkSpeed == 8 then game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = 21 else game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = 8 end
 end
 end)
