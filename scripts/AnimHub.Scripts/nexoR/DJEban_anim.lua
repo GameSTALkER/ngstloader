@@ -1,8 +1,8 @@
 local Rme,hat = loadstring(game:HttpGet("https://raw.githubusercontent.com/GameSTALkER/ngstloader/main/scripts/AnimHub.Scripts/nexoR/core.lua"))()
 
-getgenv().change_mode_key = "q" -- boombox
-getgenv().hand_move_key = "e" -- hand
-getgenv().sprint_key = "z" -- sprint
+if getgenv().change_mode_key == nil then getgenv().change_mode_key = "q" end
+if getgenv().hand_move_key == nil then getgenv().hand_move_key = "e" end
+if getgenv().sprint_key == nil then getgenv().sprint_key = "z" end
 
 Rme(1)
 
