@@ -46,8 +46,6 @@ LH.C0 = CF(0,0,0)*ANGLES(RAD(0),RAD(0),RAD(0))
 RS.C0 = CF(0,0,0)*ANGLES(RAD(0),RAD(0),RAD(0))
 LS.C0 = CF(0,0,0)*ANGLES(RAD(0),RAD(0),RAD(0))
 
--- for modes u can go in this link : https://Nexo.notxeneon15.repl.co/nexo/modes.lua
-
 coroutine.wrap(function()
     while true do -- anim changer
         if HumanDied then break end
