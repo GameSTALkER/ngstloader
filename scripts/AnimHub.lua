@@ -1,16 +1,16 @@
 
-loadstring(game:HttpGet("https://raw.githubusercontent.com/GameSTALkER/ngstloader/main/UtilLib.lua"))()
-     
 local _gui = getgenv().ngstloader:AddMenu("AnimHub")
 
 local _R6 = _gui:AddTab("R6")
 local _R15 = _gui:AddTab("R15")
 local _uni = _gui:AddTab("Universal")
-local dir = {["r6"] = "https://raw.githubusercontent.com/GameSTALkER/ngstloader/main/scripts/AnimHub.Scripts/R6/", ["r15"] = "https://raw.githubusercontent.com/GameSTALkER/ngstloader/main/scripts/AnimHub.Scripts/R15/", ["uni"] = "https://raw.githubusercontent.com/GameSTALkER/ngstloader/main/scripts/AnimHub.Scripts/Universal/"}
-
-_R6:CreateLabel({name="Join discord.gg/CDePpv6fKg/",copy="discord.gg/CDePpv6fKg/",desc="On this discord server you can get ids for hats and support if you getting some errors"})
-_R15:CreateLabel({name="Join discord.gg/CDePpv6fKg/",copy="discord.gg/CDePpv6fKg/",desc="On this discord server you can get ids for hats and support if you getting some errors"})
-_uni:CreateLabel({name="Join discord.gg/CDePpv6fKg/",copy="discord.gg/CDePpv6fKg/",desc="On this discord server you can get ids for hats and support if you getting some errors"})
+local _nexo = _gui:AddTab("NexoReanims")
+local dir = {
+    ["r6"] = "https://raw.githubusercontent.com/GameSTALkER/ngstloader/main/scripts/AnimHub.Scripts/R6/", 
+    ["r15"] = "https://raw.githubusercontent.com/GameSTALkER/ngstloader/main/scripts/AnimHub.Scripts/R15/", 
+    ["uni"] = "https://raw.githubusercontent.com/GameSTALkER/ngstloader/main/scripts/AnimHub.Scripts/Universal/", 
+    ["nexo"] = "https://raw.githubusercontent.com/GameSTALkER/ngstloader/main/scripts/AnimHub.Scripts/nexoR/"
+}
 -- R6
 -- hand ~ R6
 _R6:CreateButton({name="Execute \"Hand\" script",desc="KeyBinds:\nZ, Q, X, E, C, V, F, R, G, Y, T, B, H, J, U"},function()
@@ -150,4 +150,21 @@ _uni:CreateSlider({desc="Bang animation speed", min=1, def=8, max=100},function(
 _uni:CreateButton({name='Stop "Bang" script'},function()
     _G.choosenbang = ""
     if _G.notfunny ~= nil then _G.notfunny:Stop();_G.notfunny = nil end
+end)
+
+-- nexo
+_nexo:CreateButton({name="Soldier",desc="Hats needed: 6375552967, 6683695162, 6775283114"},function()
+    loadstring(game:HttpGet(dir['nexo'].."cyberpunk.lua"))()
+end)
+_nexo:CreateButton({name="Death Scythe",desc="Hats needed: 6202459318, 6203659107(not necessary)"},function()
+    loadstring(game:HttpGet(dir['nexo'].."death_anim.lua"))()
+end)
+_nexo:CreateButton({name="BoomBox guy",desc="Hats needed: 5975723552"},function()
+    loadstring(game:HttpGet(dir['nexo'].."DJEban_anim.lua"))()
+end)
+_nexo:CreateButton({name="Angel"},function()
+    loadstring(game:HttpGet(dir['nexo'].."angel_anim.lua"))()
+end)
+_nexo:CreateButton({name="my first anim (ugly)"},function()
+    loadstring(game:HttpGet(dir['nexo'].."wreid_anim.lua"))()
 end)
