@@ -7,73 +7,65 @@ CFG(location: string, action: table(save) or string(load))
 
 ]]--
 
-getgenv().neededhats = function(nht,returntype) -- table, available args: "string", nil
-	if returntype == nil then returntype = "table" end
-	if nht == nil then warn("UtilLib | Error: getgenv().neededhats("..nht..")\n                        you forgot to add argumet (table) - ^^^"); return end
-	if type(nht) ~= "table" then warn("UtilLib | Error: getgenv().neededhats("..nht..")\n           that argument must be \"table\" type - ^^^"); return end
+getgenv().neededhats = function(hats) -- table, available args: "string", nil
+	if hats == nil then warn("UtilLib | Error: getgenv().neededhats("..hats..")\n                        you forgot to add argumet (table) - ^^^"); return end
+	if type(hats) ~= "table" then warn("UtilLib | Error: getgenv().neededhats("..hats..")\n           that argument must be \"table\" type - ^^^"); return end
 	
-	local plr = game:GetService("Players").LocalPlayer
-	local plrbody = plr.Character
-	local havehatsnum = 0
-	local hatsactive = {}
-	
-	for i,v in pairs(plrbody:GetChildren()) do
-		if v.ClassName == "Accessory" then
-			havehatsnum = havehatsnum + 1
-		end
-	end
-	
-	for i,v in pairs(plrbody:GetChildren()) do
-		for q,w in pairs(nht) do
-            if type(w) == "string" then
-			    if v.ClassName == "Accessory" and w == v.Name then
-			    	table.insert(hatsactive,v.Name)
-			    end
-            elseif type(w) == "table" then
-                for e,r in pairs(w) do
-			        if v.ClassName == "Accessory" and r == v.Name then
-			        	table.insert(hatsactive,v.Name)
-			        end
-                end
-            else warn("UtilLib | Error: "..w.."("..q..") is unsupported type | getgenv().neededhats") end
-		end
-	end
-	
-	local allisdone = true
-	local neededhatstoactive = {}
-	if returntype == "string" then neededhatstoactive = "" end
-	local _num = 0
-	for i,v in pairs(nht) do
-        if type(v) == "string" then
-		    if not table.find(hatsactive,v) then
-		    	_num = _num + 1
-		    	warn("UtilLib: Need \""..v.."\" hat for script work.")
-		    	if returntype == "string" then 
-		    		if havehatsnum == _num then neededhatstoactive = neededhatstoactive..v else neededhatstoactive = neededhatstoactive..v.."\n" end 
-		    	else
-		    		table.insert(neededhatstoactive,v)
-		    	end
-		    	allisdone = false
-		    end
-        
-        elseif type(v) == "table" then
-            local sifud = ""
-            for q,w in pairs(v) do
-                if sifud == "" then sifud = w else sifud = sifud.." or "..w end
-		        if not table.find(hatsactive,w) and q == #v then
-		        	_num = _num + 1
-		        	warn("UtilLib: Need "..sifud.." hat for script work.")
-		        	if returntype == "string" then 
-		        		if havehatsnum == _num then neededhatstoactive = neededhatstoactive..w else neededhatstoactive = neededhatstoactive..w.."\n" end 
-		        	else
-		        		table.insert(neededhatstoactive,v)
-		        	end
-		        	allisdone = false
-		        end
+    local function getmesh(a)
+        for i,v in pairs(a:GetDescendants()) do
+            if table.find({"Mesh","SpecialMesh"},v.ClassName) then 
+                local id = v.TextureId:gsub("%rbxassetid://","")
+                if id:find("http") then id = id:sub(33) end
+                
+                local di = v.MeshId:gsub("%rbxassetid://","")
+                if di:find("http") then di = di:sub(33) end
+                
+                return {tostring(id):lower(),tostring(di):lower(),a.Name:lower()}
             end
         end
+        return {a.Name} -- if no mash found
+    end
+    
+	local plr = game:GetService("Players").LocalPlayer
+    
+    local found_hats = {}
+    local is_all_hats_found = true
+    for q,w in pairs(hats) do
+        local found = false
+        for i,v in pairs(plr.Character.Humanoid:GetAccessories()) do
+            local ac = getmesh(v)
+            if type(w) == "table" then
+                for e,r in pairs(w) do
+                    if table.find(ac,tostring(r):lower()) then
+                        table.insert(found_hats,v)
+                        found = true
+                        break
+                    end
+                end
+                if found then break end
+            else
+                if table.find(ac,tostring(w):lower()) then
+                    table.insert(found_hats,v)
+                    found = true
+                    break
+                end
+                if found then break end
+            end
+        end
+        if not found then
+            local name = nil
+            if type(w) == "table" then
+                for i,v in pairs(w) do
+                    if type(v) == "string" then name = v;break end
+                end
+                if name == nil then name = tostring(w[1]).." (MashId or TextureId)" end
+            else name = w end
+            warn("You need: "..tostring(name)) 
+            is_all_hats_found = false
+        end
 	end
-	if allisdone then return true else return neededhatstoactive end
+    return is_all_hats_found
+    
 end
 
 getgenv().CFG = function(location, action)
