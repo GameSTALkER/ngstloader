@@ -1,10 +1,6 @@
 local Rme,hat = loadstring(game:HttpGet("https://raw.githubusercontent.com/GameSTALkER/ngstloader/main/scripts/AnimHub.Scripts/nexoR/core.lua"))()
 
-if getgenv().change_mode_key == nil then getgenv().change_mode_key = "q" end
-if getgenv().hand_move_key == nil then getgenv().hand_move_key = "e" end
-if getgenv().sprint_key == nil then getgenv().sprint_key = "z" end
-
-Rme(1)
+Rme()
 
 IT = Instance.new
 CF = CFrame.new
