@@ -98,12 +98,20 @@ getgenv().CFG = function(location, action)
 
 end
 
-getgenv().Accessory = function(hatName,parent,settings)
+getgenv().Accessory = function(hatName,parent,settings,callback)
+    
+    local aliases = {
+        debug = {"d"};
+        bloxify = {"b", "mesh"};
+        speed = {"s"};
+        
+        pos = {"p", "position"};
+        rot = {"r", "rotation"};
+    }
     
     local default_settings = {
-        -- core settings
-        debug = true; -- print information in console
-        bloxify = false; -- from normal UGS to gray block (R6 only)
+        debug = false;
+        bloxify = false;
         speed = 100;
         
         pos = Vector3.new(0,0,0);
@@ -124,22 +132,21 @@ getgenv().Accessory = function(hatName,parent,settings)
         settings = default_settings
     else
         for i,v in pairs(settings) do
-            if (i:lower() == "debug") and neededType(v,"boolean") then 
-                default_settings.debug = v
-            elseif (i:lower() == "bloxify" or i:lower() == "mesh") and neededType(v,"boolean") then
-                default_settings.bloxify = v
-            elseif (i:lower() == "speed") and neededType(v,"number") then 
-                default_settings.speed = v
-            elseif (i:lower() == "pos" or i:lower() == "position" or i:lower() == "p") and neededType(v,"vector") then 
-                default_settings.pos = v
-            elseif (i:lower() == "rot" or i:lower() == "rotation" or i:lower() == "r") and neededType(v,"vector") then 
-                default_settings.rot = v
-            else print(i.."="..tostring(v).."("..type(v)..") is unknown or has incorrect value type.")
+            for e,r in pairs(default_settings) do
+                local abc = false
+                for _,a in pairs(aliases) do
+                    if (table.find(a,i) or _ == i) and neededType(v,type(r)) then
+                        default_settings[_] = settings[i]
+                        abc = true
+                        break
+                    end
+                end
+                if abc then break end
             end
         end
         settings = default_settings
     end
-    loadstring(game:HttpGet("https://raw.githubusercontent.com/GameSTALkER/ngstloader/main/scripts/AnimHub.Scripts/Universal/netless.lua"))()
+    if callback == nil then callback = function() end end
     local function debug(str) if settings.debug then print(tostring(str)) end end
     
     local Player = game:GetService("Players").LocalPlayer
@@ -151,6 +158,7 @@ getgenv().Accessory = function(hatName,parent,settings)
         if v.Name == hatName then hat = v end
     end
     if hat == nil then print("Hat not found."); return nil end
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/GameSTALkER/ngstloader/main/scripts/AnimHub.Scripts/Universal/netless.lua"))()
     pcall(function() hat.Handle.AccessoryWeld:Destroy() end)
     if hat:GetAttribute("IsReanimated") == true and getgenv().hats_attributes[hat.Name] then
         getgenv().hats_attributes[hat.Name].att1.Parent = parent
@@ -158,16 +166,18 @@ getgenv().Accessory = function(hatName,parent,settings)
         getgenv().hats_attributes[hat.Name].att1.Rotation = settings.rot
         getgenv().hats_attributes[hat.Name].Speed1.Responsiveness = settings.speed
         getgenv().hats_attributes[hat.Name].Speed2.Responsiveness = settings.speed
-        if settings.bloxify then
+        getgenv().hats_attributes[hat.Name].att0.Visible = settings.debug
+        if settings.bloxify and getgenv().hats_attributes[hat.Name].mesh ~= nil then
             getgenv().hats_attributes[hat.Name].mesh.Parent = hat
-        else 
+        elseif getgenv().hats_attributes[hat.Name].mesh ~= nil then
             getgenv().hats_attributes[hat.Name].mesh.Parent = hat.Handle
         end
     else
-        getgenv().hats_attributes[hat.Name] = {att0=nil,att1=nil,Speed1=nil,Speed2=nil,mesh=temp_mesh}
+        getgenv().hats_attributes[hat.Name] = {att0=nil,att1=nil,Speed1=nil,Speed2=nil,mesh=nil}
         -- Handle parent
         local att0 = Instance.new("Attachment", hat.Handle) -- hat att
         att0.Position = Vector3.new(0,0,0)
+        att0.Visible = settings.debug
         getgenv().hats_attributes[hat.Name].att0 = att0
         
         local att1 = Instance.new("Attachment", parent) -- parent to
@@ -200,18 +210,27 @@ getgenv().Accessory = function(hatName,parent,settings)
         
         for _,mesh in pairs(hat:GetDescendants()) do
             if mesh:IsA("Mesh") or mesh:IsA("SpecialMesh") then
-                getgenv().hats_attributes[hat.Name].mesh = mesh
+                if settings.bloxify then
+                    newmesh = mesh:Clone()
+                    mesh:Destroy() 
+                else newmesh = mesh end
+                getgenv().hats_attributes[hat.Name].mesh = newmesh
             end
         end
         
-        if settings.bloxify then
+        if settings.bloxify and getgenv().hats_attributes[hat.Name].mesh ~= nil then
             getgenv().hats_attributes[hat.Name].mesh.Parent = hat
-        else 
+        elseif getgenv().hats_attributes[hat.Name].mesh ~= nil then
             getgenv().hats_attributes[hat.Name].mesh.Parent = hat.Handle
         end
     
         hat:SetAttribute("IsReanimated",true)
     end
+    
+    callback(
+        getgenv().hats_attributes[hat.Name].Speed1, -- AlignPosition
+        getgenv().hats_attributes[hat.Name].Speed2  -- AlignOrientation
+    )
+    
     return hat
 end
-
