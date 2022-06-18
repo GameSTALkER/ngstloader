@@ -53,6 +53,7 @@ if me.OwnedTycoon.Value == nil then
     for i,v in pairs(game:GetService("Workspace").Tycoons:GetChildren()) do
         if v.Essentials:FindFirstChild("Entrance") then
             tp(v.Essentials:FindFirstChild("Entrance").CFrame)
+            wait(1)
             break
         end
     end
@@ -123,7 +124,6 @@ spawn(function()
         tp(myTycoon().Purchased["Golden Tree Statue"].StatueBottom,myTycoon().Purchased["Golden Tree Statue"].StatueBottom.PrestigePrompt)
     end
 end)
-
 
 local elements = {}
 page1:CreateToggle({name="Auto pickup fruits + Make juice"},function(_)
