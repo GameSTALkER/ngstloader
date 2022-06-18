@@ -98,15 +98,6 @@ getgenv().CFG = function(location, action)
 
 end
 
-local default_settings = {
-    -- core settings
-    debug = true; -- print information in console
-    bloxify = false; -- from normal UGS to gray block (R6 only)
-    speed = 100;
-    
-    pos = Vector3.new(0,0,0);
-    rot = Vector3.new(0,0,0);
-}
 getgenv().Accessory = function(hatName,parent,settings)
     
     local default_settings = {
@@ -161,11 +152,10 @@ getgenv().Accessory = function(hatName,parent,settings)
     end
     if hat == nil then print("Hat not found."); return nil end
     pcall(function() hat.Handle.AccessoryWeld:Destroy() end)
-    if settings.bloxify then
-        for _,mesh in pairs(hat:GetDescendants()) do
-            if mesh:IsA("Mesh") or mesh:IsA("SpecialMesh") then
-                mesh:Remove()
-            end
+    local temp_mesh = nil
+    for _,mesh in pairs(hat:GetDescendants()) do
+        if mesh:IsA("Mesh") or mesh:IsA("SpecialMesh") then
+            temp_mesh = mesh
         end
     end
     if hat:GetAttribute("IsReanimated") == true and getgenv().hats_attributes[hat.Name] then
@@ -174,8 +164,13 @@ getgenv().Accessory = function(hatName,parent,settings)
         getgenv().hats_attributes[hat.Name].att1.Rotation = settings.rot
         getgenv().hats_attributes[hat.Name].Speed1.Responsiveness = settings.speed
         getgenv().hats_attributes[hat.Name].Speed2.Responsiveness = settings.speed
+        if settings.bloxify then
+            getgenv().hats_attributes[hat.Name].mesh.Parent = hat
+        else 
+            getgenv().hats_attributes[hat.Name].mesh.Parent = hat.Handle
+        end
     else
-        getgenv().hats_attributes[hat.Name] = {att0=nil,att1=nil,Speed1=nil,Speed2=nil}
+        getgenv().hats_attributes[hat.Name] = {att0=nil,att1=nil,Speed1=nil,Speed2=nil,mesh=temp_mesh}
         -- Handle parent
         local att0 = Instance.new("Attachment", hat.Handle) -- hat att
         att0.Position = Vector3.new(0,0,0)
@@ -209,8 +204,13 @@ getgenv().Accessory = function(hatName,parent,settings)
         AO.Responsiveness = settings.speed
         getgenv().hats_attributes[hat.Name].Speed2 = AO
         
+        if settings.bloxify then
+            getgenv().hats_attributes[hat.Name].mesh.Parent = hat
+        else 
+            getgenv().hats_attributes[hat.Name].mesh.Parent = hat.Handle
+        end
+    
         hat:SetAttribute("IsReanimated",true)
     end
     return hat
-    
 end
