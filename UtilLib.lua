@@ -123,35 +123,35 @@ getgenv().CFG = function(location, action)
 
 end
 
-getgenv().Accessory = function(hatName,parent,settings,callback)
+local aliases = {
+    debug = {"d"};
+    bloxify = {"b", "mesh"};
+    speed = {"s"};
     
-    local aliases = {
-        debug = {"d"};
-        bloxify = {"b", "mesh"};
-        speed = {"s"};
-        
-        pos = {"p", "position"};
-        rot = {"r", "rotation"};
-    }
+    pos = {"p", "position"};
+    rot = {"r", "rotation"};
+}
+local default_settings = {
+    debug = false;
+    bloxify = false;
+    speed = 100;
     
-    local default_settings = {
-        debug = false;
-        bloxify = false;
-        speed = 100;
-        
-        pos = Vector3.new(0,0,0);
-        rot = Vector3.new(0,0,0);
-    }
-    local function neededType(value,ntype)
-        if type(value) == ntype then 
-            return true 
-        elseif rstr == nil then 
-            return false 
-        end
+    pos = Vector3.new(0,0,0);
+    rot = Vector3.new(0,0,0);
+}
+local function neededType(value,ntype)
+    if type(value) == ntype then 
+        return true 
+    elseif rstr == nil then 
+        return false 
     end
-    
-    if hatName == nil then print("hatName can't be nil.");return nil end
-    if parent == nil then print("parent can't be nil.");return nil end
+end
+local isHatChanging = false
+getgenv().Accessory = function(hatName,parent,settings,callback)
+    repeat wait() until isHatChanging == false
+    isHatChanging = hatName
+    if hatName == nil then print("hatName can't be nil.");isHatChanging=false;return nil end
+    if parent == nil then print("parent can't be nil.");isHatChanging=false;return nil end
     if type(settings) ~= "table" then 
         print("loaded default settings.")
         settings = default_settings
@@ -182,10 +182,10 @@ getgenv().Accessory = function(hatName,parent,settings,callback)
     for i,v in pairs(Character.Humanoid:GetAccessories()) do
         if v.Name == hatName then hat = v end
     end
-    if hat == nil then print("Hat not found."); return nil end
+    if hat == nil then print("Hat not found.");isHatChanging=false;return nil end
     loadstring(game:HttpGet("https://raw.githubusercontent.com/GameSTALkER/ngstloader/main/scripts/AnimHub.Scripts/Universal/netless.lua"))()
     pcall(function() hat.Handle.AccessoryWeld:Destroy() end)
-    if hat:GetAttribute("IsReanimated") == true and getgenv().hats_attributes[hat.Name] then
+    if hat:GetAttribute("IsReanimated") and getgenv().hats_attributes[hat.Name] then
         getgenv().hats_attributes[hat.Name].att1.Parent = parent
         getgenv().hats_attributes[hat.Name].att1.Position = settings.pos
         getgenv().hats_attributes[hat.Name].att1.Rotation = settings.rot
@@ -252,10 +252,30 @@ getgenv().Accessory = function(hatName,parent,settings,callback)
         hat:SetAttribute("IsReanimated",true)
     end
     
-    callback(
-        getgenv().hats_attributes[hat.Name].Speed1, -- AlignPosition
-        getgenv().hats_attributes[hat.Name].Speed2  -- AlignOrientation
-    )
+    spawn(function()
+        callback(
+            getgenv().hats_attributes[hat.Name].Speed1, -- AlignPosition
+            getgenv().hats_attributes[hat.Name].Speed2  -- AlignOrientation
+        )
+    end)
+    isHatChanging = false
     
     return hat
+end
+getgenv().KeyBind = function(id,key,callback)
+    if id == nil then print("Id must be provided");return end
+    if key == nil then print("Key must be provided");return end
+    if callback == nil then print("CallBack must be provided");return end
+    
+    if getgenv().KeyBindsss == nil then getgenv().KeyBindsss = {} end
+    if getgenv().KeyBindsss[tostring(id)] then 
+        getgenv().KeyBindsss[tostring(id)]:Disconnect()
+    end
+    if key == false then print("Keybind "..tostring(id).." disabled");return end
+    local UIS = game:GetService("UserInputService")
+    getgenv().KeyBindsss[tostring(id)] = UIS.InputBegan:Connect(function(a)
+        if a.KeyCode.Name:lower() == key:lower() then
+            callback()
+        end
+    end)
 end
