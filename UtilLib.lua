@@ -152,12 +152,6 @@ getgenv().Accessory = function(hatName,parent,settings)
     end
     if hat == nil then print("Hat not found."); return nil end
     pcall(function() hat.Handle.AccessoryWeld:Destroy() end)
-    local temp_mesh = nil
-    for _,mesh in pairs(hat:GetDescendants()) do
-        if mesh:IsA("Mesh") or mesh:IsA("SpecialMesh") then
-            temp_mesh = mesh
-        end
-    end
     if hat:GetAttribute("IsReanimated") == true and getgenv().hats_attributes[hat.Name] then
         getgenv().hats_attributes[hat.Name].att1.Parent = parent
         getgenv().hats_attributes[hat.Name].att1.Position = settings.pos
@@ -204,6 +198,12 @@ getgenv().Accessory = function(hatName,parent,settings)
         AO.Responsiveness = settings.speed
         getgenv().hats_attributes[hat.Name].Speed2 = AO
         
+        for _,mesh in pairs(hat:GetDescendants()) do
+            if mesh:IsA("Mesh") or mesh:IsA("SpecialMesh") then
+                getgenv().hats_attributes[hat.Name].mesh = mesh
+            end
+        end
+        
         if settings.bloxify then
             getgenv().hats_attributes[hat.Name].mesh.Parent = hat
         else 
@@ -214,3 +214,4 @@ getgenv().Accessory = function(hatName,parent,settings)
     end
     return hat
 end
+
