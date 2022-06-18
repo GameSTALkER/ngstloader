@@ -1,9 +1,34 @@
 --[[ UtilLib
 
-neededhats(hats: table, returntype: "string" or nil)
- returntype: return value at "string"-string or "table"-nil type only if some hats is not found
+neededhats(hats: table)
+Example:
+    if getgenv().neededhats({"Pal Hair",01001,{"Katana",010100}}) then
+        print("All is good!")
+    else print("You don't have some hats ^") end
  
 CFG(location: string, action: table(save) or string(load))
+Example:
+    local cfg = CFG("tetris","load") -- load
+    cfg["debug"] = false
+    cfg["completed"] = true
+    cfg["pos"] = Vector3.new(35,0,0)
+    CFG("tetris",cfg) -- save
+
+Accessory(hatName: string, parent: Instance, settings: table, callback: function(AP, AO))
+Example:
+    getgenv().Accessory("Dark Cyberpunk Katana",game:GetService("Players").LocalPlayer.Character["Left Arm"],{
+        -- core settings
+        debug = false; -- print information in console
+        bloxify = false; -- from normal UGS to gray block (R6 only) (after first execution will change only for client)
+        speed = 1000;
+        
+        position = Vector3.new(0.3,-0.5,-1.7);
+        rotation = Vector3.new(180,-90,40);
+        
+    },function(AP,AO) -- turn off Oreintation, and will rotate
+        AO.Enabled = false
+        AP.RigidityEnabled = true
+    end)
 
 ]]--
 
