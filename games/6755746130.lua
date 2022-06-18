@@ -10,6 +10,7 @@ local make_juice_at = 10
 local elements = {}
 page1:CreateToggle({name="Auto pickup fruits + Make juice"},function(_)
     auto_pickup = _
+    for i,v in pairs(myTycoon().Drops:GetChildren()) do game:GetService("ReplicatedStorage").CollectFruit:FireServer(v) end
 end)
 elements[2] = page1:CreateSlider({name="Make juice when has "..tostring(make_juice_at).." Oranges",min=3,def=make_juice_at,max=100},function(_)
     make_juice_at = _
@@ -104,7 +105,6 @@ table.insert(getgenv().connections,myTycoon().Drops.ChildAdded:Connect(function(
         end
     end
 end))
-for i,v in pairs(myTycoon().Drops:GetChildren()) do game:GetService("ReplicatedStorage").CollectFruit:FireServer(v) end
 
 spawn(function()
     while getgenv().ScriptInstanceID == Gen_ID do
