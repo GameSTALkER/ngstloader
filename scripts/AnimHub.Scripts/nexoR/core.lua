@@ -47,5 +47,5 @@ function hat(h,p,c1,c0,m)
         end
     end)
 end
-rMe(1)
+
 return rMe,hat
