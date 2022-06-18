@@ -3994,114 +3994,103 @@ function lib:init(loader_name,init_settings)
                     
                     end)
                 end
-
-                spawn(function()
-                    for i,v in pairs(toapply['btns']) do
-                        local Button = Instance.new("TextButton")
-                        local bg_34 = Instance.new("ImageLabel")
-        
-                        local lname;
-                        local lvalue;
-        
-                        if type(v) == "table" then
-                            lname = v[1]
-                            lvalue = v[2]
-                        else lname,lvalue = v,v end
-                        do
-                            Button.Name = "Button"
-                            Button.Parent = List1
-                            Button.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
-                            Button.BackgroundTransparency = 1.000
-                            Button.BorderSizePixel = 0
-                            Button.Size = UDim2.new(0, 200, 0, 50)
-                            Button.ZIndex = settings.ZIndex+28
-                            Button.Font = Enum.Font.Ubuntu
-                            Button.Text = lname
-                            Button.Active = true
-                            Button.TextColor3 = Color3.fromRGB(200, 200, 200)
-                            Button.TextSize = 14.000
-                            
-                            bg_34.Name = "bg"
-                            bg_34.Parent = Button
-                            bg_34.Active = true
-                            bg_34.AnchorPoint = Vector2.new(0.5, 0.5)
-                            bg_34.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-                            bg_34.BackgroundTransparency = 1.000
-                            bg_34.Position = UDim2.new(0.5, 0, 0.5, 0)
-                            bg_34.Selectable = true
-                            bg_34.Size = UDim2.new(1, 0, 1, 0)
-                            bg_34.ZIndex = settings.ZIndex+27
-                            bg_34.Image = "rbxassetid://3570695787"
-                            bg_34.ImageColor3 = Color3.fromRGB(25, 25, 25)
-                            bg_34.ScaleType = Enum.ScaleType.Slice
-                            bg_34.SliceCenter = Rect.new(100, 100, 100, 100)
-                            bg_34.SliceScale = 0.080
+                local function getBtns(btns)
+                    spawn(function()
+                        for i,v in pairs(List1:GetChildren()) do
+                            if v.ClassName == "TextButton" then
+                                v:Destroy()
+                            end
                         end
-                        do
-                            local ispressed = false
-                            local c = toRGB(bg_34.ImageColor3)
-                            local isonbtn = false
-                            Button.MouseButton1Up:Connect(function()
-                                TweenService:Create(Button,TweenInfo.new(.25),{TextColor3 = Color3.fromRGB(200, 200, 200)}):Play()
-                                TweenService:Create(bg_34,TweenInfo.new(.25),{ImageColor3 = Color3.fromRGB(c.R,c.G,c.B)}):Play()
-                                if isonbtn then
+                        for i,v in pairs(btns) do
+                            local Button = Instance.new("TextButton")
+                            local bg_34 = Instance.new("ImageLabel")
+            
+                            local lname;
+                            local lvalue;
+            
+                            if type(v) == "table" then
+                                lname = v[1]
+                                lvalue = v[2]
+                            else lname,lvalue = v,v end
+                            do
+                                Button.Name = "Button"
+                                Button.Parent = List1
+                                Button.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+                                Button.BackgroundTransparency = 1.000
+                                Button.BorderSizePixel = 0
+                                Button.Size = UDim2.new(0, 200, 0, 50)
+                                Button.ZIndex = settings.ZIndex+28
+                                Button.Font = Enum.Font.Ubuntu
+                                Button.Text = lname
+                                Button.Active = true
+                                Button.TextColor3 = Color3.fromRGB(200, 200, 200)
+                                Button.TextSize = 14.000
+                                
+                                bg_34.Name = "bg"
+                                bg_34.Parent = Button
+                                bg_34.Active = true
+                                bg_34.AnchorPoint = Vector2.new(0.5, 0.5)
+                                bg_34.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+                                bg_34.BackgroundTransparency = 1.000
+                                bg_34.Position = UDim2.new(0.5, 0, 0.5, 0)
+                                bg_34.Selectable = true
+                                bg_34.Size = UDim2.new(1, 0, 1, 0)
+                                bg_34.ZIndex = settings.ZIndex+27
+                                bg_34.Image = "rbxassetid://3570695787"
+                                bg_34.ImageColor3 = Color3.fromRGB(25, 25, 25)
+                                bg_34.ScaleType = Enum.ScaleType.Slice
+                                bg_34.SliceCenter = Rect.new(100, 100, 100, 100)
+                                bg_34.SliceScale = 0.080
+                            end
+                            do
+                                local ispressed = false
+                                local c = toRGB(bg_34.ImageColor3)
+                                local isonbtn = false
+                                Button.MouseButton1Up:Connect(function()
+                                    TweenService:Create(Button,TweenInfo.new(.25),{TextColor3 = Color3.fromRGB(200, 200, 200)}):Play()
+                                    TweenService:Create(bg_34,TweenInfo.new(.25),{ImageColor3 = Color3.fromRGB(c.R,c.G,c.B)}):Play()
+                                    if isonbtn then
+                                        TweenService:Create(Button,TweenInfo.new(.25),{TextColor3 = Color3.fromRGB(255,255,255)}):Play()
+                                        TweenService:Create(bg_34,TweenInfo.new(.25),{ImageColor3 = Color3.fromRGB(c.R+settings.cm.list.btns.ratio,c.G+settings.cm.list.btns.ratio,c.B+settings.cm.list.btns.ratio)}):Play()
+                                        
+                                    end
+                                    if not ispressed then return end
+                                    ispressed = false
+                                    items.Text = lname
+                                    lastpressedbtn = {lvalue,lname}
+                                    callback(lastpressedbtn[1],lastpressedbtn[2])
+                                end)
+                                Button.MouseButton1Down:Connect(function()
+                                    ispressed = true
+                                    TweenService:Create(Button,TweenInfo.new(.25),{TextColor3 = Color3.fromRGB(150, 150, 150)}):Play()
+                                    TweenService:Create(bg_34,TweenInfo.new(.25),{ImageColor3 = Color3.fromRGB(c.R-settings.cm.list.btns.ratio,c.G-settings.cm.list.btns.ratio,c.B-settings.cm.list.btns.ratio)}):Play()
+                                end)
+                                Button.MouseEnter:Connect(function()
                                     TweenService:Create(Button,TweenInfo.new(.25),{TextColor3 = Color3.fromRGB(255,255,255)}):Play()
                                     TweenService:Create(bg_34,TweenInfo.new(.25),{ImageColor3 = Color3.fromRGB(c.R+settings.cm.list.btns.ratio,c.G+settings.cm.list.btns.ratio,c.B+settings.cm.list.btns.ratio)}):Play()
-                                    
-                                end
-                                if not ispressed then return end
-                                ispressed = false
-                                items.Text = lname
-                                lastpressedbtn = {lvalue,lname}
-                                callback(lastpressedbtn[1],lastpressedbtn[2])
-                            end)
-                            Button.MouseButton1Down:Connect(function()
-                                ispressed = true
-                                TweenService:Create(Button,TweenInfo.new(.25),{TextColor3 = Color3.fromRGB(150, 150, 150)}):Play()
-                                TweenService:Create(bg_34,TweenInfo.new(.25),{ImageColor3 = Color3.fromRGB(c.R-settings.cm.list.btns.ratio,c.G-settings.cm.list.btns.ratio,c.B-settings.cm.list.btns.ratio)}):Play()
-                            end)
-                            Button.MouseEnter:Connect(function()
-                                TweenService:Create(Button,TweenInfo.new(.25),{TextColor3 = Color3.fromRGB(255,255,255)}):Play()
-                                TweenService:Create(bg_34,TweenInfo.new(.25),{ImageColor3 = Color3.fromRGB(c.R+settings.cm.list.btns.ratio,c.G+settings.cm.list.btns.ratio,c.B+settings.cm.list.btns.ratio)}):Play()
-                            
-                            end)
-                            Button.MouseLeave:Connect(function()
-                                ispressed = false
-                                TweenService:Create(Button,TweenInfo.new(.25),{TextColor3 = Color3.fromRGB(200, 200, 200)}):Play()
-                                TweenService:Create(bg_34,TweenInfo.new(.25),{ImageColor3 = Color3.fromRGB(c.R,c.G,c.B)}):Play()
-        
-                            end)
+                                
+                                end)
+                                Button.MouseLeave:Connect(function()
+                                    ispressed = false
+                                    TweenService:Create(Button,TweenInfo.new(.25),{TextColor3 = Color3.fromRGB(200, 200, 200)}):Play()
+                                    TweenService:Create(bg_34,TweenInfo.new(.25),{ImageColor3 = Color3.fromRGB(c.R,c.G,c.B)}):Play()
+            
+                                end)
+                            end
+            
                         end
-        
-                    end
-                    
-                end)
-                local khm = #toapply['btns'] * (UIGridLayout.CellSize.Y.Offset + UIGridLayout.CellPadding.Y.Offset)
-                TweenService:Create(List1,TweenInfo.new(.1),{CanvasSize = UDim2.new(0,0,0,khm)}):Play()
-
+                        
+                    end)
+                    local khm = #btns * (UIGridLayout.CellSize.Y.Offset + UIGridLayout.CellPadding.Y.Offset)
+                    TweenService:Create(List1,TweenInfo.new(.1),{CanvasSize = UDim2.new(0,0,0,khm)}):Play()
+                end
+                getBtns(toapply['btns'])
+                
                 local llib = {}
                 function llib:Destroy()
                     List:Destroy()
                     counters['lists'] = counters['lists'] - 1
                     
-                end
-                function llib:Change(fsettings)
-                    if type(fsettings) == "table" then
-                        for k,v in pairs(fsettings) do
-                            k = tostring(k):lower()
-                            if table.find({"name","title"},k) then
-                                toapply['name'] = tostring(v)
-                                title.Text = toapply['name']
-                            elseif table.find({'desc','description'},k) then
-                                toapply['desc'] = tostring(v)
-                                info:Desc(toapply['desc'])
-                            elseif k == "multi" then
-                                if type(v) == "boolean" then
-                                    toapply['multi'] = v
-                                else warn("["..menu_name.."-"..tab_name.."] ~ key \""..k.."\" must have \"boolean type\" in <CreateList ("..save['num']..")>") end
-                            else warn("["..menu_name.."-"..tab_name.."] ~ Unknown key given: \""..k.."\" in <CreateList ("..save['num']..")>") end
-                        end
-                    else warn("not table provided") end
                 end
                 function llib:Active(new_value)
                     if new_value ~= nil then spawn(function()
@@ -4120,6 +4109,30 @@ function lib:init(loader_name,init_settings)
                         end end)
                     end
 
+                end
+                function llib:Change(fsettings)
+                    if type(fsettings) == "table" then
+                        for k,v in pairs(fsettings) do
+                            k = tostring(k):lower()
+                            if table.find({"name","title"},k) then
+                                toapply['name'] = tostring(v)
+                                title.Text = toapply['name']
+                            elseif table.find({'desc','description'},k) then
+                                toapply['desc'] = tostring(v)
+                                info:Desc(toapply['desc'])
+                            elseif k == "multi" then
+                                if type(v) == "boolean" then
+                                    toapply['multi'] = v
+                                else warn("["..menu_name.."-"..tab_name.."] ~ key \""..k.."\" must have \"boolean type\" in <CreateList ("..save['num']..")>") end
+                            elseif table.find({'buttons','btns',"btn"},k) then
+                                if type(v) == "table" then
+                                    toapply['btns'] = v
+                                    getBtns(toapply['btns'])
+                                    llib:Active(toapply['btns'][1])
+                                else warn("["..menu_name.."-"..tab_name.."] ~ key \""..k.."\" must have \"boolean type\" in <CreateList ("..save['num']..")>") end
+                            else warn("["..menu_name.."-"..tab_name.."] ~ Unknown key given: \""..k.."\" in <CreateList ("..save['num']..")>") end
+                        end
+                    else warn("not table provided") end
                 end
 
                 return llib
