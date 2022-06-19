@@ -29,7 +29,13 @@ Example:
         AO.Enabled = false
         AP.RigidityEnabled = true
     end)
-
+ScriptSession(check_type: number)
+Example:
+local session = ScriptSession(1) -- generating session
+while session == ScriptSession() do -- checking if session changed
+    print("session is alive");wait(1)
+end
+print("session ended :(") -- after re executing this script
 ]]--
 
 getgenv().neededhats = function(hats) -- table, available args: "string", nil
@@ -262,4 +268,19 @@ getgenv().KeyBind = function(id,key,callback)
             callback()
         end
     end)
+end
+getgenv().ScriptSession = function(check_type)
+    if check_type == nil then check_type = 0 end
+    if check_type == 1 then
+        local array = {}
+        for i = 1, 10 do
+            array[i] = string.char(math.random(32, 126))
+        end
+        local Gen_ID = table.concat(array);array = nil
+        getgenv().ScriptInstanceID = Gen_ID
+        return Gen_ID
+    else
+        return getgenv().ScriptInstanceID
+    end
+    
 end
