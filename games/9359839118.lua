@@ -248,13 +248,13 @@ local function Buy(item_name)
 end
 
 -- for actions | avoid stucks
-table.insert(getgenv().connection,game:GetService("Players").LocalPlayer.Character.Humanoid.StateChanged:Connect(function(o,n)
+table.insert(getgenv().trash_cons,game:GetService("Players").LocalPlayer.Character.Humanoid.StateChanged:Connect(function(o,n)
 	if n == Enum.HumanoidStateType.Seated and getgenv().is_out_of_energy == false and (cfg["fuel_cars"] or cfg["clean_spots"] or cfg["cashier"]) then
         game:GetService("Players").LocalPlayer.Character.Humanoid:ChangeState(3);Scp("Client",false)
     end
 
 end))
-table.insert(getgenv().connection,game:GetService("Players").LocalPlayer.Character.Head.Touched:connect(function(obj)
+table.insert(getgenv().trash_cons,game:GetService("Players").LocalPlayer.Character.Head.Touched:connect(function(obj)
 	if obj ~= workspace.Terrain then
 		if is_noclippin == true then
 			if obj.CanCollide then table.insert(getgenv().collide_objects,obj) end
@@ -267,7 +267,7 @@ table.insert(getgenv().connection,game:GetService("Players").LocalPlayer.Charact
 		end
 	end
 end))
-table.insert(getgenv().connection,game:GetService("Players").LocalPlayer.Character.Torso.Touched:connect(function(obj)
+table.insert(getgenv().trash_cons,game:GetService("Players").LocalPlayer.Character.Torso.Touched:connect(function(obj)
 	if obj ~= workspace.Terrain then
 		if is_noclippin == true then
 			if obj.CanCollide then table.insert(getgenv().collide_objects,obj) end
@@ -447,6 +447,47 @@ elements[8] = page1:CreateToggle({state=cfg["off_lights"],name="Off/On lights on
     cfg["off_lights"] = t
     CFG("GAS STATION",cfg)
 end)
+
+table.insert(getgenv().connections,game:GetService("Players").LocalPlayer.CharacterAdded:Connect(function()
+    repeat wait() until game:GetService("Players").LocalPlayer.Character:FindFirstChild("Humanoid") and game:GetService("Players").LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+    for i,v in pairs(getgenv().trash_cons) do
+       getgenv().trash_cons[i]:Disconnect()
+       getgenv().trash_cons[i] = nil
+    end
+    table.insert(getgenv().trash_cons,game:GetService("Players").LocalPlayer.Character.Humanoid.StateChanged:Connect(function(o,n)
+    	if n == Enum.HumanoidStateType.Seated and getgenv().is_out_of_energy == false and (cfg["fuel_cars"] or cfg["clean_spots"] or cfg["cashier"]) then
+            game:GetService("Players").LocalPlayer.Character.Humanoid:ChangeState(3);Scp("Client",false)
+        end
+    
+    end))
+    table.insert(getgenv().trash_cons,game:GetService("Players").LocalPlayer.Character.Head.Touched:connect(function(obj)
+    	if obj ~= workspace.Terrain then
+    		if is_noclippin == true then
+    			if obj.CanCollide then table.insert(getgenv().collide_objects,obj) end
+    			obj.CanCollide = false
+    		else
+    		    for i,v in pairs(getgenv().collide_objects) do
+    	            v.CanCollide = true
+    	            getgenv().collide_objects[i] = nil
+    	        end
+    		end
+    	end
+    end))
+    table.insert(getgenv().trash_cons,game:GetService("Players").LocalPlayer.Character.Torso.Touched:connect(function(obj)
+    	if obj ~= workspace.Terrain then
+    		if is_noclippin == true then
+    			if obj.CanCollide then table.insert(getgenv().collide_objects,obj) end
+    			obj.CanCollide = false
+    		else
+    		    for i,v in pairs(getgenv().collide_objects) do
+    	            v.CanCollide = true
+    	            getgenv().collide_objects[i] = nil
+    	        end
+    		end
+    	end
+    end))
+    
+end))
 
 pcall(function()
     local qtp = queue_on_teleport or (syn and syn.queue_on_teleport)
