@@ -122,22 +122,13 @@ getgenv().CFG = function(location, action)
     end
 
 end
-
-local aliases = {
-    debug = {"d"};
-    bloxify = {"b", "mesh"};
-    speed = {"s"};
-    
-    pos = {"p", "position"};
-    rot = {"r", "rotation"};
-}
 local default_settings = {
-    debug = false;
-    bloxify = false;
-    speed = 100;
+    debug = false; -- print some info
+    bloxify = false; -- remove mesh
+    speed = 100; -- Speed
     
-    pos = Vector3.new(0,0,0);
-    rot = Vector3.new(0,0,0);
+    pos = Vector3.new(0,0,0); -- Position
+    rot = Vector3.new(0,0,0); -- Rotation
 }
 local function neededType(value,ntype)
     if type(value) == ntype then 
@@ -154,21 +145,6 @@ getgenv().Accessory = function(hatName,parent,settings,callback)
     if parent == nil then print("parent can't be nil.");isHatChanging=false;return nil end
     if type(settings) ~= "table" then 
         print("loaded default settings.")
-        settings = default_settings
-    else
-        for i,v in pairs(settings) do
-            for e,r in pairs(default_settings) do
-                local abc = false
-                for _,a in pairs(aliases) do
-                    if (table.find(a,i) or _ == i) and neededType(v,type(r)) then
-                        default_settings[_] = settings[i]
-                        abc = true
-                        break
-                    end
-                end
-                if abc then break end
-            end
-        end
         settings = default_settings
     end
     if callback == nil then callback = function() end end
