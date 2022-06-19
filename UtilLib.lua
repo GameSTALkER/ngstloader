@@ -161,9 +161,11 @@ getgenv().Accessory = function(hatName,parent,settings,callback)
     
     local hat = nil
     if getgenv().hats_attributes == nil then getgenv().hats_attributes = {} end
-    for i,v in pairs(Character.Humanoid:GetAccessories()) do
-        if v.Name == hatName then hat = v end
-    end
+    if type(hatName) == "string" then
+        for i,v in pairs(Character.Humanoid:GetAccessories()) do
+            if v.Name == hatName then hat = v end
+        end
+    else hat = hatName end
     if hat == nil then print("Hat not found.");isHatChanging=false;return nil end
     loadstring(game:HttpGet("https://raw.githubusercontent.com/GameSTALkER/ngstloader/main/scripts/AnimHub.Scripts/Universal/netless.lua"))()
     pcall(function() hat.Handle.AccessoryWeld:Destroy() end)
