@@ -146,6 +146,12 @@ getgenv().Accessory = function(hatName,parent,settings,callback)
     if type(settings) ~= "table" then 
         print("loaded default settings.")
         settings = default_settings
+    else
+        if settings.debug == nil then settings.debug = false end
+        if settings.bloxify == nil then settings.bloxify = false end
+        if settings.speed == nil then settings.speed = 100 end
+        if settings.pos == nil then settings.pos = Vector3.new(0,0,0) end
+        if settings.rot == nil then settings.rot = Vector3.new(0,0,0) end
     end
     if callback == nil then callback = function() end end
     local function debug(str) if settings.debug then print(tostring(str)) end end
