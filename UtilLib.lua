@@ -270,7 +270,7 @@ end
 getgenv().KeyBind = function(id,key,callback)
     if id == nil then print("Id must be provided");return end
     if key == nil then print("Key must be provided");return end
-    if callback == nil then print("CallBack must be provided");return end
+    if callback == nil and key ~= false then print("CallBack must be provided");return end
     
     if getgenv().KeyBindsss == nil then getgenv().KeyBindsss = {} end
     if getgenv().KeyBindsss[tostring(id)] then 
