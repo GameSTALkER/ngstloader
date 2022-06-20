@@ -43,6 +43,19 @@ _R6:CreateButton({name='Execute "Sex Doll" script',desc='KeyBinds:\nZ, Q, X, E, 
     loadstring(game:HttpGet(dir['uni'].."netless.lua"))()
     loadstring(game:HttpGet(dir['r6'].."Doll.lua"))()
 end)
+-- beba
+_R6:CreateButton({name='Execute "Beba" script',desc='KeyBinds:\nZ, Q, X, E, C, R'},function()
+    if game.Players.LocalPlayer.Character.Humanoid.RigType == Enum.HumanoidRigType.R15 then
+        --nlib:CreateNotify({title="ERROR",desc='Change your characters RigType to R6 in roblox avatar editor and reset character',sleep=30,textscale=13})
+        return
+    elseif neededhats({188004660,4904528793,81642452,319354652,319344974,47963332}) ~= true then
+        print("^ for Beba ^")
+        --nlib:CreateNotify({title="ERROR",desc='Check console what you forgot to wear (must turn on warns)',sleep=30,textscale=13})
+        return
+    end
+    
+    loadstring(game:HttpGet(dir['r6'].."beba.lua"))()
+end)
 
 -- spider man
 _R6:CreateButton({name='Execute "Spider Man" script',desc='Keybinds:\nQ, E'},function()
