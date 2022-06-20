@@ -44,7 +44,7 @@ _R6:CreateButton({name='Execute "Sex Doll" script',desc='KeyBinds:\nZ, Q, X, E, 
     loadstring(game:HttpGet(dir['r6'].."Doll.lua"))()
 end)
 -- beba
-_R6:CreateButton({name='Execute "Beba" script',desc='KeyBinds:\nZ, Q, X, E, C, R'},function()
+_R6:CreateButton({name='Execute "Beba" script',desc='KeyBinds:\nQ, F, E, Z, C, R'},function()
     if game.Players.LocalPlayer.Character.Humanoid.RigType == Enum.HumanoidRigType.R15 then
         --nlib:CreateNotify({title="ERROR",desc='Change your characters RigType to R6 in roblox avatar editor and reset character',sleep=30,textscale=13})
         return
