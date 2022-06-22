@@ -151,6 +151,7 @@ getgenv().Accessory = function(hatName,parent,settings,callback)
         debug = false; -- print some info
         bloxify = false; -- remove mesh
         speed = 100; -- Speed
+        FPT = 1; -- First person transparency
         
         pos = Vector3.new(0,0,0); -- Position
         rot = Vector3.new(0,0,0); -- Rotation
@@ -174,6 +175,7 @@ getgenv().Accessory = function(hatName,parent,settings,callback)
         if settings.speed == nil then settings.speed = 100 end
         if settings.pos == nil then settings.pos = Vector3.new(0,0,0) end
         if settings.rot == nil then settings.rot = Vector3.new(0,0,0) end
+        if settings.FPT == nil then settings.FPT = 1 end
     end
     if callback == nil then callback = function() end end
     local function debug(str) if settings.debug then print(tostring(str)) end end
@@ -196,13 +198,15 @@ getgenv().Accessory = function(hatName,parent,settings,callback)
         getgenv().hats_attributes[hat.Name].att1.Position = settings.pos
         getgenv().hats_attributes[hat.Name].att1.Rotation = settings.rot
         getgenv().hats_attributes[hat.Name].att0.Visible = settings.debug
+        hat:SetAttribute("LocalTransparency",settings.FPT)
+        hat.Handle.LocalTransparencyModifier = hat:GetAttribute("LocalTransparency")
         if settings.bloxify and getgenv().hats_attributes[hat.Name].mesh ~= nil then
             getgenv().hats_attributes[hat.Name].mesh.Parent = hat
         elseif getgenv().hats_attributes[hat.Name].mesh ~= nil then
             getgenv().hats_attributes[hat.Name].mesh.Parent = hat.Handle
         end
     else
-        getgenv().hats_attributes[hat.Name] = {att0=nil,att1=nil,Speed1=nil,Speed2=nil,mesh=nil}
+        getgenv().hats_attributes[hat.Name] = {att0=nil,att1=nil,Speed1=nil,Speed2=nil,mesh=nil,trans_con=nil}
         -- Handle parent
         local att0 = Instance.new("Attachment", hat.Handle) -- hat att
         att0.Position = Vector3.new(0,0,0)
@@ -246,6 +250,16 @@ getgenv().Accessory = function(hatName,parent,settings,callback)
                 getgenv().hats_attributes[hat.Name].mesh = newmesh
             end
         end
+        hat:SetAttribute("LocalTransparency",settings.FPT)
+        if getgenv().hats_attributes[hat.Name] then
+            pcall(function() getgenv().hats_attributes[hat.Name].trans_con:Disconnect() end)
+            getgenv().hats_attributes[hat.Name].trans_con = nil
+        end
+        getgenv().hats_attributes[hat.Name].trans_con = hat.Handle:GetPropertyChangedSignal("LocalTransparencyModifier"):Connect(function(_)
+            print(_)
+            hat.Handle.LocalTransparencyModifier = hat:GetAttribute("LocalTransparency")
+        end)
+        hat.Handle.LocalTransparencyModifier = hat:GetAttribute("LocalTransparency")
         
         if settings.bloxify and getgenv().hats_attributes[hat.Name].mesh ~= nil then
             getgenv().hats_attributes[hat.Name].mesh.Parent = hat
