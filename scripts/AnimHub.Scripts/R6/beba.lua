@@ -11,6 +11,7 @@ local function rePart(name,parent,pos,rot,mesh,speed)
     if speed == nil then speed = 1000 end
     if mesh == nil then mesh = true end
     if not last[name] then last[name] = {} end
+    last[name].l = parent
     last[name].p = pos
     last[name].r = rot
     last[name].s = speed
@@ -62,6 +63,14 @@ local function def_pos()
         Vector3.new(120,10,0)
         
     )
+    flag = rePart(
+        "Ukranian Flag",
+        body.Handle,
+        Vector3.new(-2.3,1.5,1.3),
+        Vector3.new(-15,0,5),
+        false
+        
+    )
 end
 def_pos()
 
@@ -110,12 +119,28 @@ getgenv().KeyBind("beba_wave","e",function()
             Vector3.new(0.1,0.1,1.3),
             Vector3.new(-120,-10,0)
         )
+        flag = rePart(
+            flag.Name,
+            body.Handle,
+            Vector3.new(-2.3,1.5,1.3),
+            Vector3.new(-15,0,5),
+            false
+            
+        )
     else
         r_hand = rePart(
             r_hand.Name,
             body.Handle,
             Vector3.new(0.1,1,1.5),
             Vector3.new(-30,10,0)
+        )
+        flag = rePart(
+            flag.Name,
+            r_hand.Handle,
+            Vector3.new(1,1,2.5),
+            Vector3.new(0,90,15),
+            false
+            
         )
     end
 end)
