@@ -35,6 +35,12 @@ local function def_pos()
         nil,
         body_speed
     )
+    rock = rePart(
+        "RockAccessory",
+        body.Handle,
+        Vector3.new(0,-0.5,0),
+        Vector3.new(0,0,0)
+    )
     head = rePart(
         "HairAccessory",
         body.Handle,
