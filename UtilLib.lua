@@ -26,6 +26,7 @@ Example:
         debug = false; -- print information in console
         bloxify = false; -- from normal UGS to gray block (R6 only) (after first execution will change only for client)
         speed = 1000;
+	FTP = false;
         
         position = Vector3.new(0.3,-0.5,-1.7);
         rotation = Vector3.new(180,-90,40);
@@ -151,7 +152,7 @@ getgenv().Accessory = function(hatName,parent,settings,callback)
         debug = false; -- print some info
         bloxify = false; -- remove mesh
         speed = 100; -- Speed
-        FPT = 1; -- First person transparency
+        FPT = false; -- First person transparency
         
         pos = Vector3.new(0,0,0); -- Position
         rot = Vector3.new(0,0,0); -- Rotation
@@ -175,7 +176,7 @@ getgenv().Accessory = function(hatName,parent,settings,callback)
         if settings.speed == nil then settings.speed = 100 end
         if settings.pos == nil then settings.pos = Vector3.new(0,0,0) end
         if settings.rot == nil then settings.rot = Vector3.new(0,0,0) end
-        if settings.FPT == nil then settings.FPT = 1 end
+        if settings.FPT == nil then settings.FPT = false end
     end
     if callback == nil then callback = function() end end
     local function debug(str) if settings.debug then print(tostring(str)) end end
@@ -198,8 +199,10 @@ getgenv().Accessory = function(hatName,parent,settings,callback)
         getgenv().hats_attributes[hat.Name].att1.Position = settings.pos
         getgenv().hats_attributes[hat.Name].att1.Rotation = settings.rot
         getgenv().hats_attributes[hat.Name].att0.Visible = settings.debug
-        hat:SetAttribute("LocalTransparency",settings.FPT)
-        hat.Handle.LocalTransparencyModifier = hat:GetAttribute("LocalTransparency")
+	if settings.FPT ~= false then
+            hat:SetAttribute("LocalTransparency",settings.FPT)
+            hat.Handle.LocalTransparencyModifier = hat:GetAttribute("LocalTransparency")
+	end
         if settings.bloxify and getgenv().hats_attributes[hat.Name].mesh ~= nil then
             getgenv().hats_attributes[hat.Name].mesh.Parent = hat
         elseif getgenv().hats_attributes[hat.Name].mesh ~= nil then
@@ -250,16 +253,17 @@ getgenv().Accessory = function(hatName,parent,settings,callback)
                 getgenv().hats_attributes[hat.Name].mesh = newmesh
             end
         end
-        hat:SetAttribute("LocalTransparency",settings.FPT)
         if getgenv().hats_attributes[hat.Name] then
             pcall(function() getgenv().hats_attributes[hat.Name].trans_con:Disconnect() end)
             getgenv().hats_attributes[hat.Name].trans_con = nil
         end
-        getgenv().hats_attributes[hat.Name].trans_con = hat.Handle:GetPropertyChangedSignal("LocalTransparencyModifier"):Connect(function(_)
-            print(_)
+	if settings.FPT ~= false then
+            hat:SetAttribute("LocalTransparency",settings.FPT)
+            getgenv().hats_attributes[hat.Name].trans_con = hat.Handle:GetPropertyChangedSignal("LocalTransparencyModifier"):Connect(function()
+                hat.Handle.LocalTransparencyModifier = hat:GetAttribute("LocalTransparency")
+            end)
             hat.Handle.LocalTransparencyModifier = hat:GetAttribute("LocalTransparency")
-        end)
-        hat.Handle.LocalTransparencyModifier = hat:GetAttribute("LocalTransparency")
+	end
         
         if settings.bloxify and getgenv().hats_attributes[hat.Name].mesh ~= nil then
             getgenv().hats_attributes[hat.Name].mesh.Parent = hat
