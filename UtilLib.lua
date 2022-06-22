@@ -163,8 +163,8 @@ getgenv().Accessory = function(hatName,parent,settings,callback)
         end
     end
     
-    if hatName == nil then print("hatName can't be nil.");isHatChanging=false;return nil end
-    if parent == nil then print("parent can't be nil.");isHatChanging=false;return nil end
+    if hatName == nil then print("hatName can't be nil.");return nil end
+    if parent == nil then print("parent can't be nil.");return nil end
     if type(settings) ~= "table" then 
         print("loaded default settings.")
         settings = default_settings
@@ -185,7 +185,7 @@ getgenv().Accessory = function(hatName,parent,settings,callback)
     if type(hatName) == "string" then
         hat = Player.Character:FindFirstChild(hatName)
     else hat = hatName end
-    if hat == nil then print("Hat not found.");isHatChanging=false;return nil end
+    if hat == nil then return nil end
     getgenv().netless()
     local del = hat.Handle:FindFirstChild("AccessoryWeld")
     if del then del:Destroy() end
