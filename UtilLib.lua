@@ -212,7 +212,7 @@ getgenv().Accessory = function(hatName,parent,settings,callback)
                     p:Destroy() 
                 else newmesh = p end
                 getgenv().hats_attributes[hat.Name].p = newmesh
-            else p:Destroy() end
+            end
         end
         -- Handle parent
         local att0 = Instance.new("Attachment", hat.Handle) -- hat att
