@@ -22,14 +22,13 @@ Example:
 Accessory(hatName: string, parent: Instance, settings: table, callback: function(AP, AO))
 Example:
     getgenv().Accessory("Dark Cyberpunk Katana",game:GetService("Players").LocalPlayer.Character["Left Arm"],{
-        -- core settings
-        debug = false; -- print information in console
-        bloxify = false; -- from normal UGS to gray block (R6 only) (after first execution will change only for client)
-        speed = 1000;
-	FTP = false;
+        debug = false; -- print some info
+        bloxify = false; -- remove mesh
+        speed = 100; -- Speed
+        shakeFix = true; -- prevent part to be under the drugs ( no soft animations :( )
         
-        position = Vector3.new(0.3,-0.5,-1.7);
-        rotation = Vector3.new(180,-90,40);
+        pos = Vector3.new(0,0,0); -- Position
+        rot = Vector3.new(0,0,0); -- Rotation
         
     },function(AP,AO) -- turn off Oreintation, and will rotate
         AO.Enabled = false
@@ -151,8 +150,8 @@ getgenv().Accessory = function(hatName,parent,settings,callback)
     local default_settings = {
         debug = false; -- print some info
         bloxify = false; -- remove mesh
-        speed = 100; -- Speed
-        FPT = false; -- First person transparency
+        speed = 175; -- speed
+        shakeFix = true; -- prevent part to be under the drugs ( no soft animations :( )
         
         pos = Vector3.new(0,0,0); -- Position
         rot = Vector3.new(0,0,0); -- Rotation
@@ -171,12 +170,12 @@ getgenv().Accessory = function(hatName,parent,settings,callback)
         print("loaded default settings.")
         settings = default_settings
     else
-        if settings.debug == nil then settings.debug = false end
-        if settings.bloxify == nil then settings.bloxify = false end
-        if settings.speed == nil then settings.speed = 100 end
-        if settings.pos == nil then settings.pos = Vector3.new(0,0,0) end
-        if settings.rot == nil then settings.rot = Vector3.new(0,0,0) end
-        if settings.FPT == nil then settings.FPT = false end
+        if settings.debug == nil then settings.debug = default_settings.debug end
+        if settings.bloxify == nil then settings.bloxify = default_settings.bloxify end
+        if settings.speed == nil then settings.speed = default_settings.speed end
+        if settings.pos == nil then settings.pos = default_settings.pos end
+        if settings.rot == nil then settings.rot = default_settings.rot end
+        if settings.shakeFix == nil then settings.shakeFix = default_settings.shakeFix end
     end
     if callback == nil then callback = function() end end
     local function debug(str) if settings.debug then print(tostring(str)) end end
@@ -190,40 +189,47 @@ getgenv().Accessory = function(hatName,parent,settings,callback)
     else hat = hatName end
     if hat == nil then return nil end
     getgenv().netless()
-    local del = hat.Handle:FindFirstChild("AccessoryWeld")
-    if del then del:Destroy() end
     if hat:GetAttribute("IsReanimated") and getgenv().hats_attributes[hat.Name] then
-        getgenv().hats_attributes[hat.Name].Speed1.Responsiveness = settings.speed
-        getgenv().hats_attributes[hat.Name].Speed2.Responsiveness = settings.speed
+        getgenv().hats_attributes[hat.Name].Pos.Responsiveness = settings.speed
+        getgenv().hats_attributes[hat.Name].Rot.Responsiveness = settings.speed
+        getgenv().hats_attributes[hat.Name].Pos.RigidityEnabled = settings.shakeFix
         getgenv().hats_attributes[hat.Name].att1.Parent = parent
         getgenv().hats_attributes[hat.Name].att1.Position = settings.pos
         getgenv().hats_attributes[hat.Name].att1.Rotation = settings.rot
         getgenv().hats_attributes[hat.Name].att0.Visible = settings.debug
-	if settings.FPT ~= false then
-            hat:SetAttribute("LocalTransparency",settings.FPT)
-            hat.Handle.LocalTransparencyModifier = hat:GetAttribute("LocalTransparency")
-	end
         if settings.bloxify and getgenv().hats_attributes[hat.Name].mesh ~= nil then
             getgenv().hats_attributes[hat.Name].mesh.Parent = hat
         elseif getgenv().hats_attributes[hat.Name].mesh ~= nil then
             getgenv().hats_attributes[hat.Name].mesh.Parent = hat.Handle
         end
     else
-        getgenv().hats_attributes[hat.Name] = {att0=nil,att1=nil,Speed1=nil,Speed2=nil,mesh=nil,trans_con=nil}
+        getgenv().hats_attributes[hat.Name] = {att0=nil,att1=nil,Pos=nil,Rot=nil,mesh=nil,trans_con=nil}
+        for n,p in pairs(hat.Handle:GetChildren()) do
+            if p:IsA("Mesh") or p:IsA("SpecialMesh") then
+                local newmesh = p
+                if settings.bloxify then
+                    newmesh = p:Clone()
+                    p:Destroy() 
+                else newmesh = p end
+                getgenv().hats_attributes[hat.Name].p = newmesh
+            else p:Destroy() end
+        end
         -- Handle parent
         local att0 = Instance.new("Attachment", hat.Handle) -- hat att
+        att0.Name = "Root"
         att0.Position = Vector3.new(0,0,0)
         att0.Visible = settings.debug
         getgenv().hats_attributes[hat.Name].att0 = att0
         
         local att1 = Instance.new("Attachment", parent) -- parent to
-        att1.Name = hat.Name
+        att1.Name = "hat-"..hat.Name
         att1.Position = settings.pos
         att1.Rotation = settings.rot
         getgenv().hats_attributes[hat.Name].att1 = att1
         
         -- Handle parent
         local AP = Instance.new("AlignPosition", hat.Handle)
+        AP.Name = "Pos"
         AP.Attachment0 = att0
         AP.Attachment1 = att1
         AP.RigidityEnabled = false
@@ -232,9 +238,11 @@ getgenv().Accessory = function(hatName,parent,settings,callback)
         AP.MaxForce = math.huge
         AP.MaxVelocity = math.huge
         AP.Responsiveness = settings.speed
-        getgenv().hats_attributes[hat.Name].Speed1 = AP
+        AP.RigidityEnabled = settings.shakeFix
+        getgenv().hats_attributes[hat.Name].Pos = AP
         
         local AO = Instance.new("AlignOrientation", hat.Handle)
+        AO.Name = "Rot"
         AO.Attachment0 = att0
         AO.Attachment1 = att1
         AO.ReactionTorqueEnabled = false
@@ -242,28 +250,12 @@ getgenv().Accessory = function(hatName,parent,settings,callback)
         AO.MaxTorque = math.huge
         AO.MaxAngularVelocity = math.huge
         AO.Responsiveness = settings.speed
-        getgenv().hats_attributes[hat.Name].Speed2 = AO
+        getgenv().hats_attributes[hat.Name].Rot = AO
         
-        for _,mesh in pairs(hat:GetDescendants()) do
-            if mesh:IsA("Mesh") or mesh:IsA("SpecialMesh") then
-                if settings.bloxify then
-                    newmesh = mesh:Clone()
-                    mesh:Destroy() 
-                else newmesh = mesh end
-                getgenv().hats_attributes[hat.Name].mesh = newmesh
-            end
-        end
         if getgenv().hats_attributes[hat.Name] then
             pcall(function() getgenv().hats_attributes[hat.Name].trans_con:Disconnect() end)
             getgenv().hats_attributes[hat.Name].trans_con = nil
         end
-	if settings.FPT ~= false then
-            hat:SetAttribute("LocalTransparency",settings.FPT)
-            getgenv().hats_attributes[hat.Name].trans_con = hat.Handle:GetPropertyChangedSignal("LocalTransparencyModifier"):Connect(function()
-                hat.Handle.LocalTransparencyModifier = hat:GetAttribute("LocalTransparency")
-            end)
-            hat.Handle.LocalTransparencyModifier = hat:GetAttribute("LocalTransparency")
-	end
         
         if settings.bloxify and getgenv().hats_attributes[hat.Name].mesh ~= nil then
             getgenv().hats_attributes[hat.Name].mesh.Parent = hat
@@ -276,8 +268,8 @@ getgenv().Accessory = function(hatName,parent,settings,callback)
     
     spawn(function()
         callback(
-            getgenv().hats_attributes[hat.Name].Speed1, -- AlignPosition
-            getgenv().hats_attributes[hat.Name].Speed2  -- AlignOrientation
+            getgenv().hats_attributes[hat.Name].Pos, -- AlignPosition
+            getgenv().hats_attributes[hat.Name].Rot  -- AlignOrientation
         )
     end)
     
