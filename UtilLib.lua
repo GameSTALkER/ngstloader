@@ -299,18 +299,23 @@ getgenv().KeyBind = function(id,key,callback)
     
 end
 
-getgenv().ScriptSession = function(check_type)
+getgenv().ScriptSession = function(id,check_type)
+
+    if type(id) == "number" then check_type = id;id=nil end
+    if id == nil then id = "global" end
     if check_type == nil then check_type = 0 end
+    
+    if getgenv().ScriptInstanceID == nil then getgenv().ScriptInstanceID = {} end
     if check_type == 1 then
         local array = {}
         for i = 1, 10 do
             array[i] = string.char(math.random(32, 126))
         end
         local Gen_ID = table.concat(array);array = nil
-        getgenv().ScriptInstanceID = Gen_ID
+        getgenv().ScriptInstanceID[id] = Gen_ID
         return Gen_ID
     else
-        return getgenv().ScriptInstanceID
+        return getgenv().ScriptInstanceID[id]
     end
     
 end
