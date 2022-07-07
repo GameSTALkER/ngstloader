@@ -42,6 +42,10 @@ while session == ScriptSession() do -- checking if session changed
     print("session is alive");wait(1)
 end
 print("session ended :(") -- after re executing this script
+
+PlayEmote(animation_id: number)
+Example:
+PlayEmote(4555816777) -- play curtsy anim (only roblox animations allowed or in-game)
 ]]--
 
 getgenv().neededhats = function(hats) -- table, available args: "string", nil
@@ -318,4 +322,42 @@ getgenv().ScriptSession = function(id,check_type)
         return getgenv().ScriptInstanceID[id]
     end
     
+end
+
+local active = {}
+getgenv().PlayEmote = function(animid)
+	for i,v in pairs(active) do
+		v:Stop()
+		active[i] = nil
+
+	end
+
+	local Character = game.Players.LocalPlayer.Character
+	local Anim = Instance.new("Animation")
+	Anim.AnimationId = "rbxassetid://"..animid
+
+	Character.Animate.Disabled = true
+	local toplay = Character.Humanoid.Animator:LoadAnimation(Anim)
+	toplay:Play()
+
+	active[animid] = toplay
+	con = Character.Humanoid.Running:connect(function(speed)
+		if speed > 3 then
+			Character.Animate.Disabled = false
+			toplay:Stop()
+			active[animid] = nil
+			con:Disconnect()
+
+		end
+
+	end)
+
+	jumpcon = Character.Humanoid.Jumping:connect(function()
+		Character.Animate.Disabled = false
+		toplay:Stop()
+		active[animid] = nil
+		jumpcon:Disconnect()
+
+	end)
+	
 end
