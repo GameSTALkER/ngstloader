@@ -1481,7 +1481,6 @@ function lib:init(loader_name,init_settings)
                 end
             end)
         end
-        spawn(function() while true do reloadfriendslist(); wait(15) end end)
         do -- friend-list reload
             local c = toRGB(bg.ImageColor3)
             local isonbtn = false
